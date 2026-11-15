@@ -3,7 +3,11 @@ import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
-export type SegmentedTabsItem<T extends string> = { value: T; label: string };
+export type SegmentedTabsItem<T extends string> = {
+  value: T;
+  label: string;
+  count?: number;
+};
 
 export type SegmentedTabsProps<T extends string> = {
   items: readonly SegmentedTabsItem<T>[];
@@ -38,6 +42,7 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.mutedForeground,
   },
   selectedLabel: { color: t.colors.foreground },
+  count: { fontWeight: '600', fontVariant: ['tabular-nums'] },
 }));
 
 export function SegmentedTabs<T extends string>({
@@ -57,7 +62,11 @@ export function SegmentedTabs<T extends string>({
             key={item.value}
             accessibilityRole="tab"
             accessibilityState={{ selected }}
-            accessibilityLabel={item.label}
+            accessibilityLabel={
+              item.count === undefined
+                ? item.label
+                : `${item.label} ${item.count}`
+            }
             touchHeight={HEIGHT}
             pressedStyle={{}}
             onPress={() => {
@@ -71,6 +80,9 @@ export function SegmentedTabs<T extends string>({
               style={[s.label, selected && s.selectedLabel]}
             >
               {item.label}
+              {item.count === undefined ? null : (
+                <Text style={s.count}> {item.count}</Text>
+              )}
             </Text>
           </PressableBase>
         );
