@@ -47,6 +47,13 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.input,
     backgroundColor: t.colors.surface,
   },
+  multi: {
+    height: 'auto',
+    minHeight: t.controlSize.lg * 3,
+    alignItems: 'flex-start',
+    paddingVertical: t.space[3],
+  },
+  multiInput: { textAlignVertical: 'top' },
   focused: {
     borderColor: t.colors.primaryEdge,
   },
@@ -138,6 +145,7 @@ export function Field({
       <View
         style={[
           s.frame,
+          input.multiline && s.multi,
           focused && s.focused,
           !!error && s.invalid,
           !!warn && s.warned,
@@ -153,7 +161,7 @@ export function Field({
           accessibilityHint={note}
           {...input}
           editable={editable && !readOnly}
-          style={s.input}
+          style={[s.input, input.multiline && s.multiInput]}
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
