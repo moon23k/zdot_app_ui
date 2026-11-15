@@ -2,12 +2,18 @@ import { View } from 'react-native';
 import { Text } from '../../components/text/text';
 import { makeStyles } from '../../utils/styles';
 
-export type BrandSwatch = { label: string; color: string; ink: string };
+export type BrandSwatch = {
+  label: string;
+  color: string;
+  ink: string;
+  name?: string;
+};
 
 export type BrandPaletteArtProps = {
   width: number;
   label: string;
   name: string;
+  code?: string;
   primary: string;
   onPrimary: string;
   swatches: readonly BrandSwatch[];
@@ -37,6 +43,7 @@ export function BrandPaletteArt({
   width,
   label,
   name,
+  code,
   primary,
   onPrimary,
   swatches,
@@ -49,14 +56,25 @@ export function BrandPaletteArt({
         <Text variant="label" style={[ink, s.soft]}>
           {label}
         </Text>
-        <View style={s.name}>
-          <Text variant="display" style={ink}>
-            {name}
-          </Text>
-          <Text variant="caption" style={[ink, s.soft]}>
-            {primary.toUpperCase()}
-          </Text>
-        </View>
+        {code ? (
+          <View style={s.name}>
+            <Text variant="label" weight="medium" style={[ink, s.soft]}>
+              {code}
+            </Text>
+            <Text variant="screenTitle" style={ink}>
+              {name}
+            </Text>
+          </View>
+        ) : (
+          <View style={s.name}>
+            <Text variant="display" style={ink}>
+              {name}
+            </Text>
+            <Text variant="caption" style={[ink, s.soft]}>
+              {primary.toUpperCase()}
+            </Text>
+          </View>
+        )}
       </View>
       <View style={s.row}>
         {swatches.map((swatch) => (
@@ -71,8 +89,12 @@ export function BrandPaletteArt({
             >
               {swatch.label}
             </Text>
-            <Text variant="caption" style={[{ color: swatch.ink }, s.soft]}>
-              {swatch.color.toUpperCase()}
+            <Text
+              variant="caption"
+              numberOfLines={2}
+              style={[{ color: swatch.ink }, s.soft]}
+            >
+              {swatch.name ?? swatch.color.toUpperCase()}
             </Text>
           </View>
         ))}
