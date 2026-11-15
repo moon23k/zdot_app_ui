@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { StyleSheet, View } from 'react-native';
 import { ArtFrame } from '../art-frame/art-frame';
+import { MockupStrip } from '../mockup-strip/mockup-strip';
 import { TokenSample } from '../token-sample/token-sample';
 import { BrandPaletteArt } from './brand-palette-art';
 
@@ -46,6 +47,21 @@ export const Frame: StoryObj<typeof meta> = {
         <View style={styles.fill} />
       </ArtFrame>
     </View>
+  ),
+};
+
+export const Strip: StoryObj<typeof meta> = {
+  render: () => (
+    <MockupStrip
+      items={['명함', '쇼핑백', '택배 상자', '감사 카드', '휴대폰'].map(
+        (label, i) => ({
+          key: String(i),
+          label,
+          uri: '',
+        })
+      )}
+      onPress={() => {}}
+    />
   ),
 };
 

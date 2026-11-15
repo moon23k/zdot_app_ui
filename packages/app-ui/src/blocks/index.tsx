@@ -1,6 +1,7 @@
 export * from './art-frame';
 export * from './brand-palette-art';
 export * from './brand-profile-card';
+export * from './mockup-strip';
 export * from './token-sample';
 export * from './bulk-ship-list';
 export * from './claim-row';
