@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
+import { Button } from '../components/button/button';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
+import type { TemplateAction } from './parts';
 
 export type CalendarTemplateProps = {
   calendar: ReactNode;
-  panel?: { field: ReactNode; rows?: ReactNode };
+  panel?: { field: ReactNode; rows?: ReactNode; action?: TemplateAction };
   bottomInset?: number;
 };
 
@@ -18,6 +20,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.background,
   },
   field: { paddingHorizontal: t.layout.screenX },
+  action: { paddingHorizontal: t.layout.screenX, paddingTop: t.space[3] },
 }));
 
 export function CalendarTemplate({
@@ -39,6 +42,18 @@ export function CalendarTemplate({
         >
           <View style={s.field}>{panel.field}</View>
           {panel.rows}
+          {panel.action ? (
+            <View style={s.action}>
+              <Button
+                size="lg"
+                onPress={panel.action.onPress}
+                disabled={panel.action.disabled}
+                loading={panel.action.loading}
+              >
+                {panel.action.label}
+              </Button>
+            </View>
+          ) : null}
         </View>
       ) : null}
     </View>
