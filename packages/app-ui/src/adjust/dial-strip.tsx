@@ -98,6 +98,12 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
   );
 }
 
+export type AxisRingProps = { value: number; max?: number; on?: boolean };
+
+export function AxisRing({ value, max, on = false }: AxisRingProps) {
+  return <Ring item={{ key: 'axis', label: '', value, max }} on={on} />;
+}
+
 export function DialStrip({
   items,
   selected,

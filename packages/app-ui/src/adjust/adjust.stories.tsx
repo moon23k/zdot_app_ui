@@ -4,9 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { Phone } from '../__stories__/phone';
 import { useTheme } from '../theme/theme-provider';
 import { AdjustTemplate } from './adjust-template';
+import { BrandFeelArt } from './brand-feel-art';
 import { ColorAdjustNote } from './color-adjust-note';
 import { ColorTrack } from './color-track';
-import { DialStrip } from './dial-strip';
+import { AxisRing, DialStrip } from './dial-strip';
 import { FontControls } from './font-controls';
 import { hslToHex } from './hsl';
 import { ScrubRuler } from './scrub-ruler';
@@ -149,3 +150,41 @@ function FontDemo() {
 export const Font: StoryObj<typeof meta> = {
   render: () => <FontDemo />,
 };
+
+export const BrandFeel: StoryObj = {
+  render: () => (
+    <View style={feel.stack}>
+      <View style={feel.rings}>
+        <AxisRing value={2} on />
+        <AxisRing value={-1} />
+        <AxisRing value={0} />
+      </View>
+      <BrandFeelArt
+        width={328}
+        axes={axes.map((a, i) => ({
+          key: a.key,
+          label: a.label,
+          value: [1, -1, 2, 0, -1][i] ?? 0,
+        }))}
+        strong={['temperature', 'softness']}
+        sample={{
+          primary: '#0E7490',
+          onPrimary: '#FFFFFF',
+          surface: '#FAF7F3',
+          surfaceAlt: '#F6F1EA',
+          border: '#C3DCE3',
+          radius: 22,
+          buttonRadius: 999,
+          photoRatio: 1,
+          button: '객실 보기',
+        }}
+        captions={['모서리 22', '사진 1:1', '둥근 버튼']}
+      />
+    </View>
+  ),
+};
+
+const feel = StyleSheet.create({
+  stack: { gap: 16 },
+  rings: { flexDirection: 'row', gap: 12 },
+});

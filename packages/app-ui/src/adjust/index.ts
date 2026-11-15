@@ -4,7 +4,19 @@ export {
   type ColorAdjustNoteProps,
 } from './color-adjust-note';
 export { ColorTrack, type ColorTrackProps } from './color-track';
-export { DialStrip, type DialItem, type DialStripProps } from './dial-strip';
+export {
+  AxisRing,
+  DialStrip,
+  type AxisRingProps,
+  type DialItem,
+  type DialStripProps,
+} from './dial-strip';
+export {
+  BrandFeelArt,
+  type BrandFeelArtProps,
+  type BrandFeelAxis,
+  type BrandFeelSample,
+} from './brand-feel-art';
 export {
   FontControls,
   type FontControlsProps,
