@@ -38,6 +38,7 @@ export type ResultTemplateProps = {
   openLabel?: string;
   closeLabel?: string;
   bottomInset?: number;
+  viewerInsets?: { top: number; bottom: number };
 };
 
 const useStyles = makeStyles((t) => ({
@@ -104,7 +105,7 @@ function Viewer({
   onClose,
   primaryAction,
   closeLabel,
-  bottomInset,
+  insets,
 }: {
   previews: readonly ResultPreview[];
   index: number;
@@ -112,14 +113,14 @@ function Viewer({
   onClose: () => void;
   primaryAction?: TemplateAction;
   closeLabel: string;
-  bottomInset: number;
+  insets: { top: number; bottom: number };
 }) {
   const t = useTheme();
   const s = useStyles();
   const [width, setWidth] = useState(0);
   const current = previews[index];
   return (
-    <View style={s.viewer}>
+    <View style={[s.viewer, { paddingTop: insets.top }]}>
       <View style={s.viewerHead}>
         <PressableBase
           onPress={onClose}
@@ -155,7 +156,7 @@ function Viewer({
         ))}
       </ScrollView>
       {primaryAction ? (
-        <BottomBar primaryAction={primaryAction} bottomInset={bottomInset} />
+        <BottomBar primaryAction={primaryAction} bottomInset={insets.bottom} />
       ) : null}
     </View>
   );
@@ -174,6 +175,7 @@ export function ResultTemplate({
   openLabel = '크게 보기',
   closeLabel = '닫기',
   bottomInset = 0,
+  viewerInsets,
 }: ResultTemplateProps) {
   const t = useTheme();
   const s = useStyles();
@@ -269,6 +271,8 @@ export function ResultTemplate({
       <Modal
         visible={open}
         animationType="slide"
+        statusBarTranslucent
+        navigationBarTranslucent
         onRequestClose={() => setOpen(false)}
       >
         <Viewer
@@ -278,7 +282,7 @@ export function ResultTemplate({
           onClose={() => setOpen(false)}
           primaryAction={primaryAction}
           closeLabel={closeLabel}
-          bottomInset={bottomInset}
+          insets={viewerInsets ?? { top: 0, bottom: bottomInset }}
         />
       </Modal>
     </View>
