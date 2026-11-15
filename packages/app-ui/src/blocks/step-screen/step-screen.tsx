@@ -17,7 +17,7 @@ export type StepAction = {
 
 export type StepScreenProps = {
   top?: ReactNode;
-  title: string;
+  title?: string;
   total?: number;
   current?: number;
   onBack?: () => void;
@@ -136,9 +136,11 @@ export function StepScreen({
           keyboardShouldPersistTaps="handled"
         >
           {top}
-          <Text accessibilityRole="header" style={s.title}>
-            {title}
-          </Text>
+          {title ? (
+            <Text accessibilityRole="header" style={s.title}>
+              {title}
+            </Text>
+          ) : null}
           {children}
         </ScrollView>
         {notice ? <Notice notice={notice} /> : null}
