@@ -1,14 +1,17 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { BELL } from './bell';
 import {
+  ALIGN,
   CARD,
   CHART,
   CLOCK,
+  DEVICES,
   EYE,
   FILE,
   GLOBE,
   LINK,
   PALETTE,
+  PENCIL,
   PHONE,
   PICTURE,
   RETURN,
@@ -16,7 +19,9 @@ import {
   SPARKLES,
   STAR,
   STORE,
+  TEXT_SIZE,
   TRUCK,
+  TYPE,
   USERS,
   WALLET,
 } from './line-icons';
@@ -258,3 +263,8 @@ export const UsersGlyph = imageGlyph(USERS);
 export const PhoneGlyph = imageGlyph(PHONE);
 export const EyeGlyph = imageGlyph(EYE);
 export const ShareGlyph = imageGlyph(SHARE);
+export const PencilGlyph = imageGlyph(PENCIL);
+export const TypeGlyph = imageGlyph(TYPE);
+export const TextSizeGlyph = imageGlyph(TEXT_SIZE);
+export const AlignGlyph = imageGlyph(ALIGN);
+export const DevicesGlyph = imageGlyph(DEVICES);
