@@ -98,7 +98,7 @@ export function BottomBar({
           <View style={s.side}>
             <Button
               size="lg"
-              variant="secondary"
+              variant="ghost"
               onPress={secondaryAction.onPress}
               disabled={secondaryAction.disabled}
               loading={secondaryAction.loading}

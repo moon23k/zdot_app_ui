@@ -125,7 +125,7 @@ export function NoticeTemplate({
             {secondaryAction ? (
               <Button
                 size="lg"
-                variant="secondary"
+                variant="ghost"
                 style={s.button}
                 onPress={secondaryAction.onPress}
                 disabled={secondaryAction.disabled}

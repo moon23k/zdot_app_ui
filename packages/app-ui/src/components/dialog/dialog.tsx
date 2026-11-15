@@ -120,7 +120,7 @@ export function Dialog({
           </View>
           <View style={s.actions}>
             <Button
-              variant="secondary"
+              variant="ghost"
               style={s.action}
               disabled={loading}
               onPress={() => onOpenChange(false)}

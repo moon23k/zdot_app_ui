@@ -74,7 +74,7 @@ export function CreditWallet({
         {onBuy || onHistory ? (
           <View style={s.actions}>
             {onHistory ? (
-              <Button variant="secondary" style={s.action} onPress={onHistory}>
+              <Button variant="outline" size="sm" style={s.action} onPress={onHistory}>
                 내역
               </Button>
             ) : null}

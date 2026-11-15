@@ -53,7 +53,7 @@ const useStyles = makeStyles((t) => ({
     borderWidth: 1.5,
     borderColor: t.colors.primary,
   },
-  primaryOff: { borderColor: t.colors.border },
+  primaryOff: { borderColor: 'transparent', backgroundColor: t.colors.muted },
   secondary: { backgroundColor: t.colors.muted },
   outline: {
     backgroundColor: 'transparent',

@@ -42,8 +42,6 @@ const useStyles = makeStyles((t) => ({
   },
   button: {
     marginTop: t.space[5],
-    height: t.controlSize.md,
-    paddingHorizontal: t.space[5],
   },
   actions: {
     flexDirection: 'row',
@@ -144,6 +142,8 @@ export function EmptyState({
       </Text>
       {action ? (
         <Button
+          variant="outline"
+          size="sm"
           leftIcon={action.icon}
           style={s.button}
           onPress={action.onPress}

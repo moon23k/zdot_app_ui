@@ -83,7 +83,7 @@ export function RequestCard({
             {meta ?? ''}
           </Text>
           {actionLabel && onAction ? (
-            <Button size="sm" onPress={onAction}>
+            <Button variant="outline" size="sm" onPress={onAction}>
               {actionLabel}
             </Button>
           ) : null}
