@@ -25,7 +25,7 @@ export type ListTemplateProps<T> = {
   header?: ReactNode;
   filters?: ReactNode;
   pinned?: ReactNode;
-  empty: { title: string; action?: Pick<TemplateAction, 'label' | 'onPress'> };
+  empty?: { title: string; action?: Pick<TemplateAction, 'label' | 'onPress'> };
   error?: { title: string; onRetry: () => void };
   refreshing?: boolean;
   onRefresh?: () => void;
@@ -139,7 +139,9 @@ export function ListTemplate<T>({
           ) : undefined
         }
         ListEmptyComponent={
-          <EmptyState title={empty.title} action={empty.action} />
+          empty ? (
+            <EmptyState title={empty.title} action={empty.action} />
+          ) : undefined
         }
         contentContainerStyle={[
           data.length === 0 ? s.grow : null,
