@@ -39,6 +39,7 @@ const useStyles = makeStyles((t) => ({
     borderBottomColor: 'transparent',
   },
   loose: { flex: 0, paddingHorizontal: t.space[3] },
+  bare: { paddingHorizontal: 0, backgroundColor: 'transparent' },
   selected: { borderBottomColor: t.colors.foreground },
   dot: {
     width: DOT,
@@ -83,7 +84,7 @@ export function SectionTabs<T extends string>({
   });
   if (scrollable) {
     return (
-      <View style={[s.row, style]}>
+      <View style={[s.row, s.bare, style]}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}

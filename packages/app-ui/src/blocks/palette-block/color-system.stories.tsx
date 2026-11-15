@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListRow } from '../../components/list-row/list-row';
 import { SectionTabs } from '../../components/section-tabs/section-tabs';
-import { Text } from '../../components/text/text';
 import { Phone } from '../../__stories__/phone';
 import { ListSection } from '../../templates/parts';
 import { ResultTemplate } from '../../templates/result-template';
@@ -67,9 +66,6 @@ const palettes = [
 const tones = ['#F7E0CC', '#D9A988', '#9D6038', '#7A4421', '#4A2A12'];
 
 const styles = StyleSheet.create({
-  body: { gap: 20, paddingHorizontal: 16, paddingTop: 20 },
-  text: { gap: 4 },
-  block: { gap: 8 },
   art: { padding: 16 },
 });
 
@@ -107,22 +103,13 @@ function Detail() {
           color="#9D6038"
           code="YR 57"
           name="ANTIQUE AMBER"
+          line="A moderate brown."
+          keywords="Warm, mid, ambery"
           onBack={() => {}}
         />
-        <View style={styles.body}>
-          <View style={styles.text}>
-            <Text variant="bodyLg">A moderate brown.</Text>
-            <Text variant="label" tone="muted">
-              Warm, mid, ambery
-            </Text>
-          </View>
-          <View style={styles.block}>
-            <Text variant="label" tone="muted">
-              톤 단계
-            </Text>
-            <ToneStrip colors={tones} />
-          </View>
-        </View>
+        <ListSection title="톤 단계" inset>
+          <ToneStrip colors={tones} />
+        </ListSection>
         <ListSection title="어울리는 컬러" boxed>
           {palettes.map((p) => (
             <ListRow
