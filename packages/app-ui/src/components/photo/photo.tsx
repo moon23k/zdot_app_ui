@@ -77,7 +77,7 @@ function PhotoInner({
           {...rest}
           source={source}
           resizeMode={rest.resizeMode ?? 'cover'}
-          style={StyleSheet.absoluteFill}
+          style={styles.fill}
           onLoad={(e) => {
             setStatus('loaded');
             onLoad?.(e);
@@ -95,4 +95,11 @@ function PhotoInner({
 const styles = StyleSheet.create({
   frame: { width: '100%', overflow: 'hidden' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  fill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
 });
