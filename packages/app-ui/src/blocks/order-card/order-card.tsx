@@ -21,8 +21,8 @@ export type OrderStatus =
 
 export const orderStatusLabel: Record<OrderStatus, string> = {
   pending_payment: '결제 대기',
-  paid: '신규',
-  preparing: '상품 준비 중',
+  paid: '신규 주문',
+  preparing: '배송 준비',
   shipped: '배송 중',
   delivered: '배송 완료',
   completed: '구매 확정',

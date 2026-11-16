@@ -33,11 +33,11 @@ const TYPE: Record<ClaimType, string> = {
 
 export const claimStatusLabel: Record<ClaimStatus, string> = {
   requested: '요청',
-  collecting: '회수 중',
-  collected: '회수 완료',
+  collecting: '수거 중',
+  collected: '수거 완료',
   held: '보류',
   completed: '완료',
-  rejected: '거절',
+  rejected: '거부',
   withdrawn: '철회',
 };
 

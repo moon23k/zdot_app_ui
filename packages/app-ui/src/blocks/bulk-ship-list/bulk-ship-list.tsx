@@ -85,7 +85,7 @@ export function BulkShipList({
           onPress={() => setPicking(true)}
         />
       </ListSection>
-      <ListSection title={`송장 번호 ${filled}/${rows.length}`}>
+      <ListSection title={`송장번호 ${filled}/${rows.length}`}>
         <View style={s.list}>
           {rows.map((row) => {
             const issue = issues[row.id];
@@ -97,12 +97,12 @@ export function BulkShipList({
                 <Field
                   value={row.trackingNo}
                   onChangeText={(v) => onTrackingChange(row.id, v)}
-                  placeholder="송장 번호"
+                  placeholder="송장번호"
                   keyboardType="number-pad"
                   inputMode="numeric"
                   autoCorrect={false}
                   maxLength={20}
-                  accessibilityLabel={`${row.title} 송장 번호`}
+                  accessibilityLabel={`${row.title} 송장번호`}
                   error={issue === 'invalid' ? INVALID : undefined}
                   warning={issue === 'duplicate' ? DUPLICATE : undefined}
                   trailing={onScan ? ScanGlyph : undefined}

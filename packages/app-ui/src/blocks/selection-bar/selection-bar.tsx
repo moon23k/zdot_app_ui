@@ -44,7 +44,7 @@ export function SelectionBar({
     <View accessibilityRole="toolbar" style={[s.root, style]}>
       <View style={s.info} accessibilityLiveRegion="polite">
         <Text weight="bold" style={s.count} numberOfLines={1}>
-          {count}건 선택
+          {count}개 선택됨
         </Text>
         {full ? (
           <Text variant="caption" tone="muted" numberOfLines={2}>

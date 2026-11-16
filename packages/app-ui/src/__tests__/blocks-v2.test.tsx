@@ -42,10 +42,10 @@ describe('ClaimRow', () => {
   });
 
   it.each([
-    ['collected', '반품 회수 완료'],
+    ['collected', '반품 수거 완료'],
     ['held', '반품 보류'],
     ['withdrawn', '반품 철회'],
-    ['rejected', '반품 거절'],
+    ['rejected', '반품 거부'],
   ] as const)('labels %s', async (status, label) => {
     await render(<ClaimRow type="return" status={status} amount={1000} />);
     expect(screen.getByText(label)).toBeTruthy();
@@ -235,13 +235,13 @@ describe('BulkShipList', () => {
     expect(
       screen.getAllByText('같은 송장 번호가 다른 주문에도 있어요')
     ).toHaveLength(2);
-    const input = screen.getByLabelText('머그컵 송장 번호');
+    const input = screen.getByLabelText('머그컵 송장번호');
     expect(input.props.keyboardType).toBe('number-pad');
     await fireEvent.changeText(input, '123456789');
     expect(onTrackingChange).toHaveBeenCalledWith('1', '123456789');
     await fireEvent.press(screen.getByLabelText('원두 송장 스캔'));
     expect(onScan).toHaveBeenCalledWith('2');
-    expect(screen.getByText('송장 번호 3/3')).toBeTruthy();
+    expect(screen.getByText('송장번호 3/3')).toBeTruthy();
     await fireEvent.press(screen.getByText('택배사'));
     await fireEvent.press(screen.getByText('우체국택배'));
     expect(onCarrierChange).toHaveBeenCalledWith('post');
@@ -274,7 +274,7 @@ describe('SelectionBar', () => {
         onClear={onClear}
       />
     );
-    expect(screen.getByText('3건 선택')).toBeTruthy();
+    expect(screen.getByText('3개 선택됨')).toBeTruthy();
     expect(screen.queryByText(/최대 50건/)).toBeNull();
     await fireEvent.press(screen.getByText('송장 입력'));
     await fireEvent.press(screen.getByText('선택 해제'));

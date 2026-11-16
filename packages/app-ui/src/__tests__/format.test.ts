@@ -41,7 +41,7 @@ describe('deadlineTone', () => {
 
 describe('orderStatusText', () => {
   it('uses the same words as the customer web by fulfillment', () => {
-    expect(orderStatusText({ status: 'preparing' })).toBe('상품 준비 중');
+    expect(orderStatusText({ status: 'preparing' })).toBe('배송 준비');
     expect(
       orderStatusText({
         status: 'preparing',
