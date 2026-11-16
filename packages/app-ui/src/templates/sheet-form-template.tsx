@@ -15,6 +15,7 @@ import { BottomBar, type TemplateAction } from './parts';
 
 export type SheetFormTemplateProps = {
   title: string;
+  titleTag?: ReactNode;
   onBack?: () => void;
   backLabel?: string;
   action?: { label: string; onPress: () => void; disabled?: boolean };
@@ -58,6 +59,14 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     transform: [{ scaleX: -1 }],
   },
+  titleRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: t.space[2],
+  },
+  shrink: { flex: 0, flexShrink: 1 },
   title: {
     flex: 1,
     textAlign: 'center',
@@ -110,6 +119,7 @@ export function SheetBlock({
 
 export function SheetFormTemplate({
   title,
+  titleTag,
   onBack,
   backLabel = '뒤로',
   action,
@@ -139,14 +149,17 @@ export function SheetFormTemplate({
               </PressableBase>
             ) : null}
           </View>
-          <Text
-            weight="bold"
-            numberOfLines={1}
-            accessibilityRole="header"
-            style={s.title}
-          >
-            {title}
-          </Text>
+          <View style={s.titleRow}>
+            <Text
+              weight="bold"
+              numberOfLines={1}
+              accessibilityRole="header"
+              style={[s.title, titleTag ? s.shrink : null]}
+            >
+              {title}
+            </Text>
+            {titleTag}
+          </View>
           <View style={[s.side, s.end]}>
             {action ? (
               <PressableBase

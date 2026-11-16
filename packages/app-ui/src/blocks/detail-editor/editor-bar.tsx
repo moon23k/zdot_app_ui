@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Button } from '../../components/button/button';
 import {
@@ -13,6 +14,7 @@ import { makeStyles } from '../../utils/styles';
 
 export type EditorBarProps = {
   topInset?: number;
+  tag?: ReactNode;
   onClose: () => void;
   onUndo?: () => void;
   onRedo?: () => void;
@@ -51,6 +53,7 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
     backgroundColor: t.colors.surface,
   },
+  tag: { alignSelf: 'center' },
   fill: { flex: 1 },
   mirror: { transform: [{ scaleX: -1 }] },
   on: { backgroundColor: t.colors.primaryTint },
@@ -58,6 +61,7 @@ const useStyles = makeStyles((t) => ({
 
 export function EditorBar({
   topInset = 0,
+  tag,
   onClose,
   onUndo,
   onRedo,
@@ -96,6 +100,7 @@ export function EditorBar({
       <View style={[s.round, { backgroundColor: t.colors.surface }]}>
         {tool('close', CloseGlyph, '닫기', onClose)}
       </View>
+      {tag ? <View style={s.tag}>{tag}</View> : null}
       <View style={s.fill} />
       <View style={s.group}>
         {tool('undo', ReturnGlyph, '실행 취소', onUndo)}
