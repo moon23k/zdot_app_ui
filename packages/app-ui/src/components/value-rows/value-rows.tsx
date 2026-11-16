@@ -34,7 +34,7 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.mutedForeground,
   },
   value: {
-    flexShrink: 1,
+    flex: 1,
     textAlign: 'right',
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,

@@ -100,6 +100,7 @@ const useStyles = makeStyles((t) => ({
   },
   heroBody: { marginTop: t.space[4] },
   heroWarn: { color: t.colors.warningText, fontWeight: '500' },
+  still: { opacity: 1 },
   heroSuffix: {
     fontSize: t.typography.label.fontSize,
     fontWeight: '400',
@@ -159,6 +160,7 @@ function ScrollTemplate({
                 accessibilityRole={hero.onCopy ? 'button' : undefined}
                 accessibilityLabel={hero.onCopy ? hero.copyLabel : undefined}
                 disabled={!hero.onCopy}
+                disabledStyle={s.still}
                 onPress={hero.onCopy}
                 style={s.heroCaption}
               >
