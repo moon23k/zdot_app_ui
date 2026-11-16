@@ -229,9 +229,7 @@ describe('BulkShipList', () => {
         onScan={onScan}
       />
     );
-    expect(
-      screen.getAllByText('송장번호를 확인해 주세요')
-    ).toHaveLength(1);
+    expect(screen.getAllByText('송장번호를 확인해 주세요')).toHaveLength(1);
     expect(
       screen.getAllByText('같은 송장번호가 다른 주문에도 있어요')
     ).toHaveLength(2);
