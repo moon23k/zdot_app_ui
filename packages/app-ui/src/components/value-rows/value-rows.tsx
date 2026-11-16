@@ -1,4 +1,6 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ChevronGlyph } from '../../internal/glyphs';
+import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -9,6 +11,7 @@ export type ValueRow = {
   value: string;
   tone?: ValueTone;
   note?: { text: string; tone?: ValueTone };
+  onPress?: () => void;
 };
 
 export type ValueRowsProps = {
@@ -40,6 +43,7 @@ const useStyles = makeStyles((t) => ({
   },
   warning: { color: t.colors.warningText },
   success: { color: t.colors.success },
+  still: { opacity: 1 },
 }));
 
 export function ValueRows({ rows, style }: ValueRowsProps) {
@@ -50,7 +54,14 @@ export function ValueRows({ rows, style }: ValueRowsProps) {
   return (
     <View style={[s.root, style]}>
       {rows.map((row) => (
-        <View key={row.label} style={s.row}>
+        <PressableBase
+          key={row.label}
+          onPress={row.onPress}
+          disabled={!row.onPress}
+          disabledStyle={s.still}
+          accessibilityRole={row.onPress ? 'button' : undefined}
+          style={s.row}
+        >
           <Text
             style={[s.label, row.tone === 'warning' && s.warning]}
             maxFontSizeMultiplier={t.maxFontScale}
@@ -66,7 +77,10 @@ export function ValueRows({ rows, style }: ValueRowsProps) {
             ) : null}
             {row.value}
           </Text>
-        </View>
+          {row.onPress ? (
+            <ChevronGlyph color={t.colors.ring} size={t.iconSize.sm} />
+          ) : null}
+        </PressableBase>
       ))}
     </View>
   );

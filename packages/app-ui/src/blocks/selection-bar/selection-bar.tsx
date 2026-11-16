@@ -9,6 +9,7 @@ export type SelectionBarProps = {
   actionLabel: string;
   onAction: () => void;
   onClear: () => void;
+  clearLabel?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -35,6 +36,7 @@ export function SelectionBar({
   actionLabel,
   onAction,
   onClear,
+  clearLabel = '선택 해제',
   disabled,
   style,
 }: SelectionBarProps) {
@@ -53,7 +55,7 @@ export function SelectionBar({
         ) : null}
       </View>
       <Button variant="ghost" size="sm" onPress={onClear}>
-        선택 해제
+        {clearLabel}
       </Button>
       <Button size="sm" onPress={onAction} disabled={disabled || count === 0}>
         {actionLabel}

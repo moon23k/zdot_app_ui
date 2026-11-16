@@ -8,6 +8,8 @@ export type TextLink = { label: string; onPress: () => void };
 
 export type TextLinksProps = { items: readonly TextLink[] };
 
+const UNDER = 1;
+
 const useStyles = makeStyles((t) => ({
   root: {
     flexDirection: 'row',
@@ -19,8 +21,9 @@ const useStyles = makeStyles((t) => ({
   bar: { width: 1, height: t.space[3], backgroundColor: t.colors.border },
   link: { paddingVertical: t.space[1] },
   under: {
-    textDecorationLine: 'underline',
-    textDecorationColor: t.colors.input,
+    paddingBottom: UNDER,
+    borderBottomWidth: 1,
+    borderBottomColor: t.colors.input,
   },
 }));
 
@@ -36,9 +39,11 @@ export function TextLinks({ items }: TextLinksProps) {
             accessibilityRole="button"
             onPress={item.onPress}
           >
-            <Text variant="label" tone="muted" style={s.under}>
-              {item.label}
-            </Text>
+            <View style={s.under}>
+              <Text variant="label" tone="muted">
+                {item.label}
+              </Text>
+            </View>
           </PressableBase>
         </Fragment>
       ))}

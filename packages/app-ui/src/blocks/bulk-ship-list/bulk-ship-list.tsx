@@ -4,7 +4,9 @@ import { Field } from '../../components/field/field';
 import { ListRow } from '../../components/list-row/list-row';
 import { Sheet, SheetOptions } from '../../components/sheet/sheet';
 import { Text } from '../../components/text/text';
-import { ScanGlyph } from '../../internal/glyphs';
+import { CheckGlyph, ScanGlyph } from '../../internal/glyphs';
+import { Photo } from '../../components/photo/photo';
+import { useTheme } from '../../theme/theme-provider';
 import { ListSection } from '../../templates/parts';
 import { makeStyles } from '../../utils/styles';
 
@@ -14,6 +16,7 @@ export type BulkShipRow = {
   id: string;
   title: string;
   subtitle?: string;
+  image?: string | null;
   trackingNo: string;
 };
 
@@ -31,8 +34,9 @@ export type BulkShipListProps = {
 export type TrackingIssue = 'invalid' | 'duplicate';
 
 const TRACKING = /^[0-9-]{8,20}$/;
-const INVALID = '숫자와 -만 8~20자리로 입력해 주세요';
-const DUPLICATE = '같은 송장 번호가 다른 주문에도 있어요';
+const INVALID = '송장번호를 확인해 주세요';
+const DUPLICATE = '같은 송장번호가 다른 주문에도 있어요';
+const THUMB = 40;
 
 export function trackingIssues(
   rows: readonly BulkShipRow[]
@@ -56,8 +60,15 @@ export function trackingIssues(
 }
 
 const useStyles = makeStyles((t) => ({
-  list: { gap: t.space[4] },
-  row: { gap: t.space[1], paddingHorizontal: t.layout.screenX },
+  row: {
+    gap: t.space[3],
+    paddingHorizontal: t.layout.screenX,
+    paddingVertical: t.space[4],
+  },
+  head: { flexDirection: 'row', alignItems: 'center', gap: t.space[3] },
+  body: { flex: 1, minWidth: 0 },
+  thumb: { width: THUMB, height: THUMB },
+  line: { height: 1, backgroundColor: t.colors.muted },
 }));
 
 export function BulkShipList({
@@ -70,11 +81,11 @@ export function BulkShipList({
   bottomInset = 0,
   style,
 }: BulkShipListProps) {
+  const t = useTheme();
   const s = useStyles();
   const [picking, setPicking] = useState(false);
   const issues = trackingIssues(rows);
   const selected = carriers.find((c) => c.code === carrier);
-  const filled = rows.filter((row) => row.trackingNo.trim()).length;
   return (
     <View style={style}>
       <ListSection card>
@@ -85,34 +96,51 @@ export function BulkShipList({
           onPress={() => setPicking(true)}
         />
       </ListSection>
-      <ListSection title={`송장번호 ${filled}/${rows.length}`}>
-        <View style={s.list}>
-          {rows.map((row) => {
-            const issue = issues[row.id];
-            return (
-              <View key={row.id} style={s.row}>
-                <Text variant="label" numberOfLines={1}>
-                  {row.subtitle ? `${row.subtitle} · ${row.title}` : row.title}
-                </Text>
-                <Field
-                  value={row.trackingNo}
-                  onChangeText={(v) => onTrackingChange(row.id, v)}
-                  placeholder="송장번호"
-                  keyboardType="number-pad"
-                  inputMode="numeric"
-                  autoCorrect={false}
-                  maxLength={20}
-                  accessibilityLabel={`${row.title} 송장번호`}
-                  error={issue === 'invalid' ? INVALID : undefined}
-                  warning={issue === 'duplicate' ? DUPLICATE : undefined}
-                  trailing={onScan ? ScanGlyph : undefined}
-                  onTrailingPress={onScan ? () => onScan(row.id) : undefined}
-                  trailingLabel={`${row.title} 송장 스캔`}
+      <ListSection card>
+        {rows.map((row) => {
+          const issue = issues[row.id];
+          const ok = Boolean(row.trackingNo.trim()) && !issue;
+          return (
+            <View key={row.id} style={s.row}>
+              <View style={s.head}>
+                <Photo
+                  source={{ uri: row.image ?? '' }}
+                  seed={row.title}
+                  radius={t.radius.md}
+                  style={s.thumb}
                 />
+                <View style={s.body}>
+                  <Text variant="label" weight="medium" numberOfLines={1}>
+                    {row.title}
+                  </Text>
+                  {row.subtitle ? (
+                    <Text variant="caption" tone="muted" numberOfLines={1}>
+                      {row.subtitle}
+                    </Text>
+                  ) : null}
+                </View>
+                {ok ? (
+                  <CheckGlyph color={t.colors.success} size={t.iconSize.md} />
+                ) : null}
               </View>
-            );
-          })}
-        </View>
+              <Field
+                value={row.trackingNo}
+                onChangeText={(v) => onTrackingChange(row.id, v)}
+                placeholder="송장번호"
+                keyboardType="number-pad"
+                inputMode="numeric"
+                autoCorrect={false}
+                maxLength={20}
+                accessibilityLabel={`${row.title} 송장번호`}
+                error={issue === 'invalid' ? INVALID : undefined}
+                warning={issue === 'duplicate' ? DUPLICATE : undefined}
+                trailing={onScan ? ScanGlyph : undefined}
+                onTrailingPress={onScan ? () => onScan(row.id) : undefined}
+                trailingLabel={`${row.title} 송장 스캔`}
+              />
+            </View>
+          );
+        })}
       </ListSection>
       <Sheet
         open={picking}

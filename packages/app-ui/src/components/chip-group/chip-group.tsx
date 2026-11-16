@@ -28,11 +28,14 @@ export type ChipGroupProps<T extends string> = (Single<T> | Multiple<T>) & {
   size?: ChipSize;
   variant?: ChipVariant;
   scroll?: boolean;
+  even?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 const useStyles = makeStyles((t) => ({
   root: { flexDirection: 'row', flexWrap: 'wrap', gap: t.space[2] },
+  evenRow: { flexWrap: 'nowrap' },
+  evenChip: { flex: 1, minWidth: 0, paddingHorizontal: 0 },
   scroll: { marginHorizontal: -t.layout.screenX, flexGrow: 0 },
   track: {
     flexDirection: 'row',
@@ -43,7 +46,7 @@ const useStyles = makeStyles((t) => ({
 
 export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
   const s = useStyles();
-  const { items, size, variant, scroll, style } = props;
+  const { items, size, variant, scroll, even, style } = props;
 
   const isSelected = (v: T) =>
     props.multiple ? props.value.includes(v) : props.value === v;
@@ -82,6 +85,7 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
           props.multiple ? { checked: selected } : { selected }
         }
         onPress={() => press(item.value)}
+        style={even ? s.evenChip : undefined}
       >
         {item.label}
       </Chip>
@@ -105,7 +109,7 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
   return (
     <View
       accessibilityRole={props.multiple ? undefined : 'radiogroup'}
-      style={[s.root, style]}
+      style={[s.root, even && s.evenRow, style]}
     >
       {chips}
     </View>

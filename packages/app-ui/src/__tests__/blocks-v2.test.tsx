@@ -230,10 +230,10 @@ describe('BulkShipList', () => {
       />
     );
     expect(
-      screen.getAllByText('숫자와 -만 8~20자리로 입력해 주세요')
+      screen.getAllByText('송장번호를 확인해 주세요')
     ).toHaveLength(1);
     expect(
-      screen.getAllByText('같은 송장 번호가 다른 주문에도 있어요')
+      screen.getAllByText('같은 송장번호가 다른 주문에도 있어요')
     ).toHaveLength(2);
     const input = screen.getByLabelText('머그컵 송장번호');
     expect(input.props.keyboardType).toBe('number-pad');
@@ -241,7 +241,6 @@ describe('BulkShipList', () => {
     expect(onTrackingChange).toHaveBeenCalledWith('1', '123456789');
     await fireEvent.press(screen.getByLabelText('원두 송장 스캔'));
     expect(onScan).toHaveBeenCalledWith('2');
-    expect(screen.getByText('송장번호 3/3')).toBeTruthy();
     await fireEvent.press(screen.getByText('택배사'));
     await fireEvent.press(screen.getByText('우체국택배'));
     expect(onCarrierChange).toHaveBeenCalledWith('post');

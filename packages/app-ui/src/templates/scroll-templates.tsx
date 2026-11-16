@@ -20,6 +20,7 @@ import {
 
 export type TemplateHero = {
   title: string;
+  titleSuffix?: string;
   overline?: ReactNode;
   captionTone?: 'muted' | 'warning';
   aside?: ReactNode;
@@ -39,6 +40,7 @@ type ScrollTemplateProps = {
   refreshing?: boolean;
   onRefresh?: () => void;
   bottomInset?: number;
+  footer?: ReactNode;
   children: ReactNode;
 };
 
@@ -97,6 +99,11 @@ const useStyles = makeStyles((t) => ({
   },
   heroBody: { marginTop: t.space[4] },
   heroWarn: { color: t.colors.warningText, fontWeight: '500' },
+  heroSuffix: {
+    fontSize: t.typography.label.fontSize,
+    fontWeight: '400',
+    color: t.colors.mutedForeground,
+  },
   media: { width: MEDIA },
 }));
 
@@ -110,6 +117,7 @@ function ScrollTemplate({
   refreshing = false,
   onRefresh,
   bottomInset = 0,
+  footer,
   children,
 }: ScrollTemplateProps) {
   const t = useTheme();
@@ -120,7 +128,7 @@ function ScrollTemplate({
       <ScrollView
         contentContainerStyle={[
           s.content,
-          primaryAction
+          primaryAction || footer
             ? null
             : { paddingBottom: t.layout.sectionGap + bottomInset },
         ]}
@@ -137,6 +145,9 @@ function ScrollTemplate({
             <View style={s.heroHead}>
               <Text accessibilityRole="header" style={s.heroTitle}>
                 {hero.title}
+                {hero.titleSuffix ? (
+                  <Text style={s.heroSuffix}>{` ${hero.titleSuffix}`}</Text>
+                ) : null}
               </Text>
               {hero.aside}
             </View>
@@ -202,7 +213,9 @@ function ScrollTemplate({
         ) : null}
         {children}
       </ScrollView>
-      {primaryAction ? (
+      {footer ? (
+        footer
+      ) : primaryAction ? (
         <BottomBar
           primaryAction={primaryAction}
           secondaryAction={secondaryAction}
@@ -223,6 +236,7 @@ export type DetailTemplateProps = {
   primaryAction?: TemplateAction;
   secondaryAction?: TemplateAction;
   bottomInset?: number;
+  footer?: ReactNode;
   children: ReactNode;
 };
 

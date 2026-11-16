@@ -21,6 +21,7 @@ export type ButtonProps = Omit<
   loading?: boolean;
   leftIcon?: IconSlot;
   rightIcon?: IconSlot;
+  point?: boolean;
   children: ReactNode;
 };
 
@@ -53,6 +54,7 @@ const useStyles = makeStyles((t) => ({
   tint: { backgroundColor: t.colors.primaryTint },
   secondary: { backgroundColor: t.colors.muted },
   outline: { backgroundColor: t.colors.muted },
+  bare: { paddingHorizontal: 0 },
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: t.colors.danger },
   label: { fontFamily: t.fontFamily, fontWeight: '600' },
@@ -78,6 +80,7 @@ export function Button({
   disabled,
   leftIcon,
   rightIcon,
+  point = false,
   children,
   style,
   accessibilityState,
@@ -98,7 +101,11 @@ export function Button({
     ghost: t.colors.title,
     danger: t.colors.dangerForeground,
   }[variant];
-  const icon = { color, size: size === 'sm' ? t.iconSize.sm : t.iconSize.md };
+  const ink = point ? t.colors.primary : color;
+  const icon = {
+    color: ink,
+    size: size === 'sm' ? t.iconSize.sm : t.iconSize.md,
+  };
 
   return (
     <PressableBase
@@ -113,6 +120,7 @@ export function Button({
         s[variant],
         tint && s.tint,
         off && s.primaryOff,
+        point && s.bare,
         style,
       ]}
     >
@@ -128,8 +136,9 @@ export function Button({
           style={[
             s.label,
             s[`${size}Label`],
-            (variant === 'secondary' || variant === 'outline') && s.quiet,
-            { color },
+            (variant === 'secondary' || variant === 'outline' || point) &&
+              s.quiet,
+            { color: ink },
           ]}
         >
           {children}

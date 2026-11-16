@@ -15,6 +15,7 @@ export type TemplateAction = {
   icon?: IconSlot;
   outline?: boolean;
   beside?: boolean;
+  quiet?: boolean;
 };
 
 export type NoticeReason = 'error' | 'money' | 'irreversible' | 'legal';
@@ -112,6 +113,7 @@ export function BottomBar({
         <View style={s.main}>
           <Button
             size="lg"
+            variant={primaryAction.quiet ? 'secondary' : 'primary'}
             onPress={primaryAction.onPress}
             disabled={primaryAction.disabled}
             loading={primaryAction.loading}
@@ -129,6 +131,7 @@ export function BottomBar({
     >
       <Button
         size="lg"
+        variant={primaryAction.quiet ? 'secondary' : 'primary'}
         onPress={primaryAction.onPress}
         disabled={primaryAction.disabled}
         loading={primaryAction.loading}
@@ -181,7 +184,7 @@ export function ListSection({
   children,
 }: {
   title?: string;
-  count?: number;
+  count?: number | string;
   action?: ReactNode;
   inset?: boolean;
   card?: boolean;

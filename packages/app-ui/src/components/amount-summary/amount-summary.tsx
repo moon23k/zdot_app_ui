@@ -16,6 +16,8 @@ export type AmountSummaryProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+const UNDER = 1;
+
 const useStyles = makeStyles((t) => ({
   root: { gap: t.space[3] },
   head: {
@@ -41,8 +43,9 @@ const useStyles = makeStyles((t) => ({
   lines: { gap: t.space[2] },
   lineHead: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   link: {
-    textDecorationLine: 'underline',
-    textDecorationColor: t.colors.input,
+    paddingBottom: UNDER,
+    borderBottomWidth: 1,
+    borderBottomColor: t.colors.input,
   },
   total: {
     paddingTop: t.space[3],
@@ -109,12 +112,14 @@ export function AmountSummary({
                     accessibilityLabel={line.link.label}
                     onPress={line.link.onPress}
                   >
-                    <Text
-                      style={[s.lineLabel, s.link]}
-                      maxFontSizeMultiplier={t.maxFontScale}
-                    >
-                      {line.link.label}
-                    </Text>
+                    <View style={s.link}>
+                      <Text
+                        style={s.lineLabel}
+                        maxFontSizeMultiplier={t.maxFontScale}
+                      >
+                        {line.link.label}
+                      </Text>
+                    </View>
                   </PressableBase>
                 ) : null}
               </View>

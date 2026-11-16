@@ -58,6 +58,8 @@ export {
   ReadAllGlyph,
   SparklesGlyph,
   StarGlyph,
+  StarFillGlyph,
+  MoreGlyph,
   StoreGlyph,
   TruckGlyph,
   UsersGlyph,

@@ -30,6 +30,8 @@ import {
   SORT,
   SPARKLES,
   STAR,
+  MORE,
+  STAR_FILL,
   STORE,
   SWAP,
   TEXT_SIZE,
@@ -229,6 +231,8 @@ export const CameraGlyph = imageGlyph(CAMERA);
 export const TruckGlyph = imageGlyph(TRUCK);
 export const ReturnGlyph = imageGlyph(RETURN);
 export const StarGlyph = imageGlyph(STAR);
+export const StarFillGlyph = imageGlyph(STAR_FILL);
+export const MoreGlyph = imageGlyph(MORE);
 export const ImageGlyph = imageGlyph(PICTURE);
 export const GlobeGlyph = imageGlyph(GLOBE);
 export const PaletteGlyph = imageGlyph(PALETTE);
