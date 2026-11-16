@@ -1,5 +1,8 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import { CheckGlyph } from '../../internal/glyphs';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
+import { FILL_FROM, usePop, useSwitch } from '../../internal/motion';
+import { Pulse } from '../../internal/pulse';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Text } from '../text/text';
@@ -22,6 +25,7 @@ const LINE = 2;
 const CHECK = 12;
 const HDOT = 12;
 const HALO = 4;
+const SPREAD = 7;
 
 const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', paddingVertical: t.space[2] },
@@ -35,7 +39,25 @@ const useStyles = makeStyles((t) => ({
   },
   left: { left: 0 },
   right: { right: 0 },
-  lineDone: { backgroundColor: t.colors.primaryContainer },
+  fill: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: t.colors.primaryContainer,
+  },
+  fromLeft: { transformOrigin: 'left' },
+  fromTop: { transformOrigin: 'top' },
+  center: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   mark: {
     width: MARK,
     height: MARK,
@@ -100,10 +122,34 @@ const useStyles = makeStyles((t) => ({
 
 type State = 'done' | 'now' | 'todo';
 
+function Fill({ on, axis }: { on: boolean; axis: 'x' | 'y' }) {
+  const s = useStyles();
+  const grow = useSwitch(on, 'long');
+  const fill = useAnimatedStyle(() =>
+    axis === 'x'
+      ? { transform: [{ scaleX: grow.value }] }
+      : { transform: [{ scaleY: grow.value }] }
+  );
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[s.fill, axis === 'x' ? s.fromLeft : s.fromTop, fill]}
+    />
+  );
+}
+
 function Dot({ state }: { state: State }) {
+  const t = useTheme();
   const s = useStyles();
   return (
-    <View key={state} style={s.mark}>
+    <View style={s.mark}>
+      {state === 'now' ? (
+        <Pulse
+          size={HDOT + HALO * 2}
+          spread={SPREAD}
+          color={t.colors.primary}
+        />
+      ) : null}
       <View
         style={
           state === 'now' ? s.hdotNow : [s.hdot, state === 'done' && s.hdotOn]
@@ -116,17 +162,29 @@ function Dot({ state }: { state: State }) {
 function Mark({ state }: { state: State }) {
   const t = useTheme();
   const s = useStyles();
-  if (state === 'done') {
-    return (
-      <View key="done" style={[s.mark, s.markDone]}>
-        <CheckGlyph color={t.colors.primaryForeground} size={CHECK} />
-      </View>
-    );
-  }
+  const done = state === 'done';
+  const pop = usePop(done, FILL_FROM);
   return (
-    <View key={state} style={[s.mark, state === 'now' && s.markNow]}>
-      <View style={state === 'now' ? s.dotNow : s.dot} />
-    </View>
+    <Animated.View
+      style={[s.mark, done ? s.markDone : state === 'now' && s.markNow, pop]}
+    >
+      {state === 'now' ? (
+        <>
+          <Pulse size={MARK} spread={SPREAD} color={t.colors.primary} />
+          <View style={s.dotNow} />
+        </>
+      ) : state === 'todo' ? (
+        <View style={s.dot} />
+      ) : null}
+      <View style={s.center}>
+        <DrawnCheck
+          on={done}
+          color={t.colors.primaryForeground}
+          size={CHECK}
+          draw="long"
+        />
+      </View>
+    </Animated.View>
   );
 }
 
@@ -159,7 +217,9 @@ export function StatusSteps({
           return (
             <View key={`${label}-${i}`} style={[s.item, i === last && s.last]}>
               {i < last ? (
-                <View style={[s.rail, state === 'done' && s.lineDone]} />
+                <View style={s.rail}>
+                  <Fill on={state === 'done'} axis="y" />
+                </View>
               ) : null}
               <Mark state={state} />
               <Text
@@ -199,10 +259,14 @@ export function StatusSteps({
         return (
           <View key={`${label}-${i}`} style={s.step}>
             {i > 0 ? (
-              <View style={[s.line, s.left, i <= index && s.lineDone]} />
+              <View style={[s.line, s.left]}>
+                <Fill on={i <= index} axis="x" />
+              </View>
             ) : null}
             {i < last ? (
-              <View style={[s.line, s.right, i < index && s.lineDone]} />
+              <View style={[s.line, s.right]}>
+                <Fill on={i < index} axis="x" />
+              </View>
             ) : null}
             <Dot state={state} />
             <Text

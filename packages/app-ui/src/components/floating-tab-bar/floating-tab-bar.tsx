@@ -13,6 +13,7 @@ import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import type { Theme } from '../../types';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type FloatingTabIcon = keyof typeof TAB_ICONS;
 
@@ -152,7 +153,9 @@ export function FloatingTabBar<K extends string>({
             item={item}
             selected={selected}
             onPress={() => {
-              if (!selected) onValueChange(item.key);
+              if (selected) return;
+              haptic('select');
+              onValueChange(item.key);
             }}
             onLayout={slide.measure(item.key)}
           />

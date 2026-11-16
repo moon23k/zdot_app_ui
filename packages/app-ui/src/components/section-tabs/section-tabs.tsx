@@ -15,6 +15,7 @@ import { SteadyText } from '../../internal/steady-text';
 import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type SectionTabsItem<T extends string> = {
   value: T;
@@ -134,7 +135,10 @@ export function SectionTabs<T extends string>({
       dot={item.dot}
       selected={item.value === value}
       loose={scrollable}
-      onPress={() => onValueChange(item.value)}
+      onPress={() => {
+        haptic('select');
+        onValueChange(item.value);
+      }}
       onLayout={slide.measure(item.value)}
     />
   ));

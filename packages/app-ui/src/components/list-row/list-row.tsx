@@ -13,6 +13,7 @@ import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Photo } from '../photo/photo';
 import { FlushRowContext } from '../../internal/flush-row';
+import { haptic } from '../../internal/haptics';
 
 export type ListRowTone = 'muted' | 'warning' | 'danger';
 
@@ -263,7 +264,14 @@ export function ListRow({
     <PressableBase
       {...rest}
       {...selectionProps}
-      onPress={onPress}
+      onPress={
+        selection
+          ? (event) => {
+              haptic('select');
+              onPress(event);
+            }
+          : onPress
+      }
       feedback="row"
       style={[
         s.row,

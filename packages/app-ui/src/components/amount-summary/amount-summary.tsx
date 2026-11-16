@@ -1,4 +1,5 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { RollText } from '../../internal/roll-text';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -88,9 +89,7 @@ export function AmountSummary({
       <Text style={s.label} maxFontSizeMultiplier={t.maxFontScale}>
         {label}
       </Text>
-      <Text style={s.value} maxFontSizeMultiplier={t.maxFontScale}>
-        {value}
-      </Text>
+      <RollText style={s.value}>{value}</RollText>
     </View>
   );
   return (
@@ -123,9 +122,9 @@ export function AmountSummary({
                   </PressableBase>
                 ) : null}
               </View>
-              <Text style={s.lineValue} maxFontSizeMultiplier={t.maxFontScale}>
+              <RollText style={s.lineValue} flash>
                 {line.value}
-              </Text>
+              </RollText>
             </View>
           ))}
         </View>

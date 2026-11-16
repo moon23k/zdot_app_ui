@@ -8,6 +8,7 @@ import {
 } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type CheckboxProps = Omit<
   PressableBaseProps,
@@ -64,7 +65,10 @@ export function Checkbox({
       accessibilityState={{ ...accessibilityState, checked: value }}
       touchHeight={label ? t.typography.body.lineHeight : BOX}
       feedback="row"
-      onPress={() => onValueChange(!value)}
+      onPress={() => {
+        haptic('select');
+        onValueChange(!value);
+      }}
       style={[s.row, style]}
     >
       <Animated.View style={[s.box, value && s.checked, pop]}>

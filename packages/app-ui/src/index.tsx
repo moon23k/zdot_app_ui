@@ -11,6 +11,7 @@ export {
 } from './internal/pressable-base';
 export type { IconRenderProps, IconSlot } from './internal/icon';
 export { renderIcon } from './internal/icon';
+export { setHaptics, type HapticKind } from './internal/haptics';
 export {
   AlertGlyph,
   BellGlyph,

@@ -1,6 +1,7 @@
 import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
 import { makeStyles } from '../../utils/styles';
 import { Chip, type ChipSize, type ChipVariant } from '../chip/chip';
+import { haptic } from '../../internal/haptics';
 
 export type ChipGroupItem<T extends string> = {
   value: T;
@@ -87,7 +88,10 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
         accessibilityState={
           props.multiple ? { checked: selected } : { selected }
         }
-        onPress={() => press(item.value)}
+        onPress={() => {
+          haptic('select');
+          press(item.value);
+        }}
         style={even ? s.evenChip : undefined}
       >
         {item.label}

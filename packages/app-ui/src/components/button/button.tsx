@@ -17,6 +17,7 @@ import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
 import type { ButtonSize, ButtonVariant } from '../../theme/contract';
+import { haptic } from '../../internal/haptics';
 
 export type { ButtonSize, ButtonVariant };
 
@@ -140,6 +141,10 @@ export function Button({
     const id = setTimeout(() => setSpin(true), t.motion.duration.base);
     return () => clearTimeout(id);
   }, [loading, t.motion.duration.base]);
+
+  useEffect(() => {
+    if (done) haptic('done');
+  }, [done]);
 
   const live = useSwitch(!off, 'long', 'decelerate');
   const nudge = useSharedValue(0);

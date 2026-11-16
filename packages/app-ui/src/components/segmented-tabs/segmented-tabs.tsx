@@ -11,10 +11,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
+import { RollText } from '../../internal/roll-text';
 import { SteadyText } from '../../internal/steady-text';
 import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type SegmentedTabsItem<T extends string> = {
   value: T;
@@ -113,12 +115,9 @@ function Tab({
         {label}
       </SteadyText>
       {count === undefined ? null : (
-        <Animated.Text
-          maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.count, tone]}
-        >
+        <RollText style={s.count} animatedStyle={tone}>
           {count}
-        </Animated.Text>
+        </RollText>
       )}
     </PressableBase>
   );
@@ -149,7 +148,9 @@ export function SegmentedTabs<T extends string>({
               count={item.count}
               selected={selected}
               onPress={() => {
-                if (!selected) onValueChange(item.value);
+                if (selected) return;
+                haptic('select');
+                onValueChange(item.value);
               }}
               onLayout={slide.measure(item.value)}
             />

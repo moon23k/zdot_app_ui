@@ -12,10 +12,12 @@ import Animated, {
 import { ChevronGlyph } from '../../internal/glyphs';
 import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
+import { RollText } from '../../internal/roll-text';
 import { SteadyText } from '../../internal/steady-text';
 import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type StageBarItem<T extends string> = {
   value: T;
@@ -112,12 +114,12 @@ function Stage({
       onLayout={onLayout}
       style={s.stage}
     >
-      <Animated.Text
-        maxFontSizeMultiplier={t.maxFontScale}
-        style={[s.count, count > 0 ? null : s.zero, number]}
+      <RollText
+        style={[s.count, count > 0 ? null : s.zero]}
+        animatedStyle={number}
       >
         {count}
-      </Animated.Text>
+      </RollText>
       <SteadyText
         selected={on}
         style={s.label}
@@ -151,7 +153,10 @@ export function StageBar<T extends string>({
               label={item.label}
               count={item.count ?? 0}
               on={on}
-              onPress={() => onValueChange(on ? null : item.value)}
+              onPress={() => {
+                haptic('select');
+                onValueChange(on ? null : item.value);
+              }}
               onLayout={slide.measure(item.value)}
             />
             {next ? (

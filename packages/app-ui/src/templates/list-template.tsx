@@ -5,12 +5,14 @@ import {
   View,
   type ListRenderItem,
 } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { EmptyState } from '../components/empty-state/empty-state';
 import { Skeleton } from '../components/skeleton/skeleton';
 import { Text } from '../components/text/text';
 import { PlusGlyph } from '../internal/glyphs';
 import { renderIcon, type IconSlot } from '../internal/icon';
 import { PressableBase } from '../internal/pressable-base';
+import { Later, useSettled } from '../internal/settle';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import type { TemplateAction } from './parts';
@@ -92,33 +94,18 @@ export function ListTemplate<T>({
   const s = useStyles();
   const head = filters ? <View style={s.filters}>{filters}</View> : null;
 
-  if (status === 'loading') {
-    return (
-      <View style={s.root}>
-        {header}
-        {head}
-        <View style={s.loading}>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} height={t.listRow.oneLine} />
-          ))}
-        </View>
-      </View>
+  const loading = status === 'loading';
+  const failed = status === 'error' && !!error;
+  const rows = loading || failed ? [] : data;
+  const settled = useSettled(loading);
+  const cell: ListRenderItem<T> = (info) =>
+    settled() ? (
+      <Animated.View entering={FadeIn.duration(t.motion.duration.long)}>
+        {renderItem(info)}
+      </Animated.View>
+    ) : (
+      renderItem(info)
     );
-  }
-
-  if (status === 'error' && error) {
-    return (
-      <View style={s.root}>
-        {header}
-        {head}
-        <EmptyState
-          variant="error"
-          title={error.title}
-          action={{ label: '다시 시도', onPress: error.onRetry }}
-        />
-      </View>
-    );
-  }
 
   return (
     <View style={s.root}>
@@ -127,8 +114,8 @@ export function ListTemplate<T>({
         key={columns}
         numColumns={columns}
         columnWrapperStyle={columns > 1 ? s.columns : undefined}
-        data={data}
-        renderItem={renderItem}
+        data={rows}
+        renderItem={cell}
         keyExtractor={keyExtractor}
         ListHeaderComponent={
           head || pinned ? (
@@ -139,12 +126,26 @@ export function ListTemplate<T>({
           ) : undefined
         }
         ListEmptyComponent={
-          empty ? (
+          loading ? (
+            <Later>
+              <View style={s.loading}>
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Skeleton key={i} height={t.listRow.oneLine} />
+                ))}
+              </View>
+            </Later>
+          ) : failed && error ? (
+            <EmptyState
+              variant="error"
+              title={error.title}
+              action={{ label: '다시 시도', onPress: error.onRetry }}
+            />
+          ) : empty ? (
             <EmptyState title={empty.title} action={empty.action} />
           ) : undefined
         }
         contentContainerStyle={[
-          data.length === 0 ? s.grow : null,
+          rows.length === 0 ? s.grow : null,
           selectionBar ? null : { paddingBottom: bottomInset },
           floatingAction
             ? {

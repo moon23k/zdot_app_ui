@@ -23,6 +23,7 @@ import { useReducedMotion } from '../../internal/use-reduced-motion';
 import type { Tone } from '../../theme/contract';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type ToastTone = Extract<Tone, 'neutral' | 'success' | 'danger'>;
 
@@ -77,6 +78,7 @@ function createToastStore() {
     show({ message, tone = 'neutral', duration, action }: ToastOptions) {
       clearTimeout(timer);
       current = { id: ++seq, message, tone, action };
+      if (tone === 'danger') haptic('error');
       timer = setTimeout(hide, duration ?? (action ? 4000 : 2500));
       emit();
       if (Platform.OS === 'ios')

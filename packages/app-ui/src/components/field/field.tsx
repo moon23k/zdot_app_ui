@@ -1,4 +1,4 @@
-import { useState, type ComponentRef, type Ref } from 'react';
+import { useEffect, useState, type ComponentRef, type Ref } from 'react';
 import {
   Text,
   TextInput,
@@ -19,6 +19,7 @@ import { useShake, useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { haptic } from '../../internal/haptics';
 
 export type FieldProps = Omit<TextInputProps, 'style'> & {
   ref?: Ref<ComponentRef<typeof TextInput>>;
@@ -142,6 +143,9 @@ export function Field({
   const note = error ?? warn ?? hint;
   const thick = useSwitch(focused || !!error || !!warn, 'press');
   const shake = useShake(error);
+  useEffect(() => {
+    if (error) haptic('error');
+  }, [error]);
   const inset = t.space[4];
   const edge = useAnimatedStyle(() => ({
     borderWidth: 1 + thick.value,

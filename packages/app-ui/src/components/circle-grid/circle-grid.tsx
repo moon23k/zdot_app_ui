@@ -18,6 +18,7 @@ import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Text } from '../text/text';
+import { haptic } from '../../internal/haptics';
 
 export type CircleGridItem<T extends string> = {
   value: T;
@@ -229,7 +230,10 @@ export function CircleGrid<T extends string>(props: CircleGridProps<T>) {
           on={isOn(item.value)}
           multiple={!!props.multiple}
           width={width}
-          onPress={() => press(item.value)}
+          onPress={() => {
+            haptic('select');
+            press(item.value);
+          }}
         />
       ))}
     </View>
