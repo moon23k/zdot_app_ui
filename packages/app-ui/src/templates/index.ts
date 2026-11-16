@@ -9,6 +9,7 @@ export type {
   DetailTemplateProps,
   FormTemplateProps,
   MenuTemplateProps,
+  TemplateHero,
 } from './scroll-templates';
 export { CalendarTemplate } from './calendar-template';
 export { NoticeTemplate } from './notice-template';

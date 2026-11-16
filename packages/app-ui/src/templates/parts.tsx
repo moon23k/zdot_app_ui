@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Button } from '../components/button/button';
 import { Text } from '../components/text/text';
 import { AlertGlyph } from '../internal/glyphs';
+import type { IconSlot } from '../internal/icon';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 
@@ -11,6 +12,8 @@ export type TemplateAction = {
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
+  icon?: IconSlot;
+  outline?: boolean;
 };
 
 export type NoticeReason = 'error' | 'money' | 'irreversible' | 'legal';
@@ -85,7 +88,7 @@ export function BottomBar({
 }) {
   const t = useTheme();
   const s = useStyles();
-  if (split) {
+  if (split || secondaryAction?.outline) {
     return (
       <View
         style={[
@@ -98,7 +101,7 @@ export function BottomBar({
           <View style={s.side}>
             <Button
               size="lg"
-              variant="ghost"
+              variant={secondaryAction.outline ? 'outline' : 'ghost'}
               onPress={secondaryAction.onPress}
               disabled={secondaryAction.disabled}
               loading={secondaryAction.loading}
@@ -113,6 +116,7 @@ export function BottomBar({
             onPress={primaryAction.onPress}
             disabled={primaryAction.disabled}
             loading={primaryAction.loading}
+            leftIcon={primaryAction.icon}
           >
             {primaryAction.label}
           </Button>
@@ -129,6 +133,7 @@ export function BottomBar({
         onPress={primaryAction.onPress}
         disabled={primaryAction.disabled}
         loading={primaryAction.loading}
+        leftIcon={primaryAction.icon}
       >
         {primaryAction.label}
       </Button>

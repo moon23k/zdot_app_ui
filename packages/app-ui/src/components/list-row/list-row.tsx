@@ -23,6 +23,7 @@ export type ListRowProps = Omit<
   overlineTone?: ListRowTone;
   leading?: IconSlot;
   image?: string | null;
+  imageSize?: 'md' | 'lg';
   trailing?: IconSlot;
   chevron?: boolean;
   value?: string;
@@ -36,6 +37,7 @@ export type ListRowProps = Omit<
 };
 
 const IMAGE = 48;
+const IMAGE_LG = 56;
 const MARK = 22;
 
 const useStyles = makeStyles((t) => ({
@@ -55,6 +57,7 @@ const useStyles = makeStyles((t) => ({
   highlighted: { backgroundColor: t.colors.primaryTint },
   top: { alignItems: 'flex-start' },
   image: { width: IMAGE },
+  imageLg: { width: IMAGE_LG },
   value: {
     ...t.typography.bodyLg,
     fontFamily: t.fontFamily,
@@ -110,6 +113,7 @@ export function ListRow({
   overlineTone = 'muted',
   leading,
   image,
+  imageSize,
   trailing,
   chevron,
   value,
@@ -170,7 +174,7 @@ export function ListRow({
           source={{ uri: image ?? '' }}
           radius={t.radius.md}
           seed={title}
-          style={s.image}
+          style={imageSize === 'lg' ? s.imageLg : s.image}
         />
       ) : null}
       <View style={s.body}>

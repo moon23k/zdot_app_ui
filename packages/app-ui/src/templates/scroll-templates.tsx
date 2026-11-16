@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { Photo } from '../components/photo/photo';
 import { Text } from '../components/text/text';
+import { CopyGlyph } from '../internal/glyphs';
+import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import {
@@ -16,7 +18,17 @@ import {
   type TemplateNotice,
 } from './parts';
 
+export type TemplateHero = {
+  title: string;
+  aside?: ReactNode;
+  caption?: string;
+  onCopy?: () => void;
+  copyLabel?: string;
+  children?: ReactNode;
+};
+
 type ScrollTemplateProps = {
+  hero?: TemplateHero;
   top?: ReactNode;
   heading?: { title: string; caption?: string; image?: string | null };
   notice?: TemplateNotice;
@@ -50,10 +62,45 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
   },
   headingText: { flex: 1, gap: t.space[1] },
+  hero: {
+    paddingTop: t.space[1],
+    paddingBottom: t.space[5],
+    paddingHorizontal: t.layout.screenX,
+    gap: t.space[1],
+    backgroundColor: t.colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: t.colors.border,
+  },
+  heroHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[2] + t.space[1] / 2,
+  },
+  heroTitle: {
+    flex: 1,
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.screenTitle.fontSize,
+    lineHeight: t.typography.screenTitle.lineHeight,
+    fontWeight: '600',
+    color: t.colors.title,
+  },
+  heroCaption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1] + t.space[1] / 2,
+  },
+  heroCaptionText: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+    color: t.colors.mutedForeground,
+  },
+  heroBody: { marginTop: t.space[4] },
   media: { width: MEDIA },
 }));
 
 function ScrollTemplate({
+  hero,
   top,
   heading,
   notice,
@@ -66,6 +113,7 @@ function ScrollTemplate({
 }: ScrollTemplateProps) {
   const t = useTheme();
   const s = useStyles();
+  const heroCopyIcon = t.iconSize.sm;
   return (
     <KeyboardAvoidingView behavior="padding" style={s.root}>
       <ScrollView
@@ -82,6 +130,36 @@ function ScrollTemplate({
           ) : undefined
         }
       >
+        {hero ? (
+          <View style={s.hero}>
+            <View style={s.heroHead}>
+              <Text accessibilityRole="header" style={s.heroTitle}>
+                {hero.title}
+              </Text>
+              {hero.aside}
+            </View>
+            {hero.caption ? (
+              <PressableBase
+                accessibilityRole={hero.onCopy ? 'button' : undefined}
+                accessibilityLabel={hero.onCopy ? hero.copyLabel : undefined}
+                disabled={!hero.onCopy}
+                onPress={hero.onCopy}
+                style={s.heroCaption}
+              >
+                <Text style={s.heroCaptionText}>{hero.caption}</Text>
+                {hero.onCopy ? (
+                  <CopyGlyph
+                    color={t.colors.mutedForeground}
+                    size={heroCopyIcon}
+                  />
+                ) : null}
+              </PressableBase>
+            ) : null}
+            {hero.children ? (
+              <View style={s.heroBody}>{hero.children}</View>
+            ) : null}
+          </View>
+        ) : null}
         {heading ? (
           <View style={s.heading}>
             {heading.image !== undefined ? (
@@ -127,6 +205,7 @@ function ScrollTemplate({
 }
 
 export type DetailTemplateProps = {
+  hero?: TemplateHero;
   status?: ReactNode;
   title?: string;
   caption?: string;
