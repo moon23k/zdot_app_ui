@@ -10,6 +10,7 @@ export type StatusStepsProps = {
   orientation?: 'horizontal' | 'vertical';
   times?: readonly (string | null | undefined)[];
   done?: boolean;
+  due?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -86,13 +87,13 @@ function Mark({ state }: { state: State }) {
   const s = useStyles();
   if (state === 'done') {
     return (
-      <View style={[s.mark, s.markDone]}>
+      <View key="done" style={[s.mark, s.markDone]}>
         <CheckGlyph color={t.colors.primaryForeground} size={CHECK} />
       </View>
     );
   }
   return (
-    <View style={[s.mark, state === 'now' && s.markNow]}>
+    <View key={state} style={[s.mark, state === 'now' && s.markNow]}>
       <View style={state === 'now' ? s.dotNow : s.dot} />
     </View>
   );
@@ -104,6 +105,7 @@ export function StatusSteps({
   orientation = 'horizontal',
   times,
   done = false,
+  due = true,
   style,
 }: StatusStepsProps) {
   const s = useStyles();
@@ -142,9 +144,9 @@ export function StatusSteps({
               {times?.[i] ? (
                 <Text
                   variant="caption"
-                  weight={state === 'now' ? 'medium' : undefined}
+                  weight={state === 'now' && due ? 'medium' : undefined}
                   tone="muted"
-                  style={state === 'now' && s.due}
+                  style={state === 'now' && due && s.due}
                 >
                   {times[i]}
                 </Text>

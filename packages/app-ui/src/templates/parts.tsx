@@ -14,6 +14,7 @@ export type TemplateAction = {
   loading?: boolean;
   icon?: IconSlot;
   outline?: boolean;
+  beside?: boolean;
 };
 
 export type NoticeReason = 'error' | 'money' | 'irreversible' | 'legal';
@@ -88,7 +89,7 @@ export function BottomBar({
 }) {
   const t = useTheme();
   const s = useStyles();
-  if (split || secondaryAction?.outline) {
+  if (split || secondaryAction?.outline || secondaryAction?.beside) {
     return (
       <View
         style={[

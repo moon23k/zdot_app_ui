@@ -30,6 +30,7 @@ export type ListRowProps = Omit<
   meta?: string;
   highlighted?: boolean;
   strong?: boolean;
+  titleSize?: 'md' | 'lg';
   titleLines?: number;
   selection?: 'check' | 'radio';
   selected?: boolean;
@@ -104,6 +105,11 @@ const useStyles = makeStyles((t) => ({
   checkOn: { borderColor: t.colors.primary, backgroundColor: t.colors.primary },
   radioOn: { borderWidth: 6, borderColor: t.colors.primary },
   strong: { color: t.colors.title, fontWeight: '600' },
+  titleLg: {
+    ...t.typography.bodyLg,
+    color: t.colors.title,
+    fontWeight: '600',
+  },
 }));
 
 export function ListRow({
@@ -120,6 +126,7 @@ export function ListRow({
   meta,
   highlighted = false,
   strong = false,
+  titleSize = 'md',
   titleLines = 1,
   selection,
   selected = false,
@@ -190,7 +197,7 @@ export function ListRow({
         <Text
           numberOfLines={titleLines}
           maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.title, strong && s.strong]}
+          style={[s.title, strong && s.strong, titleSize === 'lg' && s.titleLg]}
         >
           {title}
         </Text>
