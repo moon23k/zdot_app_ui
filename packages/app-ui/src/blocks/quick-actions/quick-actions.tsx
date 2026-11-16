@@ -14,6 +14,7 @@ export type QuickAction = {
 
 export type QuickActionsProps = {
   items: readonly QuickAction[];
+  grouped?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -32,23 +33,37 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   pressed: { backgroundColor: t.colors.border },
+  group: {
+    marginTop: t.space[4],
+    marginHorizontal: t.layout.screenX,
+    paddingHorizontal: 0,
+    paddingVertical: t.space[1],
+    gap: 0,
+    borderRadius: t.radius.lg,
+    backgroundColor: t.colors.surface,
+  },
+  groupItem: { gap: t.space[2], backgroundColor: 'transparent' },
 }));
 
-export function QuickActions({ items, style }: QuickActionsProps) {
+export function QuickActions({
+  items,
+  grouped = false,
+  style,
+}: QuickActionsProps) {
   const t = useTheme();
   const s = useStyles();
   return (
-    <View style={[s.root, style]}>
+    <View style={[s.root, grouped && s.group, style]}>
       {items.map((item) => (
         <PressableBase
           key={item.key}
           onPress={item.onPress}
           accessibilityLabel={item.label}
-          style={s.item}
+          style={[s.item, grouped && s.groupItem]}
           pressedStyle={s.pressed}
         >
           {renderIcon(item.icon, {
-            color: t.colors.foreground,
+            color: grouped ? t.colors.primary : t.colors.foreground,
             size: t.iconSize.md,
           })}
           <Text variant="caption" numberOfLines={1}>

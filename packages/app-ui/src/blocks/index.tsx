@@ -22,6 +22,7 @@ export * from './logo-candidate-grid';
 export * from './oauth-buttons';
 export * from './order-card';
 export * from './order-block';
+export * from './store-top';
 export * from './plan-card';
 export * from './product-list-empty';
 export * from './product-row';

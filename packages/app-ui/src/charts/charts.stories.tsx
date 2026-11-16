@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Column, Row, Section } from '../__stories__/helpers';
 import { Text } from '../components/text/text';
 import { LineChart, type ChartDatum } from './line-chart';
+import { DayBars } from './day-bars';
 import { Sparkline } from './sparkline';
 
 const days = ['10/17', '10/18', '10/19', '10/20', '10/21', '10/22', '10/23'];
@@ -51,6 +52,12 @@ function Demo() {
         <LineChart
           data={days.map((label) => ({ label, value: 0 }))}
           height={100}
+        />
+      </Section>
+      <Section title="DayBars">
+        <DayBars
+          data={week.map((d) => d.value)}
+          labels={days.map((d) => d.slice(3))}
         />
       </Section>
       <Section title="Sparkline">
