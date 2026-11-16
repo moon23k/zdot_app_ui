@@ -44,6 +44,18 @@ export {
   TextSizeGlyph,
   AlignGlyph,
   DevicesGlyph,
+  CopyGlyph,
+  PinGlyph,
+  SmsGlyph,
+  NoteGlyph,
+  SendGlyph,
+  SwapGlyph,
+  ReceivedGlyph,
+  SortGlyph,
+  ChecklistGlyph,
+  AddProductGlyph,
+  OpenGlyph,
+  ReadAllGlyph,
   SparklesGlyph,
   StarGlyph,
   StoreGlyph,
@@ -85,6 +97,9 @@ export * from './components/segmented-tabs';
 export * from './components/sheet';
 export * from './components/skeleton';
 export * from './components/status-badge';
+export * from './components/pill';
+export * from './components/bubble';
+export * from './components/icon-button';
 export * from './components/switch';
 export * from './components/text';
 export * from './components/text-links';

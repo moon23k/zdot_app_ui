@@ -37,6 +37,7 @@ export * from './stage-bar';
 export * from './store-sheet';
 export * from './task-tiles';
 export * from './inbox-row';
+export * from './feed-row';
 export * from './product-tile';
 export * from './quick-actions';
 export * from './action-grid';

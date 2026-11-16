@@ -37,7 +37,7 @@ const useStyles = makeStyles((t) => ({
   },
   lg: { paddingHorizontal: t.space[4] },
   selected: {
-    backgroundColor: t.colors.primaryContainer,
+    backgroundColor: t.colors.primaryTint,
   },
   outline: {
     backgroundColor: 'transparent',
@@ -45,8 +45,8 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.input,
   },
   outlineSelected: {
-    backgroundColor: t.colors.muted,
-    borderColor: t.colors.foreground,
+    backgroundColor: t.colors.primaryTint,
+    borderColor: t.colors.primaryTint,
   },
   label: {
     fontFamily: t.fontFamily,
@@ -54,7 +54,7 @@ const useStyles = makeStyles((t) => ({
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
   },
-  count: { fontVariant: ['tabular-nums'], fontWeight: '700' },
+  count: { fontVariant: ['tabular-nums'], fontWeight: '600' },
 }));
 
 export function Chip({
@@ -72,7 +72,7 @@ export function Chip({
   const t = useTheme();
   const s = useStyles();
   const outline = variant === 'outline';
-  const color = selected && !outline ? t.colors.primary : t.colors.foreground;
+  const color = selected ? t.colors.selectForeground : t.colors.foreground;
   return (
     <PressableBase
       {...rest}

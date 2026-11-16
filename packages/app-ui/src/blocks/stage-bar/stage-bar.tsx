@@ -25,7 +25,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: t.layout.screenX,
-    padding: t.space[1],
+    padding: t.space[1] + t.space[1] / 2,
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
@@ -36,12 +36,26 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: t.space[2],
     borderRadius: t.radius.md,
   },
-  on: { backgroundColor: t.colors.primaryTint },
+  on: {
+    backgroundColor: t.colors.primaryTint,
+    borderWidth: 1.5,
+    borderColor: t.colors.primary,
+  },
   count: {
     fontSize: t.typography.title.fontSize,
     lineHeight: t.typography.title.lineHeight,
+    fontWeight: '600',
+    color: t.colors.title,
     fontVariant: ['tabular-nums'],
   },
+  zero: { fontWeight: '400', color: t.colors.input },
+  countOn: { color: t.colors.primary },
+  label: {
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+    color: t.colors.mutedForeground,
+  },
+  labelOn: { fontWeight: '500', color: t.colors.selectForeground },
   split: {
     width: 1,
     alignSelf: 'stretch',
@@ -73,19 +87,10 @@ export function StageBar<T extends string>({
               onPress={() => onValueChange(on ? null : item.value)}
               style={[s.stage, on && s.on]}
             >
-              <Text
-                weight="bold"
-                tone={live ? 'point' : 'muted'}
-                style={s.count}
-              >
+              <Text style={[s.count, !live && s.zero, on && s.countOn]}>
                 {item.count ?? 0}
               </Text>
-              <Text
-                variant="caption"
-                weight={on ? 'bold' : undefined}
-                tone={on ? 'default' : 'muted'}
-                numberOfLines={1}
-              >
+              <Text numberOfLines={1} style={[s.label, on && s.labelOn]}>
                 {item.label}
               </Text>
             </PressableBase>
@@ -93,10 +98,7 @@ export function StageBar<T extends string>({
               next.flow === false ? (
                 <View style={s.split} />
               ) : (
-                <ChevronGlyph
-                  color={t.colors.mutedForeground}
-                  size={t.iconSize.sm}
-                />
+                <ChevronGlyph color={t.colors.input} size={t.iconSize.sm} />
               )
             ) : null}
           </Fragment>

@@ -1,84 +1,183 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { CheckGlyph } from '../../internal/glyphs';
+import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Text } from '../text/text';
 
 export type StatusStepsProps = {
   steps: readonly string[];
   current: number;
+  orientation?: 'horizontal' | 'vertical';
+  times?: readonly (string | null | undefined)[];
+  done?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-const DOT = 12;
-const HALO = 4;
+const MARK = 22;
+const DOT = 8;
+const NOW = 10;
 const LINE = 2;
+const CHECK = 13;
 
 const useStyles = makeStyles((t) => ({
-  root: {
-    flexDirection: 'row',
-    paddingHorizontal: t.layout.screenX,
-    paddingVertical: t.space[2],
-  },
-  step: { flex: 1, alignItems: 'center', gap: t.space[1] },
+  row: { flexDirection: 'row', paddingVertical: t.space[2] },
+  step: { flex: 1, alignItems: 'center', gap: t.space[1] + t.space[1] / 2 },
   line: {
     position: 'absolute',
-    top: HALO + DOT / 2 - LINE / 2,
+    top: MARK / 2 - LINE / 2,
     height: LINE,
     width: '50%',
     backgroundColor: t.colors.border,
   },
   left: { left: 0 },
   right: { right: 0 },
-  lineOn: { backgroundColor: t.colors.primary },
-  halo: {
-    width: DOT + HALO * 2,
-    height: DOT + HALO * 2,
-    borderRadius: t.radius.full,
+  lineDone: { backgroundColor: t.colors.primaryContainer },
+  mark: {
+    width: MARK,
+    height: MARK,
+    borderRadius: MARK / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  haloOn: { backgroundColor: t.colors.primaryContainer },
+  markDone: { backgroundColor: t.colors.primary },
+  markNow: { backgroundColor: t.colors.primaryTint },
   dot: {
     width: DOT,
     height: DOT,
-    borderRadius: t.radius.full,
+    borderRadius: DOT / 2,
+    backgroundColor: t.colors.input,
+  },
+  dotNow: {
+    width: NOW,
+    height: NOW,
+    borderRadius: NOW / 2,
+    backgroundColor: t.colors.primary,
+  },
+  column: { gap: 0 },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[3],
+    paddingBottom: t.space[3] + t.space[1] / 2,
+  },
+  last: { paddingBottom: 0 },
+  rail: {
+    position: 'absolute',
+    left: MARK / 2 - LINE / 2,
+    top: MARK,
+    bottom: 0,
+    width: LINE,
     backgroundColor: t.colors.border,
   },
-  dotOn: { backgroundColor: t.colors.primary },
+  label: { flex: 1 },
+  title: { color: t.colors.title },
+  todo: { color: t.colors.mutedForeground },
+  due: { color: t.colors.warningText },
+  small: {
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+  },
 }));
 
-export function StatusSteps({ steps, current, style }: StatusStepsProps) {
+type State = 'done' | 'now' | 'todo';
+
+function Mark({ state }: { state: State }) {
+  const t = useTheme();
+  const s = useStyles();
+  if (state === 'done') {
+    return (
+      <View style={[s.mark, s.markDone]}>
+        <CheckGlyph color={t.colors.primaryForeground} size={CHECK} />
+      </View>
+    );
+  }
+  return (
+    <View style={[s.mark, state === 'now' && s.markNow]}>
+      <View style={state === 'now' ? s.dotNow : s.dot} />
+    </View>
+  );
+}
+
+export function StatusSteps({
+  steps,
+  current,
+  orientation = 'horizontal',
+  times,
+  done = false,
+  style,
+}: StatusStepsProps) {
   const s = useStyles();
   const index = Math.min(Math.max(current, 0), steps.length - 1);
   const last = steps.length - 1;
+  const stateOf = (i: number): State =>
+    i < index || (done && i === index) ? 'done' : i === index ? 'now' : 'todo';
+  const a11y = {
+    accessible: true,
+    accessibilityRole: 'progressbar' as const,
+    accessibilityLabel: `${steps.length}단계 중 ${index + 1}단계, ${steps[index] ?? ''}`,
+    accessibilityValue: { min: 1, max: steps.length, now: index + 1 },
+  };
+  if (orientation === 'vertical') {
+    return (
+      <View style={[s.column, style]} {...a11y}>
+        {steps.map((label, i) => {
+          const state = stateOf(i);
+          return (
+            <View key={`${label}-${i}`} style={[s.item, i === last && s.last]}>
+              {i < last ? (
+                <View style={[s.rail, state === 'done' && s.lineDone]} />
+              ) : null}
+              <Mark state={state} />
+              <Text
+                weight={state === 'now' ? 'semibold' : undefined}
+                style={[
+                  s.label,
+                  state === 'now' && s.title,
+                  state === 'todo' && s.todo,
+                ]}
+                numberOfLines={1}
+              >
+                {label}
+              </Text>
+              {times?.[i] ? (
+                <Text
+                  variant="caption"
+                  weight={state === 'now' ? 'medium' : undefined}
+                  tone="muted"
+                  style={state === 'now' && s.due}
+                >
+                  {times[i]}
+                </Text>
+              ) : null}
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
   return (
-    <View
-      style={[s.root, style]}
-      accessible
-      accessibilityRole="progressbar"
-      accessibilityLabel={`${steps.length}단계 중 ${index + 1}단계, ${steps[index] ?? ''}`}
-      accessibilityValue={{ min: 1, max: steps.length, now: index + 1 }}
-    >
-      {steps.map((label, i) => (
-        <View key={label} style={s.step}>
-          {i > 0 ? (
-            <View style={[s.line, s.left, i <= index && s.lineOn]} />
-          ) : null}
-          {i < last ? (
-            <View style={[s.line, s.right, i < index && s.lineOn]} />
-          ) : null}
-          <View style={[s.halo, i === index && s.haloOn]}>
-            <View style={[s.dot, i <= index && s.dotOn]} />
+    <View style={[s.row, style]} {...a11y}>
+      {steps.map((label, i) => {
+        const state = stateOf(i);
+        return (
+          <View key={`${label}-${i}`} style={s.step}>
+            {i > 0 ? (
+              <View style={[s.line, s.left, i <= index && s.lineDone]} />
+            ) : null}
+            {i < last ? (
+              <View style={[s.line, s.right, i < index && s.lineDone]} />
+            ) : null}
+            <Mark state={state} />
+            <Text
+              weight={state === 'now' ? 'semibold' : undefined}
+              style={[s.small, state === 'now' ? s.title : s.todo]}
+              numberOfLines={1}
+            >
+              {label}
+            </Text>
           </View>
-          <Text
-            variant="caption"
-            weight={i === index ? 'bold' : undefined}
-            tone={i === index ? 'default' : 'muted'}
-            numberOfLines={1}
-          >
-            {label}
-          </Text>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }

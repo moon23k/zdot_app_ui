@@ -1,4 +1,10 @@
-import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -16,33 +22,49 @@ export type SegmentedTabsProps<T extends string> = {
   style?: StyleProp<ViewStyle>;
 };
 
-const HEIGHT = 40;
+const BAR = 3;
 
 const useStyles = makeStyles((t) => ({
+  root: {
+    backgroundColor: t.colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: t.colors.border,
+  },
   track: {
     flexDirection: 'row',
-    height: HEIGHT,
-    padding: t.space[1],
-    gap: t.space[1],
-    borderRadius: t.radius.md,
-    backgroundColor: t.colors.muted,
+    gap: t.space[5],
+    paddingHorizontal: t.layout.screenX,
   },
   tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: t.radius.sm,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: t.space[1],
+    paddingVertical: t.space[3],
   },
-  selected: { backgroundColor: t.colors.surface, boxShadow: t.shadow.sm },
   label: {
     fontFamily: t.fontFamily,
-    fontSize: t.typography.label.fontSize,
-    lineHeight: t.typography.label.lineHeight,
-    fontWeight: '500',
+    fontSize: t.typography.body.fontSize,
+    lineHeight: t.typography.body.lineHeight,
     color: t.colors.mutedForeground,
   },
-  selectedLabel: { color: t.colors.foreground },
-  count: { fontWeight: '600', fontVariant: ['tabular-nums'] },
+  count: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+    color: t.colors.mutedForeground,
+    fontVariant: ['tabular-nums'],
+  },
+  on: { color: t.colors.primary, fontWeight: '600' },
+  bar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: BAR,
+    borderTopLeftRadius: BAR,
+    borderTopRightRadius: BAR,
+    backgroundColor: t.colors.primary,
+  },
 }));
 
 export function SegmentedTabs<T extends string>({
@@ -54,39 +76,51 @@ export function SegmentedTabs<T extends string>({
   const t = useTheme();
   const s = useStyles();
   return (
-    <View accessibilityRole="tablist" style={[s.track, style]}>
-      {items.map((item) => {
-        const selected = item.value === value;
-        return (
-          <PressableBase
-            key={item.value}
-            accessibilityRole="tab"
-            accessibilityState={{ selected }}
-            accessibilityLabel={
-              item.count === undefined
-                ? item.label
-                : `${item.label} ${item.count}`
-            }
-            touchHeight={HEIGHT}
-            pressedStyle={{}}
-            onPress={() => {
-              if (!selected) onValueChange(item.value);
-            }}
-            style={[s.tab, selected && s.selected]}
-          >
-            <Text
-              numberOfLines={1}
-              maxFontSizeMultiplier={t.maxFontScale}
-              style={[s.label, selected && s.selectedLabel]}
+    <View style={[s.root, style]}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={s.track}
+        accessibilityRole="tablist"
+      >
+        {items.map((item) => {
+          const selected = item.value === value;
+          return (
+            <PressableBase
+              key={item.value}
+              accessibilityRole="tab"
+              accessibilityState={{ selected }}
+              accessibilityLabel={
+                item.count === undefined
+                  ? item.label
+                  : `${item.label} ${item.count}`
+              }
+              pressedStyle={{}}
+              onPress={() => {
+                if (!selected) onValueChange(item.value);
+              }}
+              style={s.tab}
             >
-              {item.label}
+              <Text
+                numberOfLines={1}
+                maxFontSizeMultiplier={t.maxFontScale}
+                style={[s.label, selected && s.on]}
+              >
+                {item.label}
+              </Text>
               {item.count === undefined ? null : (
-                <Text style={s.count}> {item.count}</Text>
+                <Text
+                  maxFontSizeMultiplier={t.maxFontScale}
+                  style={[s.count, selected && s.on]}
+                >
+                  {item.count}
+                </Text>
               )}
-            </Text>
-          </PressableBase>
-        );
-      })}
+              {selected ? <View style={s.bar} /> : null}
+            </PressableBase>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }

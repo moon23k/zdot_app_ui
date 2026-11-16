@@ -1,24 +1,36 @@
 import { Image, StyleSheet, View } from 'react-native';
 import { BELL } from './bell';
 import {
+  ADD_PRODUCT,
   ALIGN,
   CARD,
   CHART,
+  CHECKLIST,
   CLOCK,
+  COPY,
   DEVICES,
   EYE,
   FILE,
   GLOBE,
   LINK,
+  NOTE,
+  OPEN,
   PALETTE,
   PENCIL,
   PHONE,
   PICTURE,
+  PIN,
+  READ_ALL,
+  RECEIVED,
   RETURN,
+  SEND,
   SHARE,
+  SMS,
+  SORT,
   SPARKLES,
   STAR,
   STORE,
+  SWAP,
   TEXT_SIZE,
   TRUCK,
   TYPE,
@@ -268,3 +280,15 @@ export const TypeGlyph = imageGlyph(TYPE);
 export const TextSizeGlyph = imageGlyph(TEXT_SIZE);
 export const AlignGlyph = imageGlyph(ALIGN);
 export const DevicesGlyph = imageGlyph(DEVICES);
+export const CopyGlyph = imageGlyph(COPY);
+export const PinGlyph = imageGlyph(PIN);
+export const SmsGlyph = imageGlyph(SMS);
+export const NoteGlyph = imageGlyph(NOTE);
+export const SendGlyph = imageGlyph(SEND);
+export const SwapGlyph = imageGlyph(SWAP);
+export const ReceivedGlyph = imageGlyph(RECEIVED);
+export const SortGlyph = imageGlyph(SORT);
+export const ChecklistGlyph = imageGlyph(CHECKLIST);
+export const AddProductGlyph = imageGlyph(ADD_PRODUCT);
+export const OpenGlyph = imageGlyph(OPEN);
+export const ReadAllGlyph = imageGlyph(READ_ALL);

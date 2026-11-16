@@ -21,3 +21,14 @@ const meta = {
 export default meta;
 
 export const AllVariants: StoryObj<typeof meta> = {};
+
+export const Vertical: StoryObj<typeof meta> = {
+  render: () => (
+    <StatusSteps
+      orientation="vertical"
+      steps={['결제', '발주 확인', '상품 준비 중', '배송 중', '배송 완료']}
+      times={['11월 8일 01:00', '11월 8일 09:12', '11월 11일까지']}
+      current={2}
+    />
+  ),
+};
