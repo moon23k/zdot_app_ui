@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { Pill } from '../../components/pill/pill';
 import { ClockGlyph, ScanGlyph } from '../../internal/glyphs';
-import { OrderBlock } from './order-block';
+import { OrderBlock, SwipeAction } from './order-block';
 
 const meta = {
   title: 'Blocks/OrderBlock',
@@ -23,3 +23,9 @@ const meta = {
 export default meta;
 
 export const Playground: StoryObj<typeof meta> = {};
+
+export const Selecting: StoryObj<typeof meta> = { args: { selected: true } };
+
+export const Swiped: StoryObj<typeof meta> = {
+  render: () => <SwipeAction label="발송 처리" />,
+};

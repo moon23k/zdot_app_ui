@@ -29,6 +29,7 @@ export type ButtonProps = Omit<
   size?: ButtonSize;
   loading?: boolean;
   done?: boolean;
+  onBlocked?: () => void;
   leftIcon?: IconSlot;
   rightIcon?: IconSlot;
   point?: boolean;
@@ -104,6 +105,7 @@ export function Button({
   size = 'md',
   loading = false,
   done = false,
+  onBlocked,
   disabled,
   leftIcon,
   rightIcon,
@@ -152,6 +154,7 @@ export function Button({
   const finish = useSwitch(done, 'press');
 
   const shake = () => {
+    onBlocked?.();
     nudge.value = withSequence(
       ...NUDGE.map((x) => withTiming(x, timing(t, 'short')))
     );

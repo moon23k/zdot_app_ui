@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react';
+import Animated from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
+import { FILL_FROM, usePop } from '../../internal/motion';
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Button } from '../../components/button/button';
 import { Photo } from '../../components/photo/photo';
@@ -23,9 +26,12 @@ export type OrderBlockProps = {
   badge?: ReactNode;
   action?: OrderBlockAction;
   onPress?: () => void;
+  onLongPress?: () => void;
+  selected?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
+const MARK = 22;
 const PHOTO = 72;
 
 const useStyles = makeStyles((t) => ({
@@ -80,7 +86,46 @@ const useStyles = makeStyles((t) => ({
     paddingBottom: t.space[4],
   },
   tall: { minHeight: t.controlSize.sm },
+  mark: {
+    alignSelf: 'center',
+    width: MARK,
+    height: MARK,
+    borderRadius: t.radius.sm,
+    borderWidth: 1.5,
+    borderColor: t.colors.input,
+    backgroundColor: t.colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  markOn: { borderColor: t.colors.primary, backgroundColor: t.colors.primary },
+  swipe: {
+    flex: 1,
+    marginTop: t.space[2],
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingHorizontal: t.layout.screenX,
+    backgroundColor: t.colors.primary,
+  },
+  swipeLabel: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.body.fontSize,
+    lineHeight: t.typography.body.lineHeight,
+    fontWeight: '600',
+    color: t.colors.primaryForeground,
+  },
 }));
+
+export function SwipeAction({ label }: { label: string }) {
+  const t = useTheme();
+  const s = useStyles();
+  return (
+    <View style={s.swipe}>
+      <Text style={s.swipeLabel} maxFontSizeMultiplier={t.maxFontScale}>
+        {label}
+      </Text>
+    </View>
+  );
+}
 
 export function OrderBlock({
   title,
@@ -91,23 +136,40 @@ export function OrderBlock({
   badge,
   action,
   onPress,
+  onLongPress,
+  selected,
   style,
 }: OrderBlockProps) {
   const t = useTheme();
   const s = useStyles();
+  const picking = selected !== undefined;
+  const pop = usePop(!!selected, FILL_FROM);
   return (
     <View style={[s.root, style]}>
       <PressableBase
         onPress={onPress}
+        onLongPress={onLongPress}
         disabled={!onPress}
         disabledStyle={s.still}
-        accessibilityRole={onPress ? 'button' : undefined}
+        accessibilityRole={
+          picking ? 'checkbox' : onPress ? 'button' : undefined
+        }
+        accessibilityState={picking ? { checked: !!selected } : undefined}
         accessibilityLabel={[overline, title, meta, amount]
           .filter(Boolean)
           .join(', ')}
         feedback="row"
         style={s.mid}
       >
+        {picking ? (
+          <Animated.View style={[s.mark, selected && s.markOn, pop]}>
+            <DrawnCheck
+              on={!!selected}
+              color={t.colors.primaryForeground}
+              size={t.iconSize.sm}
+            />
+          </Animated.View>
+        ) : null}
         <Photo
           source={{ uri: image ?? '' }}
           seed={title}
@@ -139,7 +201,7 @@ export function OrderBlock({
           </Text>
         </View>
       </PressableBase>
-      {badge || action ? (
+      {(badge || action) && !picking ? (
         <View style={[s.bottom, action && s.tall]}>
           {badge ?? <View />}
           {action ? (

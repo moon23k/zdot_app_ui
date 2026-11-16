@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ComponentRef, ReactNode, Ref } from 'react';
 import {
   KeyboardAvoidingView,
   RefreshControl,
@@ -39,6 +39,7 @@ type ScrollTemplateProps = {
   secondaryAction?: TemplateAction;
   refreshing?: boolean;
   onRefresh?: () => void;
+  scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
   bottomInset?: number;
   footer?: ReactNode;
   children: ReactNode;
@@ -116,6 +117,7 @@ function ScrollTemplate({
   secondaryAction,
   refreshing = false,
   onRefresh,
+  scrollRef,
   bottomInset = 0,
   footer,
   children,
@@ -126,6 +128,7 @@ function ScrollTemplate({
   return (
     <KeyboardAvoidingView behavior="padding" style={s.root}>
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[
           s.content,
           primaryAction || footer
@@ -235,6 +238,9 @@ export type DetailTemplateProps = {
   notice?: TemplateNotice;
   primaryAction?: TemplateAction;
   secondaryAction?: TemplateAction;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+  scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
   bottomInset?: number;
   footer?: ReactNode;
   children: ReactNode;
@@ -260,6 +266,7 @@ export type FormTemplateProps = {
   notice?: TemplateNotice;
   saveAction: TemplateAction;
   secondaryAction?: TemplateAction;
+  scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
   bottomInset?: number;
   children: ReactNode;
 };

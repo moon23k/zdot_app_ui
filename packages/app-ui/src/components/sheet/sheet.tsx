@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import {
   Animated,
   KeyboardAvoidingView,
   Modal,
+  PanResponder,
   ScrollView,
   Text,
   useWindowDimensions,
@@ -11,7 +12,11 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { CheckGlyph } from '../../internal/glyphs';
-import { Backdrop, useOverlayTransition } from '../../internal/overlay';
+import {
+  Backdrop,
+  useNativeDriver,
+  useOverlayTransition,
+} from '../../internal/overlay';
 import { ListRow } from '../list-row/list-row';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -28,6 +33,10 @@ export type SheetProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+const DRAG_START = 4;
+const DRAG_CLOSE = 80;
+const FLING = 0.5;
+
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, justifyContent: 'flex-end' },
   options: { marginHorizontal: -t.space[4] },
@@ -41,6 +50,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
     boxShadow: t.shadow.md,
   },
+  grip: { gap: t.space[3] },
   handle: {
     alignSelf: 'center',
     width: 36,
@@ -69,10 +79,43 @@ export function Sheet({
   const s = useStyles();
   const { height } = useWindowDimensions();
   const { mounted, progress } = useOverlayTransition(open);
+  const drag = useRef(new Animated.Value(0)).current;
 
   const close = () => {
     if (dismissible) onOpenChange(false);
   };
+
+  const settle = () =>
+    Animated.timing(drag, {
+      toValue: 0,
+      duration: t.motion.duration.base,
+      useNativeDriver,
+    }).start();
+
+  const grip = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, g) => g.dy > DRAG_START,
+      onPanResponderMove: (_, g) => drag.setValue(Math.max(0, g.dy)),
+      onPanResponderRelease: (_, g) => {
+        if (g.dy > DRAG_CLOSE || g.vy > FLING) {
+          gripClose.current();
+          return;
+        }
+        settle();
+      },
+      onPanResponderTerminate: () => settle(),
+    })
+  ).current;
+  const gripClose = useRef(() => {});
+  gripClose.current = () => {
+    if (!dismissible) {
+      settle();
+      return;
+    }
+    onOpenChange(false);
+  };
+  if (!open && !mounted) drag.setValue(0);
 
   return (
     <Modal
@@ -93,26 +136,31 @@ export function Sheet({
             {
               transform: [
                 {
-                  translateY: progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, 0],
-                  }),
+                  translateY: Animated.add(
+                    progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [height, 0],
+                    }),
+                    drag
+                  ),
                 },
               ],
             },
             style,
           ]}
         >
-          <View style={s.handle} />
-          {title ? (
-            <Text
-              accessibilityRole="header"
-              maxFontSizeMultiplier={t.maxFontScale}
-              style={s.title}
-            >
-              {title}
-            </Text>
-          ) : null}
+          <View style={s.grip} {...grip.panHandlers}>
+            <View style={s.handle} />
+            {title ? (
+              <Text
+                accessibilityRole="header"
+                maxFontSizeMultiplier={t.maxFontScale}
+                style={s.title}
+              >
+                {title}
+              </Text>
+            ) : null}
+          </View>
           {children}
         </Animated.View>
       </KeyboardAvoidingView>

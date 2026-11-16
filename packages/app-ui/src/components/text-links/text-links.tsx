@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { View } from 'react-native';
 import { PressableBase } from '../../internal/pressable-base';
+import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Text } from '../text/text';
 
@@ -28,6 +29,7 @@ const useStyles = makeStyles((t) => ({
 }));
 
 export function TextLinks({ items }: TextLinksProps) {
+  const t = useTheme();
   const s = useStyles();
   return (
     <View style={s.root}>
@@ -37,6 +39,7 @@ export function TextLinks({ items }: TextLinksProps) {
           <PressableBase
             style={s.link}
             accessibilityRole="button"
+            touchHeight={t.typography.label.lineHeight + t.space[1] * 2}
             onPress={item.onPress}
           >
             <View style={s.under}>

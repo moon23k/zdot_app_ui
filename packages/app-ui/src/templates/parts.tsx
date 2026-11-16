@@ -13,6 +13,7 @@ export type TemplateAction = {
   disabled?: boolean;
   loading?: boolean;
   done?: boolean;
+  onBlocked?: () => void;
   icon?: IconSlot;
   outline?: boolean;
   beside?: boolean;
@@ -119,6 +120,7 @@ export function BottomBar({
             disabled={primaryAction.disabled}
             loading={primaryAction.loading}
             done={primaryAction.done}
+            onBlocked={primaryAction.onBlocked}
             leftIcon={primaryAction.icon}
           >
             {primaryAction.label}
@@ -138,6 +140,7 @@ export function BottomBar({
         disabled={primaryAction.disabled}
         loading={primaryAction.loading}
         done={primaryAction.done}
+        onBlocked={primaryAction.onBlocked}
         leftIcon={primaryAction.icon}
       >
         {primaryAction.label}

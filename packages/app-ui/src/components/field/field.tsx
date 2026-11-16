@@ -203,6 +203,7 @@ export function Field({
           <PressableBase
             accessibilityRole="button"
             accessibilityLabel={trailingLabel}
+            hitSlop={(t.minTouchSize - t.iconSize.md) / 2}
             onPress={onTrailingPress}
           >
             {renderIcon(trailing, { ...icon, color: t.colors.foreground })}
