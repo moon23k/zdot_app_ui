@@ -130,7 +130,7 @@ export function StepScreen({
             s.body,
             floatingAction && {
               paddingBottom:
-                footerBottom + t.layout.footerTop + t.controlSize.lg,
+                footerBottom + t.layout.footerTop * 2 + t.controlSize.lg,
             },
           ]}
           keyboardShouldPersistTaps="handled"

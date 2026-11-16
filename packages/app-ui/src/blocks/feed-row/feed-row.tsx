@@ -10,6 +10,7 @@ export type FeedRowNote = { text: string; icon?: IconSlot; tone?: 'warning' };
 export type FeedRowProps = {
   overline: string;
   title: string;
+  titleLines?: 1 | 2;
   body?: string;
   note?: FeedRowNote;
   image?: string | null;
@@ -87,6 +88,7 @@ const useStyles = makeStyles((t) => ({
 export function FeedRow({
   overline,
   title,
+  titleLines = 2,
   body,
   note,
   image,
@@ -127,7 +129,7 @@ export function FeedRow({
           {unread ? <View style={s.dot} /> : null}
         </View>
         <Text
-          numberOfLines={2}
+          numberOfLines={titleLines}
           maxFontSizeMultiplier={t.maxFontScale}
           style={[s.title, !unread && s.titleRead]}
         >
