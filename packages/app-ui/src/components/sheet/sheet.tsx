@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Animated,
   KeyboardAvoidingView,
@@ -15,6 +15,7 @@ import { CheckGlyph } from '../../internal/glyphs';
 import {
   Backdrop,
   useNativeDriver,
+  OverlayShown,
   useOverlayTransition,
 } from '../../internal/overlay';
 import { ListRow } from '../list-row/list-row';
@@ -78,7 +79,18 @@ export function Sheet({
   const t = useTheme();
   const s = useStyles();
   const { height } = useWindowDimensions();
-  const { mounted, progress } = useOverlayTransition(open);
+  const { mounted, progress, shown } = useOverlayTransition(open);
+  const [showing, setShowing] = useState(false);
+  const [visible, setVisible] = useState(false);
+  if (!mounted && (visible || showing)) {
+    setShowing(false);
+    setVisible(false);
+  }
+  useEffect(() => {
+    if (!showing) return;
+    const id = setTimeout(() => setVisible(true), t.motion.duration.long);
+    return () => clearTimeout(id);
+  }, [showing, t]);
   const drag = useRef(new Animated.Value(0)).current;
 
   const close = () => {
@@ -125,6 +137,7 @@ export function Sheet({
       statusBarTranslucent
       navigationBarTranslucent
       onRequestClose={close}
+      onShow={() => setShowing(true)}
     >
       <KeyboardAvoidingView behavior="padding" style={s.root}>
         <Backdrop progress={progress} onPress={close} label={closeLabel} />
@@ -161,7 +174,9 @@ export function Sheet({
               </Text>
             ) : null}
           </View>
-          {children}
+          <OverlayShown.Provider value={shown && visible}>
+            {children}
+          </OverlayShown.Provider>
         </Animated.View>
       </KeyboardAvoidingView>
       <ToastHost />

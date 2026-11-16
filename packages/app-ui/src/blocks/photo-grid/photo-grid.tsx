@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { Photo } from '../../components/photo/photo';
 import { Text } from '../../components/text/text';
 import { PlusGlyph } from '../../internal/glyphs';
@@ -29,8 +29,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
   },
   cell: {
-    flexBasis: '48%',
-    flexGrow: 1,
     overflow: 'hidden',
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
@@ -50,6 +48,10 @@ const useStyles = makeStyles((t) => ({
 export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
   const t = useTheme();
   const s = useStyles();
+  const { width } = useWindowDimensions();
+  const cell = {
+    width: (width - t.layout.screenX * 2 - t.layout.itemGap) / 2,
+  };
   return (
     <View style={s.root}>
       <PressableBase
@@ -57,7 +59,7 @@ export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
         accessibilityLabel={addLabel}
         onPress={onAdd}
         feedback="small"
-        style={[s.cell, s.add]}
+        style={[s.cell, cell, s.add]}
       >
         <PlusGlyph color={t.colors.primary} size={t.iconSize.md} />
         <Text variant="label" weight="bold" tone="point">
@@ -71,7 +73,7 @@ export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
           accessibilityLabel={item.title}
           onPress={() => onPress(item.key)}
           feedback="small"
-          style={s.cell}
+          style={[s.cell, cell]}
         >
           <Photo
             source={{ uri: item.image ?? '' }}

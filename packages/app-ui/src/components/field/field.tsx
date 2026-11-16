@@ -1,6 +1,15 @@
-import { useEffect, useState, type ComponentRef, type Ref } from 'react';
+import {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentRef,
+  type Ref,
+} from 'react';
 import {
   Text,
+  Keyboard,
+  Platform,
   TextInput,
   View,
   type StyleProp,
@@ -16,6 +25,7 @@ import { AlertGlyph } from '../../internal/glyphs';
 import { PopCheck } from '../../internal/pop-check';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import { useShake, useSwitch } from '../../internal/motion';
+import { OverlayShown } from '../../internal/overlay';
 import { PressableBase } from '../../internal/pressable-base';
 import { useReducedMotion } from '../../internal/use-reduced-motion';
 import { useTheme } from '../../theme/theme-provider';
@@ -119,6 +129,8 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
+const RETRIES = 3;
+
 export function Field({
   label,
   readOnly = false,
@@ -134,6 +146,8 @@ export function Field({
   editable = true,
   onFocus,
   onBlur,
+  ref,
+  autoFocus,
   ...input
 }: FieldProps) {
   const t = useTheme();
@@ -148,6 +162,40 @@ export function Field({
   useEffect(() => {
     if (error) haptic('error');
   }, [error]);
+  const shown = useContext(OverlayShown);
+  const own = useRef<ComponentRef<typeof TextInput> | null>(null);
+  const quiet = useRef(false);
+  const retryAfter = t.motion.duration.long;
+  useEffect(() => {
+    const node = own.current;
+    if (!autoFocus || !shown || !node) return;
+    node.focus();
+    if (Platform.OS !== 'android') return;
+    let tries = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const check = () => {
+      quiet.current = false;
+      if (Keyboard.isVisible() || !node.isFocused() || tries >= RETRIES) return;
+      tries += 1;
+      quiet.current = true;
+      node.blur();
+      node.focus();
+      timer = setTimeout(check, retryAfter);
+    };
+    timer = setTimeout(check, retryAfter);
+    const seen = Keyboard.addListener('keyboardDidShow', () =>
+      clearTimeout(timer)
+    );
+    return () => {
+      clearTimeout(timer);
+      seen.remove();
+    };
+  }, [autoFocus, shown, retryAfter]);
+  const attach = (node: ComponentRef<typeof TextInput> | null) => {
+    own.current = node;
+    if (typeof ref === 'function') ref(node);
+    else if (ref) ref.current = node;
+  };
   const inset = t.space[4];
   const edge = useAnimatedStyle(() => ({
     borderWidth: 1 + thick.value,
@@ -187,13 +235,20 @@ export function Field({
           accessibilityLabel={label}
           accessibilityHint={note}
           {...input}
+          ref={attach}
+          autoFocus={autoFocus && shown !== false}
           editable={editable && !readOnly}
           style={[s.input, input.multiline && s.multiInput]}
           onFocus={(e) => {
             setFocused(true);
+            if (quiet.current) {
+              quiet.current = false;
+              return;
+            }
             onFocus?.(e);
           }}
           onBlur={(e) => {
+            if (quiet.current) return;
             setFocused(false);
             onBlur?.(e);
           }}
