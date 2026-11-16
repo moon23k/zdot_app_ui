@@ -17,6 +17,7 @@ import { PopCheck } from '../../internal/pop-check';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import { useShake, useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
+import { useReducedMotion } from '../../internal/use-reduced-motion';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { haptic } from '../../internal/haptics';
@@ -136,6 +137,7 @@ export function Field({
   ...input
 }: FieldProps) {
   const t = useTheme();
+  const reduced = useReducedMotion();
   const s = useStyles();
   const [focused, setFocused] = useState(false);
   const icon = { color: t.colors.mutedForeground, size: t.iconSize.md };
@@ -221,7 +223,9 @@ export function Field({
       </Animated.View>
       {error ? (
         <Animated.Text
-          entering={FadeIn.duration(t.motion.duration.press)}
+          entering={
+            reduced ? undefined : FadeIn.duration(t.motion.duration.press)
+          }
           maxFontSizeMultiplier={t.maxFontScale}
           accessibilityLiveRegion="polite"
           style={s.error}

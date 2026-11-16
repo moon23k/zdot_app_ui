@@ -13,6 +13,7 @@ import { PlusGlyph } from '../internal/glyphs';
 import { renderIcon, type IconSlot } from '../internal/icon';
 import { PressableBase } from '../internal/pressable-base';
 import { Later, useSettled } from '../internal/settle';
+import { useReducedMotion } from '../internal/use-reduced-motion';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import type { TemplateAction } from './parts';
@@ -98,8 +99,9 @@ export function ListTemplate<T>({
   const failed = status === 'error' && !!error;
   const rows = loading || failed ? [] : data;
   const settled = useSettled(loading);
+  const reduced = useReducedMotion();
   const cell: ListRenderItem<T> = (info) =>
-    settled() ? (
+    settled() && !reduced ? (
       <Animated.View entering={FadeIn.duration(t.motion.duration.long)}>
         {renderItem(info)}
       </Animated.View>
