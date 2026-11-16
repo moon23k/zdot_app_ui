@@ -143,7 +143,7 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
     lineHeight: t.typography.label.lineHeight,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 }));
 

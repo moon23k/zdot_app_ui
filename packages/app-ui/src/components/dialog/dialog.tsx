@@ -36,9 +36,9 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     fontSize: t.typography.title.fontSize,
     lineHeight: t.typography.title.lineHeight,
-    fontWeight: '700',
+    fontWeight: '600',
     textAlign: 'center',
-    color: t.colors.foreground,
+    color: t.colors.title,
   },
   copy: { gap: t.space[2] },
   description: {

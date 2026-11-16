@@ -103,7 +103,7 @@ const useStyles = makeStyles((t) => ({
   radio: { borderRadius: t.radius.full },
   checkOn: { borderColor: t.colors.primary, backgroundColor: t.colors.primary },
   radioOn: { borderWidth: 6, borderColor: t.colors.primary },
-  strong: { color: t.colors.foreground, fontWeight: '700' },
+  strong: { color: t.colors.title, fontWeight: '600' },
 }));
 
 export function ListRow({

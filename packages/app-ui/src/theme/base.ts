@@ -135,7 +135,7 @@ export const typography = {
   display: {
     fontSize: 28,
     lineHeight: 34,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 } as const;
 

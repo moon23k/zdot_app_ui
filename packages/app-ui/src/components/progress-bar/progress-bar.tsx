@@ -22,7 +22,7 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     fontFamily: t.fontFamily,
     fontWeight: '600',
-    color: t.colors.foreground,
+    color: t.colors.title,
   },
   count: {
     ...t.typography.body,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((t) => ({
     fontVariant: ['tabular-nums'],
     color: t.colors.mutedForeground,
   },
-  strong: { fontWeight: '700', color: t.colors.foreground },
+  strong: { fontWeight: '600', color: t.colors.title },
   track: {
     height: 6,
     borderRadius: t.radius.full,

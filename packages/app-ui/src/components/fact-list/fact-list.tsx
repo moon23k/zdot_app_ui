@@ -1,5 +1,5 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { CheckGlyph, CloseGlyph } from '../../internal/glyphs';
+import { CheckGlyph } from '../../internal/glyphs';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -11,6 +11,7 @@ export type FactListProps = {
 };
 
 const ICON = 14;
+const LINE = 10;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -27,6 +28,13 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.foreground,
   },
   muted: { color: t.colors.mutedForeground },
+  dash: { width: ICON, alignItems: 'center' },
+  dashLine: {
+    width: LINE,
+    height: 1.5,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.mutedForeground,
+  },
 }));
 
 export function FactList({ items, style }: FactListProps) {
@@ -44,9 +52,11 @@ export function FactList({ items, style }: FactListProps) {
           {item.met === true ? (
             <CheckGlyph color={t.colors.success} size={ICON} />
           ) : item.met === false ? (
-            <CloseGlyph color={t.colors.warningText} size={ICON} />
+            <View style={s.dash}>
+              <View style={s.dashLine} />
+            </View>
           ) : null}
-          <Text style={[s.label, item.met === null && s.muted]}>
+          <Text style={[s.label, item.met !== true && s.muted]}>
             {item.label}
           </Text>
         </View>

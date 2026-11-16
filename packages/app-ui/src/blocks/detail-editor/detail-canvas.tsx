@@ -86,7 +86,7 @@ const useStyles = makeStyles((t) => ({
   },
   tagText: {
     fontSize: t.typography.caption.fontSize,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   tag: {
     position: 'absolute',

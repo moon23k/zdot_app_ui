@@ -93,9 +93,9 @@ export function Button({
   const off = variant === 'primary' && !!disabled && !loading;
   const color = {
     primary: off ? t.colors.mutedForeground : t.colors.primary,
-    secondary: t.colors.foreground,
-    outline: t.colors.foreground,
-    ghost: t.colors.foreground,
+    secondary: t.colors.title,
+    outline: t.colors.title,
+    ghost: t.colors.title,
     danger: t.colors.dangerForeground,
   }[variant];
   const icon = { color, size: size === 'sm' ? t.iconSize.sm : t.iconSize.md };

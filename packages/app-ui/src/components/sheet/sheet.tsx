@@ -51,7 +51,7 @@ const useStyles = makeStyles((t) => ({
   title: {
     ...t.typography.title,
     fontFamily: t.fontFamily,
-    color: t.colors.foreground,
+    color: t.colors.title,
   },
 }));
 

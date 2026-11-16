@@ -37,7 +37,7 @@ const useStyles = makeStyles((t) => ({
     marginTop: t.space[4],
     fontFamily: t.fontFamily,
     fontWeight: '600',
-    color: t.colors.foreground,
+    color: t.colors.title,
     textAlign: 'center',
   },
   button: {
@@ -72,7 +72,7 @@ const useStyles = makeStyles((t) => ({
     fontSize: t.typography.label.fontSize,
     fontWeight: '600',
     fontFamily: t.fontFamily,
-    color: t.colors.foreground,
+    color: t.colors.title,
   },
 }));
 

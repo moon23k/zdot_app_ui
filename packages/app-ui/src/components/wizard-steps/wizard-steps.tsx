@@ -23,7 +23,7 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     color: t.colors.mutedForeground,
   },
-  name: { color: t.colors.foreground, fontWeight: '600' },
+  name: { color: t.colors.title, fontWeight: '600' },
 }));
 
 export function WizardSteps({ steps, current, style }: WizardStepsProps) {

@@ -21,8 +21,8 @@ const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', alignItems: 'baseline', gap: t.space[2] },
   value: {
     fontFamily: t.fontFamily,
-    fontWeight: '700',
-    color: t.colors.foreground,
+    fontWeight: '600',
+    color: t.colors.title,
   },
   original: {
     ...t.typography.caption,
@@ -33,7 +33,7 @@ const useStyles = makeStyles((t) => ({
   rate: {
     ...t.typography.caption,
     fontFamily: t.fontFamily,
-    fontWeight: '700',
+    fontWeight: '600',
     color: t.colors.danger,
   },
 }));

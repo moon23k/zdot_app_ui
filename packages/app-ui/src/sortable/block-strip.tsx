@@ -54,7 +54,7 @@ const useStyles = makeStyles((t) => ({
   },
   numText: {
     fontSize: t.typography.caption.fontSize - 1,
-    fontWeight: '700',
+    fontWeight: '600',
     color: t.colors.primaryForeground,
   },
   add: {

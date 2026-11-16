@@ -36,7 +36,7 @@ const useStyles = makeStyles((t) => ({
   regular: { fontWeight: '400' },
   medium: { fontWeight: '500' },
   semibold: { fontWeight: '600' },
-  bold: { fontWeight: '700' },
+  bold: { fontWeight: '600' },
 }));
 
 export function Text({
@@ -56,7 +56,13 @@ export function Text({
         s.font,
         s[variant],
         s[tone],
-        variant === 'screenTitle' && tone === 'default' && s.heading,
+        tone === 'default' &&
+          (variant === 'screenTitle' ||
+            variant === 'title' ||
+            variant === 'display' ||
+            weight === 'semibold' ||
+            weight === 'bold') &&
+          s.heading,
         weight && s[weight],
         style,
       ]}
