@@ -45,6 +45,26 @@ export function useSwitch(
   return progress;
 }
 
+const SHAKE = [-4, 4, -2, 0] as const;
+
+export function useShake(trigger: unknown) {
+  const t = useTheme();
+  const x = useSharedValue(0);
+  const last = useRef(trigger);
+  useEffect(() => {
+    if (trigger && trigger !== last.current) {
+      const step = {
+        duration: t.motion.duration.long / SHAKE.length,
+        easing: curve(t, 'standard'),
+        reduceMotion: ReduceMotion.System,
+      };
+      x.value = withSequence(...SHAKE.map((v) => withTiming(v, step)));
+    }
+    last.current = trigger;
+  }, [trigger, x, t]);
+  return x;
+}
+
 export function usePop(on: boolean, from: number) {
   const t = useTheme();
   const scale = useSharedValue(1);

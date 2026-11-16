@@ -7,8 +7,15 @@ import {
   type TextInputProps,
   type ViewStyle,
 } from 'react-native';
+import Animated, {
+  FadeIn,
+  LinearTransition,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { AlertGlyph } from '../../internal/glyphs';
+import { PopCheck } from '../../internal/pop-check';
 import { renderIcon, type IconSlot } from '../../internal/icon';
+import { useShake, useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -24,6 +31,7 @@ export type FieldProps = Omit<TextInputProps, 'style'> & {
   trailing?: IconSlot;
   onTrailingPress?: () => void;
   trailingLabel?: string;
+  valid?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -119,6 +127,7 @@ export function Field({
   trailing,
   onTrailingPress,
   trailingLabel,
+  valid,
   style,
   editable = true,
   onFocus,
@@ -131,9 +140,20 @@ export function Field({
   const icon = { color: t.colors.mutedForeground, size: t.iconSize.md };
   const warn = error ? undefined : warning;
   const note = error ?? warn ?? hint;
+  const thick = useSwitch(focused || !!error || !!warn, 'press');
+  const shake = useShake(error);
+  const inset = t.space[4];
+  const edge = useAnimatedStyle(() => ({
+    borderWidth: 1 + thick.value,
+    paddingHorizontal: inset - thick.value,
+    transform: [{ translateX: shake.value }],
+  }));
 
   return (
-    <View style={[s.root, style]}>
+    <Animated.View
+      layout={LinearTransition.duration(t.motion.duration.press)}
+      style={[s.root, style]}
+    >
       {label ? (
         <Text
           maxFontSizeMultiplier={t.maxFontScale}
@@ -142,7 +162,7 @@ export function Field({
           {label}
         </Text>
       ) : null}
-      <View
+      <Animated.View
         style={[
           s.frame,
           input.multiline && s.multi,
@@ -150,6 +170,7 @@ export function Field({
           !!error && s.invalid,
           !!warn && s.warned,
           readOnly ? s.readOnly : !editable && s.disabled,
+          edge,
         ]}
       >
         {leading ? renderIcon(leading, icon) : null}
@@ -171,6 +192,9 @@ export function Field({
             onBlur?.(e);
           }}
         />
+        {valid !== undefined && !error ? (
+          <PopCheck on={valid} size={t.iconSize.md} />
+        ) : null}
         {trailing && onTrailingPress ? (
           <PressableBase
             accessibilityRole="button"
@@ -189,15 +213,16 @@ export function Field({
         ) : trailing ? (
           renderIcon(trailing, icon)
         ) : null}
-      </View>
+      </Animated.View>
       {error ? (
-        <Text
+        <Animated.Text
+          entering={FadeIn.duration(t.motion.duration.press)}
           maxFontSizeMultiplier={t.maxFontScale}
           accessibilityLiveRegion="polite"
           style={s.error}
         >
           {error}
-        </Text>
+        </Animated.Text>
       ) : warn ? (
         <View style={s.noteRow}>
           <AlertGlyph
@@ -219,6 +244,6 @@ export function Field({
           {hint}
         </Text>
       ) : null}
-    </View>
+    </Animated.View>
   );
 }

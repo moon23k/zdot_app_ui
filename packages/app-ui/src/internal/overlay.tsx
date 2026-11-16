@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Platform, Pressable, StyleSheet } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Platform,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
 import { useTheme } from '../theme/theme-provider';
 import { useReducedMotion } from './use-reduced-motion';
 
@@ -13,16 +19,19 @@ export function useOverlayTransition(open: boolean) {
 
   useEffect(() => {
     if (open) setMounted(true);
+    const [x1, y1, x2, y2] =
+      t.motion.easing[open ? 'decelerate' : 'accelerate'];
     const animation = Animated.timing(progress, {
       toValue: open ? 1 : 0,
-      duration: reduced ? 0 : t.motion.duration.base,
+      duration: reduced ? 0 : t.motion.duration[open ? 'long' : 'base'],
+      easing: Easing.bezier(x1, y1, x2, y2),
       useNativeDriver,
     });
     animation.start(({ finished }) => {
       if (finished && !open) setMounted(false);
     });
     return () => animation.stop();
-  }, [open, progress, reduced, t.motion.duration.base]);
+  }, [open, progress, reduced, t]);
 
   return { mounted, progress };
 }

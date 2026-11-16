@@ -11,10 +11,12 @@ import {
 import {
   AccessibilityInfo,
   Animated,
+  Easing,
   Platform,
   Text,
   View,
 } from 'react-native';
+import { CheckGlyph } from '../../internal/glyphs';
 import { useNativeDriver } from '../../internal/overlay';
 import { PressableBase } from '../../internal/pressable-base';
 import { useReducedMotion } from '../../internal/use-reduced-motion';
@@ -86,6 +88,8 @@ function createToastStore() {
 
 type ToastStore = ReturnType<typeof createToastStore>;
 
+const TOAST_FROM = 0.9;
+
 const StoreContext = createContext<ToastStore | null>(null);
 
 export type ToastProviderProps = {
@@ -139,6 +143,7 @@ const useStyles = makeStyles((t) => ({
   message: { ...t.typography.body, flexShrink: 1, fontFamily: t.fontFamily },
   messageFill: { flex: 1, fontSize: t.typography.label.fontSize },
   action: { paddingHorizontal: t.space[3], justifyContent: 'center' },
+  mark: { marginRight: t.space[2] },
   actionLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
@@ -166,32 +171,41 @@ function ToastHostInner({ store }: { store: ToastStore }) {
 
   useEffect(() => store.addHost(id), [store, id]);
 
+  const [shown, setShown] = useState<Current | null>(current);
+  if (current && current !== shown) setShown(current);
+
   useEffect(() => {
-    if (!current) return;
-    opacity.setValue(reduced ? 1 : 0);
-    if (reduced) return;
+    const into = !!current;
+    if (reduced) {
+      opacity.setValue(into ? 1 : 0);
+      if (!into) setShown(null);
+      return;
+    }
+    if (into) opacity.setValue(0);
+    const [x1, y1, x2, y2] =
+      t.motion.easing[into ? 'decelerate' : 'accelerate'];
     const animation = Animated.timing(opacity, {
-      toValue: 1,
-      duration: t.motion.duration.base,
+      toValue: into ? 1 : 0,
+      duration: t.motion.duration[into ? 'base' : 'short'],
+      easing: Easing.bezier(x1, y1, x2, y2),
       useNativeDriver,
     });
-    animation.start();
+    animation.start(({ finished }) => {
+      if (finished && !into) setShown(null);
+    });
     return () => animation.stop();
-  }, [current, opacity, reduced, t.motion.duration.base]);
+  }, [current, opacity, reduced, t]);
 
-  if (!current || !isTop) return null;
+  const view = current ?? shown;
+  if (!view || !isTop) return null;
 
   const [bg, fg] = {
     neutral: [t.colors.foreground, t.colors.background],
     success: [t.colors.success, t.colors.successForeground],
     danger: [t.colors.danger, t.colors.dangerForeground],
-  }[current.tone];
+  }[view.tone];
   const actionColor =
-    current.tone !== 'neutral'
-      ? fg
-      : t.scheme === 'light'
-        ? '#93c5fd'
-        : '#1d4ed8';
+    view.tone !== 'neutral' ? fg : t.scheme === 'light' ? '#93c5fd' : '#1d4ed8';
 
   return (
     <View
@@ -203,24 +217,43 @@ function ToastHostInner({ store }: { store: ToastStore }) {
         accessibilityLiveRegion="polite"
         style={[
           s.toast,
-          !!current.action && s.withAction,
-          { backgroundColor: bg, opacity },
+          !!view.action && s.withAction,
+          {
+            backgroundColor: bg,
+            opacity,
+            transform: [
+              {
+                scale: opacity.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [TOAST_FROM, 1],
+                }),
+              },
+            ],
+          },
         ]}
       >
+        {view.tone === 'success' ? (
+          <View style={s.mark}>
+            <CheckGlyph
+              color={fg ?? t.colors.successForeground}
+              size={t.iconSize.sm}
+            />
+          </View>
+        ) : null}
         <Text
           maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.message, !!current.action && s.messageFill, { color: fg }]}
+          style={[s.message, !!view.action && s.messageFill, { color: fg }]}
         >
-          {current.message}
+          {view.message}
         </Text>
-        {current.action ? (
+        {view.action ? (
           <PressableBase
             accessibilityRole="button"
-            accessibilityLabel={current.action.label}
+            accessibilityLabel={view.action.label}
             touchHeight={44}
             style={s.action}
             onPress={() => {
-              current.action?.onPress();
+              view.action?.onPress();
               store.hide();
             }}
           >
@@ -228,7 +261,7 @@ function ToastHostInner({ store }: { store: ToastStore }) {
               maxFontSizeMultiplier={t.maxFontScale}
               style={[s.actionLabel, { color: actionColor }]}
             >
-              {current.action.label}
+              {view.action.label}
             </Text>
           </PressableBase>
         ) : null}

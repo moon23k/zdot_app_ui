@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import {
   Button,
+  defaultThemes,
   FINISH_HOLD,
   useFinish,
   Calendar,
@@ -200,6 +201,9 @@ describe('Toast', () => {
     expect(screen.getByText('저장했어요')).toBeTruthy();
     await act(async () => {
       jest.advanceTimersByTime(2500);
+    });
+    await act(async () => {
+      jest.advanceTimersByTime(defaultThemes.light.motion.duration.short);
     });
     expect(screen.queryByText('저장했어요')).toBeNull();
   });

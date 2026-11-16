@@ -78,6 +78,10 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[10],
   },
   raised: { boxShadow: t.shadow.md },
+  backing: {
+    borderRadius: t.controlSize.lg / 2,
+    backgroundColor: t.colors.background,
+  },
 }));
 
 export function StepScreen({
@@ -154,19 +158,21 @@ export function StepScreen({
         >
           {actions}
           {primaryAction ? (
-            <Button
-              size="lg"
-              onPress={primaryAction.onPress}
-              disabled={primaryAction.disabled}
-              loading={primaryAction.loading}
-              style={
-                floatingAction
-                  ? [s.pill, !primaryAction.disabled && s.raised]
-                  : undefined
-              }
-            >
-              {primaryAction.label}
-            </Button>
+            <View style={floatingAction ? s.backing : undefined}>
+              <Button
+                size="lg"
+                onPress={primaryAction.onPress}
+                disabled={primaryAction.disabled}
+                loading={primaryAction.loading}
+                style={
+                  floatingAction
+                    ? [s.pill, !primaryAction.disabled && s.raised]
+                    : undefined
+                }
+              >
+                {primaryAction.label}
+              </Button>
+            </View>
           ) : null}
           {secondaryAction ? (
             <Button

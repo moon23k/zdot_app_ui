@@ -4,7 +4,8 @@ import { Field } from '../../components/field/field';
 import { ListRow } from '../../components/list-row/list-row';
 import { Sheet, SheetOptions } from '../../components/sheet/sheet';
 import { Text } from '../../components/text/text';
-import { CheckGlyph, ScanGlyph } from '../../internal/glyphs';
+import { ScanGlyph } from '../../internal/glyphs';
+import { PopCheck } from '../../internal/pop-check';
 import { Photo } from '../../components/photo/photo';
 import { useTheme } from '../../theme/theme-provider';
 import { ListSection } from '../../templates/parts';
@@ -119,9 +120,7 @@ export function BulkShipList({
                     </Text>
                   ) : null}
                 </View>
-                {ok ? (
-                  <CheckGlyph color={t.colors.success} size={t.iconSize.md} />
-                ) : null}
+                <PopCheck on={ok} size={t.iconSize.md} />
               </View>
               <Field
                 value={row.trackingNo}

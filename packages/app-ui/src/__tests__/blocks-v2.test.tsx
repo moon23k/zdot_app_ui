@@ -289,7 +289,7 @@ describe('SelectionBar', () => {
     expect(screen.getByText(/최대 50건/)).toBeTruthy();
   });
 
-  it('disables the action at zero', async () => {
+  it('hides and disables the action at zero', async () => {
     const onAction = jest.fn();
     await render(
       <SelectionBar
@@ -299,7 +299,10 @@ describe('SelectionBar', () => {
         onClear={() => {}}
       />
     );
-    await fireEvent.press(screen.getByText('배송 준비'));
+    expect(screen.queryByText('배송 준비')).toBeNull();
+    await fireEvent.press(
+      screen.getByText('배송 준비', { includeHiddenElements: true })
+    );
     expect(onAction).not.toHaveBeenCalled();
   });
 });

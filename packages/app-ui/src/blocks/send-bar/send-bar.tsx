@@ -1,5 +1,7 @@
 import { TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { SendGlyph } from '../../internal/glyphs';
+import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -16,6 +18,7 @@ export type SendBarProps = {
 };
 
 const FIELD = 44;
+const SEND_FROM = 0.82;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -49,6 +52,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  face: { backgroundColor: t.colors.primary },
 }));
 
 export function SendBar({
@@ -64,6 +68,12 @@ export function SendBar({
   const t = useTheme();
   const s = useStyles();
   const off = disabled || !value.trim();
+  const live = useSwitch(!off, 'spring', 'spring');
+  const dim = t.opacity.disabled;
+  const ready = useAnimatedStyle(() => ({
+    opacity: dim + (1 - dim) * Math.min(1, live.value),
+    transform: [{ scale: SEND_FROM + (1 - SEND_FROM) * live.value }],
+  }));
   return (
     <View style={[s.root, { paddingBottom: t.space[3] + bottomInset }, style]}>
       <TextInput
@@ -80,13 +90,14 @@ export function SendBar({
         accessibilityRole="button"
         accessibilityLabel={sendLabel}
         disabled={off}
+        disabledStyle={{}}
+        feedback="small"
         onPress={onSend}
         style={s.send}
       >
-        <SendGlyph
-          color={off ? t.colors.ring : t.colors.primary}
-          size={t.iconSize.md}
-        />
+        <Animated.View style={[s.send, s.face, ready]}>
+          <SendGlyph color={t.colors.primaryForeground} size={t.iconSize.sm} />
+        </Animated.View>
       </PressableBase>
     </View>
   );
