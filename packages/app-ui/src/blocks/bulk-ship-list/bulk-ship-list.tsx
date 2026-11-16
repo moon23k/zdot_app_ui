@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { useRef, useState, type ComponentRef } from 'react';
+import { TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Field } from '../../components/field/field';
 import { ListRow } from '../../components/list-row/list-row';
 import { Sheet, SheetOptions } from '../../components/sheet/sheet';
@@ -34,28 +34,35 @@ export type BulkShipListProps = {
 
 export type TrackingIssue = 'invalid' | 'duplicate';
 
-const TRACKING = /^[0-9-]{8,20}$/;
+const TRACKING = /^[0-9]{8,20}$/;
 const INVALID = '송장번호를 확인해 주세요';
 const DUPLICATE = '같은 송장번호가 다른 주문에도 있어요';
 const THUMB = 40;
 
+export function trackingDigits(raw: string): string {
+  return raw.replace(/[^0-9]/g, '');
+}
+
+export function isTracking(raw: string): boolean {
+  return TRACKING.test(trackingDigits(raw));
+}
+
 export function trackingIssues(
   rows: readonly BulkShipRow[]
 ): Record<string, TrackingIssue> {
-  const key = (v: string) => v.trim().replace(/-/g, '');
   const seen = new Map<string, number>();
   for (const row of rows) {
-    const k = key(row.trackingNo);
-    if (k && TRACKING.test(row.trackingNo.trim())) {
+    if (isTracking(row.trackingNo)) {
+      const k = trackingDigits(row.trackingNo);
       seen.set(k, (seen.get(k) ?? 0) + 1);
     }
   }
   const issues: Record<string, TrackingIssue> = {};
   for (const row of rows) {
-    const value = row.trackingNo.trim();
-    if (!value) continue;
-    if (!TRACKING.test(value)) issues[row.id] = 'invalid';
-    else if ((seen.get(key(value)) ?? 0) > 1) issues[row.id] = 'duplicate';
+    if (!row.trackingNo.trim()) continue;
+    if (!isTracking(row.trackingNo)) issues[row.id] = 'invalid';
+    else if ((seen.get(trackingDigits(row.trackingNo)) ?? 0) > 1)
+      issues[row.id] = 'duplicate';
   }
   return issues;
 }
@@ -85,7 +92,12 @@ export function BulkShipList({
   const t = useTheme();
   const s = useStyles();
   const [picking, setPicking] = useState(false);
+  const [left, setLeft] = useState<readonly string[]>([]);
+  const inputs = useRef(
+    new Map<string, ComponentRef<typeof TextInput> | null>()
+  );
   const issues = trackingIssues(rows);
+  const last = rows.length - 1;
   const selected = carriers.find((c) => c.code === carrier);
   return (
     <View style={style}>
@@ -98,8 +110,10 @@ export function BulkShipList({
         />
       </ListSection>
       <ListSection card>
-        {rows.map((row) => {
+        {rows.map((row, i) => {
           const issue = issues[row.id];
+          const shown = left.includes(row.id) || issue === 'duplicate';
+          const next = rows[i + 1];
           const ok = Boolean(row.trackingNo.trim()) && !issue;
           return (
             <View key={row.id} style={s.row}>
@@ -131,8 +145,24 @@ export function BulkShipList({
                 autoCorrect={false}
                 maxLength={20}
                 accessibilityLabel={`${row.title} 송장번호`}
-                error={issue === 'invalid' ? INVALID : undefined}
-                warning={issue === 'duplicate' ? DUPLICATE : undefined}
+                ref={(input: ComponentRef<typeof TextInput> | null) => {
+                  inputs.current.set(row.id, input);
+                }}
+                returnKeyType={i < last ? 'next' : 'done'}
+                submitBehavior={i < last ? 'submit' : 'blurAndSubmit'}
+                onSubmitEditing={() =>
+                  next && inputs.current.get(next.id)?.focus()
+                }
+                onFocus={() =>
+                  setLeft((ids) => ids.filter((id) => id !== row.id))
+                }
+                onBlur={() =>
+                  setLeft((ids) =>
+                    ids.includes(row.id) ? ids : [...ids, row.id]
+                  )
+                }
+                error={shown && issue === 'invalid' ? INVALID : undefined}
+                warning={shown && issue === 'duplicate' ? DUPLICATE : undefined}
                 trailing={onScan ? ScanGlyph : undefined}
                 onTrailingPress={onScan ? () => onScan(row.id) : undefined}
                 trailingLabel={`${row.title} 송장 스캔`}

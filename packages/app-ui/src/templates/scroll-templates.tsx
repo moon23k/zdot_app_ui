@@ -259,6 +259,7 @@ export function DetailTemplate({
 export type FormTemplateProps = {
   notice?: TemplateNotice;
   saveAction: TemplateAction;
+  secondaryAction?: TemplateAction;
   bottomInset?: number;
   children: ReactNode;
 };

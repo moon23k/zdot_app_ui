@@ -229,11 +229,15 @@ describe('BulkShipList', () => {
         onScan={onScan}
       />
     );
-    expect(screen.getAllByText('송장번호를 확인해 주세요')).toHaveLength(1);
+    expect(screen.queryByText('송장번호를 확인해 주세요')).toBeNull();
     expect(
       screen.getAllByText('같은 송장번호가 다른 주문에도 있어요')
     ).toHaveLength(2);
     const input = screen.getByLabelText('머그컵 송장번호');
+    await fireEvent(input, 'blur');
+    expect(screen.getAllByText('송장번호를 확인해 주세요')).toHaveLength(1);
+    await fireEvent(input, 'focus');
+    expect(screen.queryByText('송장번호를 확인해 주세요')).toBeNull();
     expect(input.props.keyboardType).toBe('number-pad');
     await fireEvent.changeText(input, '123456789');
     expect(onTrackingChange).toHaveBeenCalledWith('1', '123456789');

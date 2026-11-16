@@ -1,5 +1,7 @@
 export {
   BulkShipList,
+  isTracking,
+  trackingDigits,
   trackingIssues,
   type BulkShipListProps,
   type BulkShipRow,
