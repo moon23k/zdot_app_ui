@@ -64,12 +64,10 @@ const useStyles = makeStyles((t) => ({
   headingText: { flex: 1, gap: t.space[1] },
   hero: {
     paddingTop: t.space[1],
-    paddingBottom: t.space[5],
+    paddingBottom: t.space[6],
     paddingHorizontal: t.layout.screenX,
     gap: t.space[1],
     backgroundColor: t.colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: t.colors.border,
   },
   heroHead: {
     flexDirection: 'row',

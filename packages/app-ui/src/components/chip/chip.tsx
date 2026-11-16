@@ -1,5 +1,4 @@
 import { Text, View } from 'react-native';
-import { CheckGlyph } from '../../internal/glyphs';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import {
   PressableBase,
@@ -39,11 +38,7 @@ const useStyles = makeStyles((t) => ({
   selected: {
     backgroundColor: t.colors.primaryTint,
   },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: t.colors.input,
-  },
+  outline: { backgroundColor: t.colors.muted },
   outlineSelected: {
     backgroundColor: t.colors.primaryTint,
     borderColor: t.colors.primaryTint,
@@ -72,7 +67,7 @@ export function Chip({
   const t = useTheme();
   const s = useStyles();
   const outline = variant === 'outline';
-  const color = selected ? t.colors.selectForeground : t.colors.foreground;
+  const color = selected ? t.colors.primary : t.colors.foreground;
   return (
     <PressableBase
       {...rest}
@@ -92,9 +87,6 @@ export function Chip({
         style,
       ]}
     >
-      {selected && !outline ? (
-        <CheckGlyph color={color} size={t.iconSize.sm} />
-      ) : null}
       {leftIcon ? (
         <View>{renderIcon(leftIcon, { color, size: t.iconSize.sm })}</View>
       ) : null}

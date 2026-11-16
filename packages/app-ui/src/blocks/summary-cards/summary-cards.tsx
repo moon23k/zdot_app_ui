@@ -16,11 +16,10 @@ const LONG_ANSWER = 24;
 
 const useStyles = makeStyles((t) => ({
   panel: {
-    marginTop: t.layout.groupGap,
-    marginHorizontal: t.layout.screenX,
-    padding: t.space[4],
+    marginTop: t.space[2],
+    paddingHorizontal: t.layout.screenX,
+    paddingVertical: t.space[5],
     gap: t.space[3],
-    borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: t.space[3] },

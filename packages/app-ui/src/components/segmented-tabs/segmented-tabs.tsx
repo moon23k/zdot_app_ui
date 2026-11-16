@@ -22,7 +22,7 @@ export type SegmentedTabsProps<T extends string> = {
   style?: StyleProp<ViewStyle>;
 };
 
-const BAR = 3;
+const BAR = 2;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -54,16 +54,15 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.mutedForeground,
     fontVariant: ['tabular-nums'],
   },
-  on: { color: t.colors.primary, fontWeight: '600' },
+  on: { color: t.colors.title, fontWeight: '600' },
+  countOn: { color: t.colors.primary },
   bar: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
     height: BAR,
-    borderTopLeftRadius: BAR,
-    borderTopRightRadius: BAR,
-    backgroundColor: t.colors.primary,
+    backgroundColor: t.colors.title,
   },
 }));
 
@@ -111,7 +110,7 @@ export function SegmentedTabs<T extends string>({
               {item.count === undefined ? null : (
                 <Text
                   maxFontSizeMultiplier={t.maxFontScale}
-                  style={[s.count, selected && s.on]}
+                  style={[s.count, selected && s.countOn]}
                 >
                   {item.count}
                 </Text>

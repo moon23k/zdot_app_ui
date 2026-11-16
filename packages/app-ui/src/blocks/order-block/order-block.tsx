@@ -30,9 +30,7 @@ const PHOTO = 76;
 
 const useStyles = makeStyles((t) => ({
   root: {
-    marginHorizontal: t.layout.screenX,
-    marginBottom: t.space[2],
-    borderRadius: t.radius.lg,
+    marginTop: t.space[2],
     backgroundColor: t.colors.surface,
   },
   pressed: { backgroundColor: t.colors.muted },
@@ -41,7 +39,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     gap: t.space[3],
     paddingHorizontal: t.layout.screenX,
-    paddingVertical: t.space[3],
+    paddingVertical: t.space[4],
   },
   photo: { width: PHOTO, height: PHOTO },
   body: { flex: 1, minWidth: 0 },

@@ -48,20 +48,15 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[5],
     borderRadius: t.radius.lg,
   },
-  primary: {
-    backgroundColor: t.colors.surface,
-    borderWidth: 1.5,
-    borderColor: t.colors.primary,
-  },
-  primaryOff: { borderColor: 'transparent', backgroundColor: t.colors.muted },
+  primary: { backgroundColor: t.colors.primary },
+  primaryOff: { backgroundColor: t.colors.muted },
+  tint: { backgroundColor: t.colors.primaryTint },
   secondary: { backgroundColor: t.colors.muted },
-  outline: {
-    backgroundColor: 'transparent',
-    borderColor: t.colors.input,
-  },
+  outline: { backgroundColor: t.colors.muted },
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: t.colors.danger },
   label: { fontFamily: t.fontFamily, fontWeight: '600' },
+  quiet: { fontWeight: '500' },
   smLabel: {
     fontSize: t.typography.label.fontSize,
     lineHeight: t.typography.label.lineHeight,
@@ -91,8 +86,13 @@ export function Button({
   const t = useTheme();
   const s = useStyles();
   const off = variant === 'primary' && !!disabled && !loading;
+  const tint = variant === 'primary' && size === 'sm';
   const color = {
-    primary: off ? t.colors.mutedForeground : t.colors.primary,
+    primary: off
+      ? t.colors.mutedForeground
+      : tint
+        ? t.colors.primary
+        : t.colors.primaryForeground,
     secondary: t.colors.title,
     outline: t.colors.title,
     ghost: t.colors.title,
@@ -107,7 +107,14 @@ export function Button({
       touchHeight={t.controlSize[size]}
       accessibilityState={{ ...accessibilityState, busy: loading }}
       disabledStyle={variant === 'primary' ? {} : undefined}
-      style={[s.base, s[size], s[variant], off && s.primaryOff, style]}
+      style={[
+        s.base,
+        s[size],
+        s[variant],
+        tint && s.tint,
+        off && s.primaryOff,
+        style,
+      ]}
     >
       {loading ? (
         <ActivityIndicator size="small" color={color} />
@@ -118,7 +125,12 @@ export function Button({
         <Text
           numberOfLines={1}
           maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.label, s[`${size}Label`], { color }]}
+          style={[
+            s.label,
+            s[`${size}Label`],
+            (variant === 'secondary' || variant === 'outline') && s.quiet,
+            { color },
+          ]}
         >
           {children}
         </Text>

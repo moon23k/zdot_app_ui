@@ -25,6 +25,7 @@ export const semantic = {
     warningForeground: '#0a0a0a',
     warningText: '#b45309',
     warningTint: '#fffbeb',
+    successTint: '#f0fdf4',
     info: '#2563eb',
     infoForeground: '#ffffff',
   },
@@ -54,6 +55,7 @@ export const semantic = {
     warningForeground: '#0a0a0a',
     warningText: '#fbbf24',
     warningTint: '#451a03',
+    successTint: '#052e16',
     info: '#60a5fa',
     infoForeground: '#0a0a0a',
   },
@@ -166,7 +168,7 @@ export const touch = {
 } as const;
 
 export const layout = {
-  screenX: 16,
+  screenX: 20,
   screenTop: 24,
   titleGap: 24,
   sectionGap: 32,

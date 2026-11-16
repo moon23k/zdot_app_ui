@@ -50,11 +50,8 @@ const useStyles = makeStyles((t) => ({
   },
   inset: { paddingHorizontal: t.layout.screenX },
   card: {
-    marginHorizontal: t.layout.screenX,
-    marginBottom: t.space[4],
-    borderWidth: 1,
-    borderColor: t.colors.border,
-    borderRadius: t.radius.lg,
+    marginTop: t.space[2],
+    paddingBottom: t.space[2],
     overflow: 'hidden',
     backgroundColor: t.colors.surface,
   },
@@ -63,7 +60,8 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: t.layout.screenX,
-    paddingVertical: t.space[3],
+    paddingTop: t.space[5],
+    paddingBottom: t.space[1],
   },
   cardLine: { height: 1, backgroundColor: t.colors.muted },
   split: {
@@ -102,7 +100,7 @@ export function BottomBar({
           <View style={s.side}>
             <Button
               size="lg"
-              variant={secondaryAction.outline ? 'outline' : 'ghost'}
+              variant="secondary"
               onPress={secondaryAction.onPress}
               disabled={secondaryAction.disabled}
               loading={secondaryAction.loading}
@@ -191,8 +189,8 @@ export function ListSection({
   const s = useStyles();
   if (boxed) {
     return (
-      <ListSection title={title} action={action}>
-        <ListSection card>{children}</ListSection>
+      <ListSection card title={title} action={action}>
+        {children}
       </ListSection>
     );
   }
@@ -210,7 +208,7 @@ export function ListSection({
         ) : null}
         {rows.map((row, index) => (
           <Fragment key={index}>
-            {index || title ? <View style={s.cardLine} /> : null}
+            {index ? <View style={s.cardLine} /> : null}
             {row}
           </Fragment>
         ))}

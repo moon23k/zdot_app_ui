@@ -1,9 +1,9 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { renderIcon, type IconSlot } from '../../internal/icon';
+import type { IconSlot } from '../../internal/icon';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
-export type PillTone = 'neutral' | 'warning';
+export type PillTone = 'neutral' | 'warning' | 'success' | 'point';
 
 export type PillProps = {
   children: string;
@@ -12,41 +12,43 @@ export type PillProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const HEIGHT = 28;
-const ICON = 14;
+const HEIGHT = 20;
 
 const useStyles = makeStyles((t) => ({
   root: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.space[1],
     height: HEIGHT,
-    paddingHorizontal: t.space[3] - t.space[1] / 2,
-    borderRadius: t.radius.full,
+    paddingHorizontal: t.space[1] + t.space[1] / 2,
+    borderRadius: t.radius.sm - 2,
     backgroundColor: t.colors.muted,
   },
   warning: { backgroundColor: t.colors.warningTint },
+  success: { backgroundColor: t.colors.successTint },
+  point: { backgroundColor: t.colors.primaryTint },
   label: {
-    ...t.typography.eyebrow,
     fontFamily: t.fontFamily,
-    color: t.colors.foreground,
+    fontSize: t.typography.caption.fontSize,
+    lineHeight: t.typography.caption.lineHeight,
+    fontWeight: '500',
+    color: t.colors.mutedForeground,
   },
   warningLabel: { color: t.colors.warningText },
+  successLabel: { color: t.colors.success },
+  pointLabel: { color: t.colors.primary },
 }));
 
-export function Pill({ children, icon, tone = 'neutral', style }: PillProps) {
+export function Pill({ children, tone = 'neutral', style }: PillProps) {
   const t = useTheme();
   const s = useStyles();
-  const warning = tone === 'warning';
-  const color = warning ? t.colors.warningText : t.colors.foreground;
+  const mark = tone === 'neutral' ? null : tone;
   return (
-    <View style={[s.root, warning && s.warning, style]}>
-      {icon ? renderIcon(icon, { color, size: ICON }) : null}
+    <View style={[s.root, mark && s[mark], style]}>
       <Text
         numberOfLines={1}
         maxFontSizeMultiplier={t.maxFontScale}
-        style={[s.label, warning && s.warningLabel]}
+        style={[s.label, mark && s[`${mark}Label`]]}
       >
         {children}
       </Text>

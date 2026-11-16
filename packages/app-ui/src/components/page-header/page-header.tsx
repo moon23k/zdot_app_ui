@@ -31,8 +31,8 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
   },
   title: {
-    fontSize: t.typography.display.fontSize,
-    lineHeight: t.typography.display.lineHeight,
+    fontSize: t.typography.screenTitle.fontSize,
+    lineHeight: t.typography.screenTitle.lineHeight,
     fontWeight: t.typography.screenTitle.fontWeight,
     letterSpacing: t.typography.screenTitle.letterSpacing,
     color: t.colors.title,

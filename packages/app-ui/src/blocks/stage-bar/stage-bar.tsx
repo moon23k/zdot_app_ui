@@ -38,8 +38,6 @@ const useStyles = makeStyles((t) => ({
   },
   on: {
     backgroundColor: t.colors.primaryTint,
-    borderWidth: 1.5,
-    borderColor: t.colors.primary,
   },
   count: {
     fontSize: t.typography.title.fontSize,
@@ -55,7 +53,7 @@ const useStyles = makeStyles((t) => ({
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
-  labelOn: { fontWeight: '500', color: t.colors.selectForeground },
+  labelOn: { fontWeight: '500', color: t.colors.primary },
   split: {
     width: 1,
     alignSelf: 'stretch',

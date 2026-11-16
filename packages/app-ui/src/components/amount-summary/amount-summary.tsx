@@ -12,7 +12,7 @@ export type AmountSummaryProps = {
 };
 
 const useStyles = makeStyles((t) => ({
-  root: { gap: t.space[2] },
+  root: { gap: t.space[3] },
   head: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -33,7 +33,12 @@ const useStyles = makeStyles((t) => ({
     fontWeight: '600',
     color: t.colors.title,
   },
-  lines: { gap: t.space[1] },
+  lines: { gap: t.space[2] },
+  total: {
+    paddingTop: t.space[3],
+    borderTopWidth: 1,
+    borderTopColor: t.colors.muted,
+  },
   line: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -61,16 +66,22 @@ export function AmountSummary({
 }: AmountSummaryProps) {
   const t = useTheme();
   const s = useStyles();
+  const head = (
+    <View
+      style={[s.head, lines.length > 0 && s.total]}
+      accessible
+      accessibilityLabel={`${label} ${value}`}
+    >
+      <Text style={s.label} maxFontSizeMultiplier={t.maxFontScale}>
+        {label}
+      </Text>
+      <Text style={s.value} maxFontSizeMultiplier={t.maxFontScale}>
+        {value}
+      </Text>
+    </View>
+  );
   return (
     <View style={[s.root, style]}>
-      <View style={s.head} accessible accessibilityLabel={`${label} ${value}`}>
-        <Text style={s.label} maxFontSizeMultiplier={t.maxFontScale}>
-          {label}
-        </Text>
-        <Text style={s.value} maxFontSizeMultiplier={t.maxFontScale}>
-          {value}
-        </Text>
-      </View>
       {lines.length ? (
         <View style={s.lines}>
           {lines.map((line) => (
@@ -85,6 +96,7 @@ export function AmountSummary({
           ))}
         </View>
       ) : null}
+      {head}
     </View>
   );
 }

@@ -22,11 +22,9 @@ const useStyles = makeStyles((t) => ({
     borderRadius: SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: t.colors.border,
-    backgroundColor: t.colors.surface,
+    backgroundColor: t.colors.muted,
   },
-  pressed: { backgroundColor: t.colors.muted },
+  pressed: { backgroundColor: t.colors.border },
   dot: {
     position: 'absolute',
     top: t.space[2],
@@ -35,7 +33,7 @@ const useStyles = makeStyles((t) => ({
     height: DOT,
     borderRadius: DOT / 2,
     borderWidth: 2,
-    borderColor: t.colors.surface,
+    borderColor: t.colors.muted,
     backgroundColor: t.colors.primaryEdge,
   },
 }));

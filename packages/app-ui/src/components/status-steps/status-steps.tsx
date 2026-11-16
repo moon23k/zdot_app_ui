@@ -14,11 +14,13 @@ export type StatusStepsProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const MARK = 22;
+const MARK = 20;
 const DOT = 8;
-const NOW = 10;
+const NOW = 8;
 const LINE = 2;
-const CHECK = 13;
+const CHECK = 12;
+const HDOT = 12;
+const HALO = 4;
 
 const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', paddingVertical: t.space[2] },
@@ -28,7 +30,7 @@ const useStyles = makeStyles((t) => ({
     top: MARK / 2 - LINE / 2,
     height: LINE,
     width: '50%',
-    backgroundColor: t.colors.border,
+    backgroundColor: t.colors.muted,
   },
   left: { left: 0 },
   right: { right: 0 },
@@ -47,6 +49,21 @@ const useStyles = makeStyles((t) => ({
     height: DOT,
     borderRadius: DOT / 2,
     backgroundColor: t.colors.input,
+  },
+  hdot: {
+    width: HDOT,
+    height: HDOT,
+    borderRadius: HDOT / 2,
+    backgroundColor: t.colors.input,
+  },
+  hdotOn: { backgroundColor: t.colors.primary },
+  hdotNow: {
+    width: HDOT + HALO * 2,
+    height: HDOT + HALO * 2,
+    borderRadius: (HDOT + HALO * 2) / 2,
+    borderWidth: HALO,
+    borderColor: t.colors.primaryTint,
+    backgroundColor: t.colors.primary,
   },
   dotNow: {
     width: NOW,
@@ -68,11 +85,11 @@ const useStyles = makeStyles((t) => ({
     top: MARK,
     bottom: 0,
     width: LINE,
-    backgroundColor: t.colors.border,
+    backgroundColor: t.colors.muted,
   },
   label: { flex: 1 },
   title: { color: t.colors.title },
-  todo: { color: t.colors.mutedForeground },
+  todo: { color: t.colors.ring },
   due: { color: t.colors.warningText },
   small: {
     fontSize: t.typography.eyebrow.fontSize,
@@ -81,6 +98,19 @@ const useStyles = makeStyles((t) => ({
 }));
 
 type State = 'done' | 'now' | 'todo';
+
+function Dot({ state }: { state: State }) {
+  const s = useStyles();
+  return (
+    <View key={state} style={s.mark}>
+      <View
+        style={
+          state === 'now' ? s.hdotNow : [s.hdot, state === 'done' && s.hdotOn]
+        }
+      />
+    </View>
+  );
+}
 
 function Mark({ state }: { state: State }) {
   const t = useTheme();
@@ -169,7 +199,7 @@ export function StatusSteps({
             {i < last ? (
               <View style={[s.line, s.right, i < index && s.lineDone]} />
             ) : null}
-            <Mark state={state} />
+            <Dot state={state} />
             <Text
               weight={state === 'now' ? 'semibold' : undefined}
               style={[s.small, state === 'now' ? s.title : s.todo]}
