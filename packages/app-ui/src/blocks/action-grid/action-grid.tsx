@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.border },
   row: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   label: { flex: 1 },
 }));
@@ -51,7 +50,7 @@ export function ActionGrid({ items, style }: ActionGridProps) {
             .filter(Boolean)
             .join(' ')}
           style={s.item}
-          pressedStyle={s.pressed}
+          feedback="small"
         >
           {renderIcon(item.icon, {
             color: t.colors.primary,

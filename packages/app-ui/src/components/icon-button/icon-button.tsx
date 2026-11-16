@@ -24,7 +24,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.muted,
   },
-  pressed: { backgroundColor: t.colors.border },
   dot: {
     position: 'absolute',
     top: t.space[2],
@@ -53,7 +52,7 @@ export function IconButton({
       accessibilityLabel={accessibilityLabel}
       touchHeight={SIZE}
       onPress={onPress}
-      pressedStyle={s.pressed}
+      feedback="small"
       style={[s.root, style]}
     >
       {renderIcon(icon, {

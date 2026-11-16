@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   read: { backgroundColor: 'transparent' },
-  pressed: { backgroundColor: t.colors.muted },
   lead: {
     width: LEAD,
     height: LEAD,
@@ -170,7 +169,7 @@ export function FeedRow({
     <PressableBase
       accessibilityRole="button"
       onPress={onPress}
-      pressedStyle={s.pressed}
+      feedback="row"
       style={[s.root, !unread && s.read, style]}
     >
       {content}

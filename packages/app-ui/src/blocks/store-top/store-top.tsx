@@ -89,7 +89,6 @@ const useStyles = makeStyles((t) => ({
   cells: { flexDirection: 'row' },
   cell: { flex: 1, alignItems: 'center', gap: t.space[1] / 2 },
   divider: { borderLeftWidth: 1, borderLeftColor: t.colors.muted },
-  pressed: { opacity: t.opacity.pressed },
   still: { opacity: 1 },
   key: { flexDirection: 'row', alignItems: 'center', gap: t.space[1] },
   keyText: {
@@ -153,7 +152,7 @@ export function StoreTop({
             disabledStyle={s.still}
             accessibilityRole={onSwitch ? 'button' : undefined}
             accessibilityLabel={name}
-            pressedStyle={s.pressed}
+            feedback="row"
             style={s.nameRow}
           >
             <Text
@@ -213,7 +212,7 @@ export function StoreTop({
             disabledStyle={s.still}
             accessibilityRole={cell.onPress ? 'button' : undefined}
             accessibilityLabel={`${cell.label} ${cell.count}`}
-            pressedStyle={s.pressed}
+            feedback="row"
             style={[s.cell, i > 0 && s.divider]}
           >
             <View style={s.key}>

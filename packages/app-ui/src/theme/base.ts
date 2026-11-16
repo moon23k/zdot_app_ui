@@ -149,12 +149,33 @@ export const shadow = {
 } as const;
 
 export const motion = {
-  duration: 200,
+  duration: {
+    short: 100,
+    press: 150,
+    base: 200,
+    move: 250,
+    long: 300,
+    spring: 350,
+    xlong: 400,
+  },
+  easing: {
+    standard: [0.2, 0, 0, 1],
+    decelerate: [0.05, 0.7, 0.1, 1],
+    accelerate: [0.3, 0, 0.8, 0.15],
+    spring: [0.42, 1.67, 0.21, 0.9],
+  },
 } as const;
 
 export const opacity = {
   pressed: 0.8,
-  disabled: 0.5,
+  disabled: 0.38,
+} as const;
+
+export const press = {
+  layer: 0.1,
+  shrink: 2,
+  scale: 0.95,
+  disabled: 0.96,
 } as const;
 
 export const iconSize = {

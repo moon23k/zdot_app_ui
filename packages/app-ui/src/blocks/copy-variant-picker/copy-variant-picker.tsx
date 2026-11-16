@@ -2,7 +2,6 @@ import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Button } from '../../components/button/button';
 import { Text } from '../../components/text/text';
 import { PressableBase } from '../../internal/pressable-base';
-import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
 export type CopyVariant = { id: string; text: string; locked?: boolean };
@@ -72,7 +71,6 @@ export function CopyVariantPicker({
   onReload,
   style,
 }: CopyVariantPickerProps) {
-  const t = useTheme();
   const s = useStyles();
   return (
     <View style={[s.root, style]}>
@@ -101,7 +99,7 @@ export function CopyVariantPicker({
               accessibilityRole="radio"
               accessibilityState={{ selected }}
               accessibilityLabel={v.text}
-              pressedStyle={{ backgroundColor: t.colors.muted }}
+              feedback="row"
               onPress={() => onSelect(v.id)}
               style={[s.item, selected && s.selected]}
             >

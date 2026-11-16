@@ -16,7 +16,6 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.border,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   selected: {
     paddingRight: MARK + t.space[3],
     borderColor: t.colors.primaryTint,
@@ -75,7 +74,7 @@ export function Card({
       onLongPress={onLongPress}
       accessibilityLabel={accessibilityLabel}
       accessibilityState={selected === undefined ? undefined : { selected }}
-      pressedStyle={s.pressed}
+      feedback="row"
       style={frame}
     >
       {children}

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, type StyleProp, type ViewStyle } from 'react-native';
+import { useReducedMotion } from '../../internal/use-reduced-motion';
 import { useTheme } from '../../theme/theme-provider';
 
 export type ProgressCircleProps = {
@@ -17,7 +18,9 @@ export function ProgressCircle({
 }: ProgressCircleProps) {
   const t = useTheme();
   const turn = useRef(new Animated.Value(0)).current;
+  const reduced = useReducedMotion();
   useEffect(() => {
+    if (reduced) return;
     const loop = Animated.loop(
       Animated.timing(turn, {
         toValue: 1,
@@ -28,7 +31,7 @@ export function ProgressCircle({
     );
     loop.start();
     return () => loop.stop();
-  }, [turn]);
+  }, [turn, reduced]);
   const rotate = turn.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],

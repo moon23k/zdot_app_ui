@@ -45,7 +45,6 @@ const useStyles = makeStyles((t) => ({
   },
   photo: { width: '100%' },
   body: { padding: t.space[3], gap: t.space[1] },
-  pressed: { backgroundColor: t.colors.muted },
 }));
 
 export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
@@ -57,7 +56,7 @@ export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
         accessibilityRole="button"
         accessibilityLabel={addLabel}
         onPress={onAdd}
-        pressedStyle={s.pressed}
+        feedback="small"
         style={[s.cell, s.add]}
       >
         <PlusGlyph color={t.colors.primary} size={t.iconSize.md} />
@@ -71,7 +70,7 @@ export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
           accessibilityRole="button"
           accessibilityLabel={item.title}
           onPress={() => onPress(item.key)}
-          pressedStyle={s.pressed}
+          feedback="small"
           style={s.cell}
         >
           <Photo

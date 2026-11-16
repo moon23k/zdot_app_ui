@@ -66,7 +66,11 @@ export function CodeInput({
   };
   return (
     <View style={[s.root, style]}>
-      <PressableBase onPress={() => input.current?.focus()} accessible={false}>
+      <PressableBase
+        feedback="none"
+        onPress={() => input.current?.focus()}
+        accessible={false}
+      >
         <View style={s.row}>
           {Array.from({ length }, (_, i) => (
             <View

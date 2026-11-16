@@ -34,7 +34,6 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.input,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   off: { opacity: t.opacity.disabled },
   value: { minWidth: SIZE, textAlign: 'center' },
 }));
@@ -61,7 +60,7 @@ export function Stepper({
           accessibilityLabel={`${label} 줄이기`}
           disabled={!down}
           onPress={() => onValueChange(value - step)}
-          pressedStyle={s.pressed}
+          feedback="small"
           style={[s.button, !down && s.off]}
         >
           <Text variant="bodyLg">−</Text>
@@ -74,7 +73,7 @@ export function Stepper({
           accessibilityLabel={`${label} 늘리기`}
           disabled={!up}
           onPress={() => onValueChange(value + step)}
-          pressedStyle={s.pressed}
+          feedback="small"
           style={[s.button, !up && s.off]}
         >
           <Text variant="bodyLg">+</Text>

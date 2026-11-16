@@ -152,6 +152,7 @@ export function QuestionAccordion({
         if (!open) {
           return (
             <PressableBase
+              feedback="row"
               key={section.key}
               accessibilityRole="button"
               accessibilityState={{ expanded: false }}

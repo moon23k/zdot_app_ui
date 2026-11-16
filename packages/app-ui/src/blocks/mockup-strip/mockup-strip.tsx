@@ -17,7 +17,6 @@ const useStyles = makeStyles((t) => ({
   row: { gap: t.layout.itemGap, paddingHorizontal: t.layout.screenX },
   cell: { width: THUMB, gap: t.space[1] },
   photo: { width: THUMB },
-  pressed: { opacity: t.opacity.pressed },
 }));
 
 export function MockupStrip({ items, onPress }: MockupStripProps) {
@@ -34,7 +33,7 @@ export function MockupStrip({ items, onPress }: MockupStripProps) {
           accessibilityRole="button"
           accessibilityLabel={item.label}
           onPress={() => onPress(item.key)}
-          pressedStyle={s.pressed}
+          feedback="small"
           style={s.cell}
         >
           <View style={s.photo}>

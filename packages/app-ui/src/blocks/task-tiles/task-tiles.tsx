@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.border },
   count: {
     fontSize: t.typography.title.fontSize,
     lineHeight: t.typography.title.lineHeight,
@@ -53,7 +52,7 @@ export function TaskTiles({ items, style }: TaskTilesProps) {
           disabled={!item.onPress}
           accessibilityLabel={`${item.label} ${item.count}${item.note ? ` ${item.note}` : ''}`}
           style={s.tile}
-          pressedStyle={s.pressed}
+          feedback="row"
         >
           {renderIcon(item.icon, {
             color: t.colors.mutedForeground,

@@ -50,7 +50,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   band: { flexDirection: 'row', gap: t.space[1] },
   month: { flex: 1, alignItems: 'center', gap: t.space[1] },
   cell: { alignSelf: 'stretch', height: 28, borderRadius: t.radius.sm },
@@ -90,7 +89,7 @@ export function Panel({
         onPress={onPress}
         accessibilityLabel={accessibilityLabel}
         style={[s.panel, style]}
-        pressedStyle={s.pressed}
+        feedback="row"
       >
         {children}
       </PressableBase>
@@ -269,7 +268,7 @@ export function ValueTiles({ items }: ValueTilesProps) {
             accessibilityRole="button"
             accessibilityLabel={`${item.label} ${item.value}`}
             onPress={item.onPress}
-            pressedStyle={s.pressed}
+            feedback="row"
             style={s.tile}
           >
             {body}

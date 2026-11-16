@@ -44,7 +44,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.border },
 }));
 
 export function PreviewTemplate({
@@ -67,7 +66,7 @@ export function PreviewTemplate({
             accessibilityRole="button"
             accessibilityLabel={item.label}
             onPress={item.onPress}
-            pressedStyle={s.pressed}
+            feedback="row"
             style={s.action}
           >
             {renderIcon(item.icon, {

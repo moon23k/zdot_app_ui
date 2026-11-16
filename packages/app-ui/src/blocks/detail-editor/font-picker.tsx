@@ -43,6 +43,7 @@ export function FontPicker({ value, onValueChange, sample }: FontPickerProps) {
         const on = font === value;
         return (
           <PressableBase
+            feedback="row"
             key={font}
             accessibilityRole="radio"
             accessibilityState={{ selected: on }}

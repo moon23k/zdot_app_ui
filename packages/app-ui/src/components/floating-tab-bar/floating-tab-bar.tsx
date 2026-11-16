@@ -91,7 +91,7 @@ export function FloatingTabBar<K extends string>({
               item.badge ? `${item.label}, ${item.badge}` : item.label
             }
             touchHeight={t.controlSize.md}
-            pressedStyle={{ opacity: t.opacity.pressed }}
+            feedback="small"
             onPress={() => {
               if (!selected) onValueChange(item.key);
             }}

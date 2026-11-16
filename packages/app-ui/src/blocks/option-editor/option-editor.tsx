@@ -42,7 +42,6 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   separator: { borderTopWidth: 1, borderTopColor: t.colors.border },
-  pressed: { backgroundColor: t.colors.muted },
   body: { flex: 1, paddingVertical: t.space[2] },
   price: { fontVariant: ['tabular-nums'] },
   grip: {
@@ -128,7 +127,7 @@ export function OptionEditor({
             return onEdit ? (
               <PressableBase
                 onPress={() => onEdit(item.id)}
-                pressedStyle={s.pressed}
+                feedback="row"
                 style={rowStyle}
               >
                 {content}

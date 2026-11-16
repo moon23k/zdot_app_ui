@@ -47,7 +47,6 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.mutedForeground,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   card: {
     margin: t.space[4],
     overflow: 'hidden',
@@ -134,7 +133,7 @@ export function ProductListEmpty({
     <View style={[s.grid, style]}>
       <PressableBase
         accessibilityLabel={`등록된 상품이 없어요. ${addLabel}`}
-        pressedStyle={s.pressed}
+        feedback="row"
         onPress={onAdd}
         style={s.tile}
       >

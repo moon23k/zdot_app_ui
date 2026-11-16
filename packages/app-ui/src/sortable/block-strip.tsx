@@ -133,7 +133,7 @@ export function BlockStrip({
                 onPress={() => onValueChange(item.key)}
                 accessibilityLabel={`블록 ${index + 1}`}
                 accessibilityState={{ selected: on }}
-                pressedStyle={{}}
+                feedback="small"
                 style={[s.chip, on && s.on]}
               >
                 {item.thumb}

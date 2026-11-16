@@ -50,7 +50,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[4],
   },
   divided: { borderTopWidth: 1, borderTopColor: t.colors.border },
-  pressed: { backgroundColor: t.colors.muted },
   radio: {
     width: 20,
     height: 20,
@@ -112,7 +111,7 @@ export function SupplyItemCard({
               accessibilityRole="radio"
               accessibilityState={{ selected: on }}
               accessibilityLabel={`${qty} ${formatPrice(q.price)}`}
-              pressedStyle={s.pressed}
+              feedback="row"
               onPress={() => onSelectQuantity(q.quantity)}
               style={[s.row, i > 0 && s.divided]}
             >

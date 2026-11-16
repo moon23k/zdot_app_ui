@@ -105,6 +105,7 @@ export function InviteCard({
     );
     return onPress ? (
       <PressableBase
+        feedback="row"
         onPress={onPress}
         accessibilityRole="button"
         style={[s.compact, style]}

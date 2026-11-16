@@ -97,6 +97,7 @@ export function OAuthButtons({
         const label = labels[p] ?? brand.label;
         return (
           <PressableBase
+            feedback="surface"
             key={p}
             accessibilityLabel={label}
             disabled={loading !== null}

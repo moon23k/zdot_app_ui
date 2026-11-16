@@ -109,6 +109,7 @@ export function Button({
 
   return (
     <PressableBase
+      feedback="surface"
       {...rest}
       disabled={disabled || loading}
       touchHeight={t.controlSize[size]}

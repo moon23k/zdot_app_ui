@@ -60,7 +60,7 @@ export function Checkbox({
       {...rest}
       accessibilityState={{ ...accessibilityState, checked: value }}
       touchHeight={label ? t.typography.body.lineHeight : BOX}
-      pressedStyle={{}}
+      feedback="row"
       onPress={() => onValueChange(!value)}
       style={[s.row, style]}
     >

@@ -109,7 +109,7 @@ export function ColorSwatchPicker({
             accessibilityLabel={c.label}
             accessibilityState={{ selected }}
             touchHeight={variant === 'grid' ? GRID : DOT}
-            pressedStyle={{}}
+            feedback="small"
             onPress={() => onValueChange(c.value)}
             style={
               variant === 'card'

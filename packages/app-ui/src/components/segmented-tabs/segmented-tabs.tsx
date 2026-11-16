@@ -96,7 +96,7 @@ export function SegmentedTabs<T extends string>({
                   ? item.label
                   : `${item.label} ${item.count}`
               }
-              pressedStyle={{}}
+              feedback="row"
               onPress={() => {
                 if (!selected) onValueChange(item.value);
               }}

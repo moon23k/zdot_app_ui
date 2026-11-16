@@ -172,12 +172,12 @@ function ToastHostInner({ store }: { store: ToastStore }) {
     if (reduced) return;
     const animation = Animated.timing(opacity, {
       toValue: 1,
-      duration: t.motion.duration,
+      duration: t.motion.duration.base,
       useNativeDriver,
     });
     animation.start();
     return () => animation.stop();
-  }, [current, opacity, reduced, t.motion.duration]);
+  }, [current, opacity, reduced, t.motion.duration.base]);
 
   if (!current || !isTop) return null;
 

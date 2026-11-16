@@ -161,6 +161,7 @@ export function ListTemplate<T>({
       />
       {floatingAction ? (
         <PressableBase
+          feedback="surface"
           onPress={floatingAction.onPress}
           accessibilityLabel={floatingAction.label}
           style={[s.fab, { bottom: t.space[4] + bottomInset }]}

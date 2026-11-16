@@ -79,6 +79,7 @@ export function StageBar<T extends string>({
         return (
           <Fragment key={item.value}>
             <PressableBase
+              feedback="row"
               accessibilityRole="tab"
               accessibilityState={{ selected: on }}
               accessibilityLabel={`${item.label} ${item.count ?? 0}`}

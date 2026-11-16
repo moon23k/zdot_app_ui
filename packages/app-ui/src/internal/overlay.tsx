@@ -15,14 +15,14 @@ export function useOverlayTransition(open: boolean) {
     if (open) setMounted(true);
     const animation = Animated.timing(progress, {
       toValue: open ? 1 : 0,
-      duration: reduced ? 0 : t.motion.duration,
+      duration: reduced ? 0 : t.motion.duration.base,
       useNativeDriver,
     });
     animation.start(({ finished }) => {
       if (finished && !open) setMounted(false);
     });
     return () => animation.stop();
-  }, [open, progress, reduced, t.motion.duration]);
+  }, [open, progress, reduced, t.motion.duration.base]);
 
   return { mounted, progress };
 }

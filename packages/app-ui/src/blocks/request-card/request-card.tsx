@@ -27,7 +27,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   head: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   name: { flexShrink: 1 },
   space: { flex: 1 },
@@ -57,7 +56,7 @@ export function RequestCard({
       accessibilityRole="button"
       accessibilityLabel={[name, tag, due, summary].filter(Boolean).join(' ')}
       onPress={onPress}
-      pressedStyle={s.pressed}
+      feedback="row"
       style={[s.card, style]}
     >
       <View style={s.head}>

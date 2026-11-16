@@ -73,6 +73,7 @@ export function ConsentList({
   return (
     <View style={[s.root, style]}>
       <PressableBase
+        feedback="row"
         accessibilityRole="checkbox"
         accessibilityState={{ checked: all }}
         onPress={() => onChangeAll(!all)}
@@ -95,6 +96,7 @@ export function ConsentList({
         const label = `${item.required ? '[필수]' : '[선택]'} ${item.label}`;
         return (
           <PressableBase
+            feedback="row"
             key={item.key}
             accessibilityRole="checkbox"
             accessibilityLabel={label}

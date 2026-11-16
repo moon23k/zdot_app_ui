@@ -29,7 +29,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
     paddingVertical: t.space[3],
   },
-  pressed: { backgroundColor: t.colors.muted },
   mark: {
     width: t.controlSize.sm,
     height: t.controlSize.sm,
@@ -73,7 +72,7 @@ export function InboxRow({
       disabled={!onPress}
       accessibilityLabel={[title, body, meta].filter(Boolean).join(' ')}
       style={[s.root, style]}
-      pressedStyle={s.pressed}
+      feedback="row"
     >
       <View style={s.mark}>
         {icon ? (

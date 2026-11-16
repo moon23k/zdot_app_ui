@@ -77,16 +77,10 @@
     "react-native-gesture-handler": {
       "optional": true
     },
-    "react-native-reanimated": {
-      "optional": true
-    },
     "react-native-sortables": {
       "optional": true
     },
     "react-native-svg": {
-      "optional": true
-    },
-    "react-native-worklets": {
       "optional": true
     }
   },

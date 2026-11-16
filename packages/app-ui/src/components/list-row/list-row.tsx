@@ -54,7 +54,6 @@ const useStyles = makeStyles((t) => ({
   twoLine: { minHeight: t.listRow.twoLine },
   threeLine: { minHeight: t.listRow.threeLine },
   flush: { paddingHorizontal: 0 },
-  pressed: { backgroundColor: t.colors.muted },
   highlighted: { backgroundColor: t.colors.primaryTint },
   top: { alignItems: 'flex-start' },
   image: { width: IMAGE },
@@ -259,7 +258,7 @@ export function ListRow({
       {...rest}
       {...selectionProps}
       onPress={onPress}
-      pressedStyle={s.pressed}
+      feedback="row"
       style={[
         s.row,
         flush && s.flush,

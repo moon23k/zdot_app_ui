@@ -31,7 +31,7 @@ export function Skeleton({
       opacity.setValue(0.7);
       return;
     }
-    const half = t.motion.duration * 4;
+    const half = t.motion.duration.base * 4;
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(opacity, {
@@ -48,7 +48,7 @@ export function Skeleton({
     );
     loop.start();
     return () => loop.stop();
-  }, [opacity, reduced, t.motion.duration]);
+  }, [opacity, reduced, t.motion.duration.base]);
 
   return (
     <Animated.View

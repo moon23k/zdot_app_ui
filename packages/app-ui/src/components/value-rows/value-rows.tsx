@@ -55,6 +55,7 @@ export function ValueRows({ rows, style }: ValueRowsProps) {
     <View style={[s.root, style]}>
       {rows.map((row) => (
         <PressableBase
+          feedback="row"
           key={row.label}
           onPress={row.onPress}
           disabled={!row.onPress}

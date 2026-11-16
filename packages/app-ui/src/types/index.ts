@@ -65,8 +65,18 @@ export type ThemeTokens = {
   fontFamily: string | undefined;
   maxFontScale: number;
   shadow: { sm: string; md: string; panel: string };
-  motion: { duration: number };
+  motion: {
+    duration: Record<
+      'short' | 'press' | 'base' | 'move' | 'long' | 'spring' | 'xlong',
+      number
+    >;
+    easing: Record<
+      'standard' | 'decelerate' | 'accelerate' | 'spring',
+      readonly [number, number, number, number]
+    >;
+  };
   opacity: { pressed: number; disabled: number };
+  press: { layer: number; shrink: number; scale: number; disabled: number };
   iconSize: { sm: number; md: number };
   minTouchSize: number;
   layout: {

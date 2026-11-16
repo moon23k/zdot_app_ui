@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
     backgroundColor: 'transparent',
   },
-  pressed: { backgroundColor: t.colors.muted },
   thumb: { width: t.listRow.oneLine },
   empty: {
     width: t.listRow.oneLine,
@@ -90,7 +89,7 @@ export function ProductRow({
     <PressableBase
       onPress={onPress}
       accessibilityLabel={label}
-      pressedStyle={s.pressed}
+      feedback="row"
       style={[s.row, style]}
     >
       {content}

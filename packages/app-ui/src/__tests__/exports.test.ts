@@ -1,8 +1,6 @@
 const OPTIONAL_PEERS = [
   'react-native-svg',
   'react-native-gesture-handler',
-  'react-native-reanimated',
-  'react-native-worklets',
   'react-native-sortables',
 ];
 

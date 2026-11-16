@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     marginTop: t.space[2],
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   still: { opacity: 1 },
   mid: {
     flexDirection: 'row',
@@ -106,7 +105,7 @@ export function OrderBlock({
         accessibilityLabel={[overline, title, meta, amount]
           .filter(Boolean)
           .join(', ')}
-        pressedStyle={s.pressed}
+        feedback="row"
         style={s.mid}
       >
         <Photo

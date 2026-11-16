@@ -108,7 +108,7 @@ export function LogoCandidateGrid({
             accessibilityRole="radio"
             accessibilityLabel={`로고 후보 ${i + 1}`}
             accessibilityState={{ selected }}
-            pressedStyle={{}}
+            feedback="small"
             onPress={() => onSelect(c.id)}
             style={s.cell}
           >

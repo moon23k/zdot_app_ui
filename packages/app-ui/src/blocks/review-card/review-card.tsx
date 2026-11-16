@@ -34,7 +34,6 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[2],
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.muted },
   still: { opacity: 1 },
   head: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   stars: { flexDirection: 'row', gap: STAR_GAP },
@@ -98,7 +97,7 @@ export function ReviewCard({
       onPress={onPress}
       disabled={!onPress}
       disabledStyle={s.still}
-      pressedStyle={s.pressed}
+      feedback="row"
       accessibilityLabel={`${rating}점, ${author}, ${body}`}
       style={[s.root, style]}
     >

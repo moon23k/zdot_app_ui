@@ -221,6 +221,7 @@ export function ResultTemplate({
               {previews.map((preview, i) => (
                 <View key={preview.key} style={[s.page, { width: page }]}>
                   <PressableBase
+                    feedback="row"
                     onPress={() => {
                       onIndexChange(i);
                       setOpen(true);

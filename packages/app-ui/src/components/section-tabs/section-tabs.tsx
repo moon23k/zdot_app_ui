@@ -66,7 +66,7 @@ export function SectionTabs<T extends string>({
         accessibilityRole="tab"
         accessibilityState={{ selected }}
         accessibilityLabel={item.dot ? `${item.label}, 확인 필요` : item.label}
-        pressedStyle={{}}
+        feedback="row"
         onPress={() => onValueChange(item.value)}
         style={[s.tab, scrollable && s.loose, selected && s.selected]}
       >

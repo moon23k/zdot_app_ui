@@ -32,7 +32,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
     backgroundColor: t.colors.surface,
   },
-  pressed: { backgroundColor: t.colors.border },
   group: {
     marginTop: t.space[4],
     marginHorizontal: t.layout.screenX,
@@ -60,7 +59,7 @@ export function QuickActions({
           onPress={item.onPress}
           accessibilityLabel={item.label}
           style={[s.item, grouped && s.groupItem]}
-          pressedStyle={s.pressed}
+          feedback="small"
         >
           {renderIcon(item.icon, {
             color: grouped ? t.colors.primary : t.colors.foreground,

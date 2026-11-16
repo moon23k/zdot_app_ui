@@ -62,7 +62,6 @@ const useStyles = makeStyles((t) => ({
     borderWidth: RING,
     borderColor: t.colors.primary,
   },
-  pressed: { opacity: t.opacity.pressed },
 }));
 
 export function ColorChipGrid({
@@ -90,7 +89,7 @@ export function ColorChipGrid({
                 accessibilityState={{ selected }}
                 accessibilityLabel={`${item.name}, ${item.code}`}
                 onPress={() => onValueChange(item.key)}
-                pressedStyle={s.pressed}
+                feedback="small"
                 style={s.cell}
               >
                 <View style={s.chip}>

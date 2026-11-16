@@ -33,7 +33,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[4],
     paddingVertical: t.space[2],
   },
-  pressed: { backgroundColor: t.colors.muted },
   body: { flex: 1, gap: t.space[1] },
 }));
 
@@ -69,7 +68,7 @@ export function StoreSheet({
                 if (!on) onValueChange(store.value);
               }}
               style={s.row}
-              pressedStyle={s.pressed}
+              feedback="row"
             >
               <StoreMark name={store.name} size="lg" />
               <View style={s.body}>
