@@ -1,6 +1,14 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
 import { renderIcon, type IconSlot } from '../../internal/icon';
+import { timing, useSwitch } from '../../internal/motion';
 import {
   PressableBase,
   type PressableBaseProps,
@@ -14,25 +22,42 @@ export type { ButtonSize, ButtonVariant };
 
 export type ButtonProps = Omit<
   PressableBaseProps,
-  'children' | 'touchHeight'
+  'children' | 'touchHeight' | 'live' | 'nudge' | 'onDisabledPress'
 > & {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
+  done?: boolean;
   leftIcon?: IconSlot;
   rightIcon?: IconSlot;
   point?: boolean;
   children: ReactNode;
 };
 
+const NUDGE = [4, -4, 2, 0] as const;
+
 const useStyles = makeStyles((t) => ({
   base: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: t.space[2],
     borderWidth: 1,
     borderColor: 'transparent',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: t.space[2],
+  },
+  center: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sm: {
     height: t.controlSize.sm,
@@ -50,13 +75,13 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
   },
   primary: { backgroundColor: t.colors.primary },
-  primaryOff: { backgroundColor: t.colors.muted },
   tint: { backgroundColor: t.colors.primaryTint },
   secondary: { backgroundColor: t.colors.muted },
   outline: { backgroundColor: t.colors.muted },
   bare: { paddingHorizontal: 0 },
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: t.colors.danger },
+  success: { backgroundColor: t.colors.success },
   label: { fontFamily: t.fontFamily, fontWeight: '600' },
   quiet: { fontWeight: '500' },
   smLabel: {
@@ -77,6 +102,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
+  done = false,
   disabled,
   leftIcon,
   rightIcon,
@@ -88,14 +114,11 @@ export function Button({
 }: ButtonProps) {
   const t = useTheme();
   const s = useStyles();
-  const off = variant === 'primary' && !!disabled && !loading;
+  const busy = loading || done;
+  const off = !!disabled && !busy;
   const tint = variant === 'primary' && size === 'sm';
   const color = {
-    primary: off
-      ? t.colors.mutedForeground
-      : tint
-        ? t.colors.primary
-        : t.colors.primaryForeground,
+    primary: tint ? t.colors.primary : t.colors.primaryForeground,
     secondary: t.colors.title,
     outline: t.colors.title,
     ghost: t.colors.title,
@@ -106,48 +129,95 @@ export function Button({
     color: ink,
     size: size === 'sm' ? t.iconSize.sm : t.iconSize.md,
   };
+  const radius = s[size].borderRadius;
+
+  const [spin, setSpin] = useState(false);
+  useEffect(() => {
+    if (!loading) {
+      setSpin(false);
+      return;
+    }
+    const id = setTimeout(() => setSpin(true), t.motion.duration.base);
+    return () => clearTimeout(id);
+  }, [loading, t.motion.duration.base]);
+
+  const live = useSwitch(!off, 'long', 'decelerate');
+  const nudge = useSharedValue(0);
+  const hide = useSwitch(spin || done, 'base');
+  const finish = useSwitch(done, 'press');
+
+  const shake = () => {
+    nudge.value = withSequence(
+      ...NUDGE.map((x) => withTiming(x, timing(t, 'short')))
+    );
+  };
+
+  const content = useAnimatedStyle(() => ({
+    opacity: 1 - hide.value,
+    transform: [{ translateY: -t.space[1] * hide.value }],
+  }));
+  const fill = useAnimatedStyle(() => ({ opacity: finish.value }));
 
   return (
     <PressableBase
       feedback="surface"
       {...rest}
-      disabled={disabled || loading}
+      disabled={off || busy}
+      onDisabledPress={off ? shake : undefined}
+      live={live}
+      nudge={nudge}
       touchHeight={t.controlSize[size]}
       accessibilityState={{ ...accessibilityState, busy: loading }}
-      disabledStyle={variant === 'primary' ? {} : undefined}
+      disabledStyle={{}}
       style={[
         s.base,
         s[size],
         s[variant],
         tint && s.tint,
-        off && s.primaryOff,
         point && s.bare,
         style,
       ]}
     >
-      {loading ? (
-        <ActivityIndicator size="small" color={color} />
-      ) : leftIcon ? (
-        <View>{renderIcon(leftIcon, icon)}</View>
+      <Animated.View
+        pointerEvents="none"
+        style={[s.center, s.success, { borderRadius: radius }, fill]}
+      />
+      <Animated.View style={[s.content, content]}>
+        {leftIcon ? <View>{renderIcon(leftIcon, icon)}</View> : null}
+        {typeof children === 'string' ? (
+          <Text
+            numberOfLines={1}
+            maxFontSizeMultiplier={t.maxFontScale}
+            style={[
+              s.label,
+              s[`${size}Label`],
+              (variant === 'secondary' || variant === 'outline' || point) &&
+                s.quiet,
+              { color: ink },
+            ]}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+        {rightIcon ? <View>{renderIcon(rightIcon, icon)}</View> : null}
+      </Animated.View>
+      {spin && !done ? (
+        <View pointerEvents="none" style={s.center}>
+          <ActivityIndicator size="small" color={ink} />
+        </View>
       ) : null}
-      {typeof children === 'string' ? (
-        <Text
-          numberOfLines={1}
-          maxFontSizeMultiplier={t.maxFontScale}
-          style={[
-            s.label,
-            s[`${size}Label`],
-            (variant === 'secondary' || variant === 'outline' || point) &&
-              s.quiet,
-            { color: ink },
-          ]}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-      {rightIcon ? <View>{renderIcon(rightIcon, icon)}</View> : null}
+      {done ? (
+        <View pointerEvents="none" style={s.center}>
+          <DrawnCheck
+            on
+            size={icon.size}
+            color={t.colors.successForeground}
+            draw="long"
+          />
+        </View>
+      ) : null}
     </PressableBase>
   );
 }

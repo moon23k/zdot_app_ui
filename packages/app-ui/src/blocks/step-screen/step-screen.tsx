@@ -76,8 +76,8 @@ const useStyles = makeStyles((t) => ({
   pill: {
     borderRadius: t.controlSize.lg / 2,
     paddingHorizontal: t.space[10],
-    boxShadow: t.shadow.md,
   },
+  raised: { boxShadow: t.shadow.md },
 }));
 
 export function StepScreen({
@@ -159,7 +159,11 @@ export function StepScreen({
               onPress={primaryAction.onPress}
               disabled={primaryAction.disabled}
               loading={primaryAction.loading}
-              style={floatingAction ? s.pill : undefined}
+              style={
+                floatingAction
+                  ? [s.pill, !primaryAction.disabled && s.raised]
+                  : undefined
+              }
             >
               {primaryAction.label}
             </Button>

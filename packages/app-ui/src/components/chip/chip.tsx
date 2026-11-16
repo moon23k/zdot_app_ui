@@ -1,5 +1,11 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+import { CheckGlyph } from '../../internal/glyphs';
 import { renderIcon, type IconSlot } from '../../internal/icon';
+import { useSwitch } from '../../internal/motion';
 import {
   PressableBase,
   type PressableBaseProps,
@@ -13,6 +19,7 @@ export type ChipVariant = 'solid' | 'outline';
 
 export type ChipProps = Omit<PressableBaseProps, 'children' | 'touchHeight'> & {
   selected?: boolean;
+  check?: boolean;
   size?: ChipSize;
   variant?: ChipVariant;
   leftIcon?: IconSlot;
@@ -32,16 +39,13 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[1],
     paddingHorizontal: t.space[3],
     borderRadius: t.radius.full,
-    backgroundColor: t.colors.muted,
   },
   lg: { paddingHorizontal: t.space[4] },
-  selected: {
-    backgroundColor: t.colors.primaryTint,
-  },
-  outline: { backgroundColor: t.colors.muted },
-  outlineSelected: {
-    backgroundColor: t.colors.primaryTint,
-    borderColor: t.colors.primaryTint,
+  outlineSelected: { borderColor: t.colors.primaryTint },
+  mark: {
+    flexDirection: 'row',
+    overflow: 'hidden',
+    marginRight: -t.space[1],
   },
   label: {
     fontFamily: t.fontFamily,
@@ -54,6 +58,7 @@ const useStyles = makeStyles((t) => ({
 
 export function Chip({
   selected = false,
+  check = false,
   size = 'sm',
   variant = 'solid',
   leftIcon,
@@ -68,6 +73,25 @@ export function Chip({
   const s = useStyles();
   const outline = variant === 'outline';
   const color = selected ? t.colors.primary : t.colors.foreground;
+  const off = t.colors.muted;
+  const on = t.colors.primaryTint;
+  const ink = t.colors.foreground;
+  const point = t.colors.primary;
+  const reach = t.iconSize.sm + t.space[1];
+
+  const pick = useSwitch(selected, 'base');
+  const mark = useSwitch(selected && check, 'base');
+  const face = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(pick.value, [0, 1], [off, on]),
+  }));
+  const tone = useAnimatedStyle(() => ({
+    color: interpolateColor(pick.value, [0, 1], [ink, point]),
+  }));
+  const open = useAnimatedStyle(() => ({
+    width: reach * mark.value,
+    opacity: mark.value,
+  }));
+
   return (
     <PressableBase
       {...rest}
@@ -81,30 +105,34 @@ export function Chip({
         s.base,
         { height: HEIGHT[size], minWidth: MIN_WIDTH[size] },
         size === 'lg' && s.lg,
-        outline
-          ? [s.outline, selected && s.outlineSelected]
-          : selected && s.selected,
+        outline && selected && s.outlineSelected,
         style,
       ]}
+      animatedStyle={face}
     >
+      {check ? (
+        <Animated.View style={[s.mark, open]}>
+          <CheckGlyph color={point} size={t.iconSize.sm} />
+        </Animated.View>
+      ) : null}
       {leftIcon ? (
         <View>{renderIcon(leftIcon, { color, size: t.iconSize.sm })}</View>
       ) : null}
-      <Text
+      <Animated.Text
         numberOfLines={1}
         maxFontSizeMultiplier={t.maxFontScale}
-        style={[s.label, { color }]}
+        style={[s.label, tone]}
       >
         {children}
-      </Text>
+      </Animated.Text>
       {count === undefined ? null : (
-        <Text
+        <Animated.Text
           numberOfLines={1}
           maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.label, s.count, { color }]}
+          style={[s.label, s.count, tone]}
         >
           {count}
-        </Text>
+        </Animated.Text>
       )}
     </PressableBase>
   );

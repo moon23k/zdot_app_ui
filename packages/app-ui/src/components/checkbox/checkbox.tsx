@@ -1,5 +1,7 @@
-import { Text, View } from 'react-native';
-import { CheckGlyph } from '../../internal/glyphs';
+import { Text } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
+import { FILL_FROM, usePop } from '../../internal/motion';
 import {
   PressableBase,
   type PressableBaseProps,
@@ -53,6 +55,7 @@ export function Checkbox({
 }: CheckboxProps) {
   const t = useTheme();
   const s = useStyles();
+  const pop = usePop(value, FILL_FROM);
   return (
     <PressableBase
       accessibilityRole="checkbox"
@@ -64,11 +67,9 @@ export function Checkbox({
       onPress={() => onValueChange(!value)}
       style={[s.row, style]}
     >
-      <View style={[s.box, value && s.checked]}>
-        {value ? (
-          <CheckGlyph color={t.colors.primaryForeground} size={14} />
-        ) : null}
-      </View>
+      <Animated.View style={[s.box, value && s.checked, pop]}>
+        <DrawnCheck on={value} color={t.colors.primaryForeground} size={14} />
+      </Animated.View>
       {label ? (
         <Text maxFontSizeMultiplier={t.maxFontScale} style={s.label}>
           {label}

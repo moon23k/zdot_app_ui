@@ -15,6 +15,7 @@ export type DialogProps = {
   cancelLabel?: string;
   danger?: boolean;
   loading?: boolean;
+  done?: boolean;
   dismissible?: boolean;
 };
 
@@ -62,14 +63,16 @@ export function Dialog({
   cancelLabel = '취소',
   danger = false,
   loading = false,
+  done = false,
   dismissible = true,
 }: DialogProps) {
   const t = useTheme();
   const s = useStyles();
   const { mounted, progress } = useOverlayTransition(open);
+  const busy = loading || done;
 
   const close = () => {
-    if (dismissible && !loading) onOpenChange(false);
+    if (dismissible && !busy) onOpenChange(false);
   };
 
   return (
@@ -122,7 +125,7 @@ export function Dialog({
             <Button
               variant="ghost"
               style={s.action}
-              disabled={loading}
+              disabled={busy}
               onPress={() => onOpenChange(false)}
             >
               {cancelLabel}
@@ -131,6 +134,7 @@ export function Dialog({
               variant={danger ? 'danger' : 'primary'}
               style={s.action}
               loading={loading}
+              done={done}
               onPress={onConfirm}
             >
               {confirmLabel}

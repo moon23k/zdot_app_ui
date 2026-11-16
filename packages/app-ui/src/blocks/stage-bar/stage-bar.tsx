@@ -1,8 +1,19 @@
 import { Fragment } from 'react';
-import { View, type StyleProp, type ViewStyle } from 'react-native';
-import { Text } from '../../components/text/text';
+import {
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { ChevronGlyph } from '../../internal/glyphs';
+import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
+import { SteadyText } from '../../internal/steady-text';
+import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -36,24 +47,28 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: t.space[2],
     borderRadius: t.radius.md,
   },
-  on: {
+  panel: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    borderRadius: t.radius.md,
     backgroundColor: t.colors.primaryTint,
   },
   count: {
+    fontFamily: t.fontFamily,
     fontSize: t.typography.title.fontSize,
     lineHeight: t.typography.title.lineHeight,
     fontWeight: '600',
-    color: t.colors.title,
     fontVariant: ['tabular-nums'],
   },
-  zero: { fontWeight: '400', color: t.colors.input },
-  countOn: { color: t.colors.primary },
+  zero: { fontWeight: '400' },
   label: {
+    fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
-  labelOn: { fontWeight: '500', color: t.colors.primary },
+  strong: { fontWeight: '500' },
   split: {
     width: 1,
     alignSelf: 'stretch',
@@ -61,6 +76,59 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.border,
   },
 }));
+
+function Stage({
+  label,
+  count,
+  on,
+  onPress,
+  onLayout,
+}: {
+  label: string;
+  count: number;
+  on: boolean;
+  onPress: () => void;
+  onLayout: (event: LayoutChangeEvent) => void;
+}) {
+  const t = useTheme();
+  const s = useStyles();
+  const pick = useSwitch(on, 'base');
+  const rest = count > 0 ? t.colors.title : t.colors.input;
+  const idle = t.colors.mutedForeground;
+  const point = t.colors.primary;
+  const number = useAnimatedStyle(() => ({
+    color: interpolateColor(pick.value, [0, 1], [rest, point]),
+  }));
+  const word = useAnimatedStyle(() => ({
+    color: interpolateColor(pick.value, [0, 1], [idle, point]),
+  }));
+  return (
+    <PressableBase
+      feedback="row"
+      accessibilityRole="tab"
+      accessibilityState={{ selected: on }}
+      accessibilityLabel={`${label} ${count}`}
+      onPress={onPress}
+      onLayout={onLayout}
+      style={s.stage}
+    >
+      <Animated.Text
+        maxFontSizeMultiplier={t.maxFontScale}
+        style={[s.count, count > 0 ? null : s.zero, number]}
+      >
+        {count}
+      </Animated.Text>
+      <SteadyText
+        selected={on}
+        style={s.label}
+        strongStyle={s.strong}
+        animatedStyle={word}
+      >
+        {label}
+      </SteadyText>
+    </PressableBase>
+  );
+}
 
 export function StageBar<T extends string>({
   items,
@@ -70,29 +138,22 @@ export function StageBar<T extends string>({
 }: StageBarProps<T>) {
   const t = useTheme();
   const s = useStyles();
+  const slide = useSlide(value);
   return (
     <View style={[s.root, style]} accessibilityRole="tablist">
+      <Animated.View pointerEvents="none" style={[s.panel, slide.box]} />
       {items.map((item, i) => {
         const on = item.value === value;
         const next = items[i + 1];
-        const live = (item.count ?? 0) > 0;
         return (
           <Fragment key={item.value}>
-            <PressableBase
-              feedback="row"
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`${item.label} ${item.count ?? 0}`}
+            <Stage
+              label={item.label}
+              count={item.count ?? 0}
+              on={on}
               onPress={() => onValueChange(on ? null : item.value)}
-              style={[s.stage, on && s.on]}
-            >
-              <Text style={[s.count, !live && s.zero, on && s.countOn]}>
-                {item.count ?? 0}
-              </Text>
-              <Text numberOfLines={1} style={[s.label, on && s.labelOn]}>
-                {item.label}
-              </Text>
-            </PressableBase>
+              onLayout={slide.measure(item.value)}
+            />
             {next ? (
               next.flow === false ? (
                 <View style={s.split} />

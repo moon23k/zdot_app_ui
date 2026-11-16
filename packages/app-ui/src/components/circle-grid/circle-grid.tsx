@@ -7,7 +7,13 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { CheckGlyph } from '../../internal/glyphs';
+import { timing, useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -41,6 +47,7 @@ export type CircleGridProps<T extends string> = (Single<T> | Multiple<T>) & {
 };
 
 const RING = 3;
+const RING_FROM = 1.12;
 const BADGE = 26;
 const GLYPH = 40;
 
@@ -63,7 +70,17 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
     borderColor: 'transparent',
   },
-  ringOn: { borderColor: t.colors.primary },
+  hoop: {
+    position: 'absolute',
+    top: -RING,
+    right: -RING,
+    bottom: -RING,
+    left: -RING,
+    borderWidth: RING,
+    borderRadius: t.radius.full,
+    borderColor: t.colors.primary,
+  },
+  fill: { flex: 1 },
   circle: {
     flex: 1,
     overflow: 'hidden',
@@ -118,9 +135,73 @@ function Circle({
   );
 }
 
+function Cell<T extends string>({
+  item,
+  on,
+  multiple,
+  width,
+  onPress,
+}: {
+  item: CircleGridItem<T>;
+  on: boolean;
+  multiple: boolean;
+  width: `${number}%`;
+  onPress: () => void;
+}) {
+  const t = useTheme();
+  const s = useStyles();
+  const pressed = useSharedValue(0);
+  const ring = useSwitch(on, 'base', 'decelerate');
+  const badge = useSwitch(on, 'spring', 'spring');
+  const shrinkTo = t.press.scale;
+  const face = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 - pressed.value * (1 - shrinkTo) }],
+  }));
+  const hoop = useAnimatedStyle(() => ({
+    opacity: ring.value,
+    transform: [{ scale: RING_FROM - (RING_FROM - 1) * ring.value }],
+  }));
+  const mark = useAnimatedStyle(() => ({
+    opacity: Math.min(1, badge.value * 2),
+    transform: [{ scale: badge.value }],
+  }));
+  const hold = (into: boolean) => () => {
+    pressed.value = withTiming(into ? 1 : 0, timing(t, 'press'));
+  };
+  return (
+    <PressableBase
+      feedback="none"
+      accessibilityRole={multiple ? 'checkbox' : 'radio'}
+      accessibilityState={multiple ? { checked: on } : { selected: on }}
+      accessibilityLabel={item.label}
+      onPress={onPress}
+      onPressIn={hold(true)}
+      onPressOut={hold(false)}
+      style={[s.cell, { width }]}
+    >
+      <View style={s.ring}>
+        <Animated.View pointerEvents="none" style={[s.hoop, hoop]} />
+        <Animated.View style={[s.fill, face]}>
+          <Circle uri={item.uri} source={item.source} glyph={item.glyph} />
+        </Animated.View>
+        <Animated.View pointerEvents="none" style={[s.badge, mark]}>
+          <CheckGlyph color={t.colors.primaryForeground} size={14} />
+        </Animated.View>
+      </View>
+      <Text
+        variant="label"
+        weight={on ? 'bold' : 'regular'}
+        style={s.label}
+        numberOfLines={2}
+      >
+        {item.label}
+      </Text>
+    </PressableBase>
+  );
+}
+
 export function CircleGrid<T extends string>(props: CircleGridProps<T>) {
   const { items, columns = 3, style } = props;
-  const t = useTheme();
   const s = useStyles();
   const width = `${100 / columns}%` as const;
   const isOn = (v: T) =>
@@ -141,38 +222,16 @@ export function CircleGrid<T extends string>(props: CircleGridProps<T>) {
       accessibilityRole={props.multiple ? undefined : 'radiogroup'}
       style={[s.root, style]}
     >
-      {items.map((item) => {
-        const on = isOn(item.value);
-        return (
-          <PressableBase
-            key={item.value}
-            accessibilityRole={props.multiple ? 'checkbox' : 'radio'}
-            accessibilityState={
-              props.multiple ? { checked: on } : { selected: on }
-            }
-            accessibilityLabel={item.label}
-            onPress={() => press(item.value)}
-            style={[s.cell, { width }]}
-          >
-            <View style={[s.ring, on && s.ringOn]}>
-              <Circle uri={item.uri} source={item.source} glyph={item.glyph} />
-              {on ? (
-                <View style={s.badge}>
-                  <CheckGlyph color={t.colors.primaryForeground} size={14} />
-                </View>
-              ) : null}
-            </View>
-            <Text
-              variant="label"
-              weight={on ? 'bold' : 'regular'}
-              style={s.label}
-              numberOfLines={2}
-            >
-              {item.label}
-            </Text>
-          </PressableBase>
-        );
-      })}
+      {items.map((item) => (
+        <Cell
+          key={item.value}
+          item={item}
+          on={isOn(item.value)}
+          multiple={!!props.multiple}
+          width={width}
+          onPress={() => press(item.value)}
+        />
+      ))}
     </View>
   );
 }

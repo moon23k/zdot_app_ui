@@ -12,6 +12,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  type AnimatedStyle,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { useTheme } from '../theme/theme-provider';
 import { timing } from './motion';
@@ -21,10 +23,14 @@ export type PressFeedback = 'surface' | 'row' | 'small' | 'none';
 export type PressableBaseProps = Omit<PressableProps, 'style'> & {
   ref?: Ref<ComponentRef<typeof Pressable>>;
   style?: StyleProp<ViewStyle>;
+  animatedStyle?: StyleProp<AnimatedStyle<ViewStyle>>;
   pressedStyle?: StyleProp<ViewStyle>;
   disabledStyle?: StyleProp<ViewStyle>;
   touchHeight?: number;
   feedback?: PressFeedback;
+  onDisabledPress?: () => void;
+  live?: SharedValue<number>;
+  nudge?: SharedValue<number>;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -34,14 +40,19 @@ const WIDTH_SHARE = 4;
 
 export function PressableBase({
   style,
+  animatedStyle,
   pressedStyle,
   disabledStyle,
   touchHeight,
   feedback,
+  onDisabledPress,
+  live,
+  nudge,
   disabled,
   hitSlop,
   accessibilityRole = 'button',
   accessibilityState,
+  onPress,
   onPressIn,
   onPressOut,
   onLayout,
@@ -57,19 +68,24 @@ export function PressableBase({
   const shrinkTo = t.press.scale;
   const shrink = t.press.shrink;
   const layer = t.press.layer;
+  const dimOpacity = t.opacity.disabled;
+  const dimScale = t.press.disabled;
   const radius = StyleSheet.flatten(style)?.borderRadius;
+  const moving = mode === 'small' || mode === 'surface' || !!live || !!nudge;
 
   const motion = useAnimatedStyle(() => {
-    if (mode === 'small') {
-      return {
-        transform: [{ scale: 1 - progress.value * (1 - shrinkTo) }],
-      };
-    }
+    if (!moving) return {};
+    let scale = 1;
+    if (mode === 'small') scale = 1 - progress.value * (1 - shrinkTo);
     if (mode === 'surface' && basis.value > 0) {
       const target = (basis.value - shrink) / basis.value;
-      return { transform: [{ scale: 1 - progress.value * (1 - target) }] };
+      scale = 1 - progress.value * (1 - target);
     }
-    return {};
+    if (live) scale *= 1 - (1 - live.value) * (1 - dimScale);
+    const transform = [{ translateX: nudge ? nudge.value : 0 }, { scale }];
+    return live
+      ? { transform, opacity: dimOpacity + (1 - dimOpacity) * live.value }
+      : { transform };
   });
   const veil = useAnimatedStyle(() => ({ opacity: progress.value * layer }));
 
@@ -108,19 +124,23 @@ export function PressableBase({
       />
     ) : null;
 
+  const answer = !!disabled && !!onDisabledPress;
+
   return (
     <AnimatedPressable
       {...rest}
-      disabled={disabled}
+      disabled={answer ? undefined : disabled}
       hitSlop={slop}
       accessibilityRole={accessibilityRole}
       accessibilityState={{ ...accessibilityState, disabled: !!disabled }}
+      onPress={answer ? onDisabledPress : onPress}
       onPressIn={press(true)}
       onPressOut={press(false)}
       onLayout={mode === 'surface' ? measure : onLayout}
       style={[
         style,
-        mode === 'none' ? null : motion,
+        animatedStyle,
+        motion,
         pressed && !disabled && pressedStyle,
         disabled && (disabledStyle ?? { opacity: t.opacity.disabled }),
       ]}

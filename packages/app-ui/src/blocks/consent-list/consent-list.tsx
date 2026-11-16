@@ -1,6 +1,9 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/text/text';
+import Animated from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
 import { CheckGlyph } from '../../internal/glyphs';
+import { FILL_FROM, usePop } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -70,6 +73,7 @@ export function ConsentList({
     ...items.filter((i) => !i.required),
   ];
   const all = items.every((i) => i.checked);
+  const pop = usePop(all, FILL_FROM);
   return (
     <View style={[s.root, style]}>
       <PressableBase
@@ -80,14 +84,13 @@ export function ConsentList({
         touchHeight={MARK}
         style={s.row}
       >
-        <View style={[s.circle, all && s.circleOn]}>
-          {all ? (
-            <CheckGlyph
-              color={t.colors.primaryForeground}
-              size={t.iconSize.sm}
-            />
-          ) : null}
-        </View>
+        <Animated.View style={[s.circle, all && s.circleOn, pop]}>
+          <DrawnCheck
+            on={all}
+            color={t.colors.primaryForeground}
+            size={t.iconSize.sm}
+          />
+        </Animated.View>
         <Text variant="bodyLg" weight="semibold" style={s.label}>
           {allLabel}
         </Text>

@@ -1,11 +1,18 @@
 import {
   ScrollView,
-  Text,
   View,
+  type LayoutChangeEvent,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
+import { SteadyText } from '../../internal/steady-text';
+import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -54,12 +61,10 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.mutedForeground,
     fontVariant: ['tabular-nums'],
   },
-  on: { color: t.colors.primary, fontWeight: '600' },
-  countOn: { color: t.colors.primary },
+  strong: { fontWeight: '600' },
   bar: {
     position: 'absolute',
     left: 0,
-    right: 0,
     bottom: 0,
     height: BAR,
     borderTopLeftRadius: BAR,
@@ -68,14 +73,65 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
+function Tab({
+  label,
+  count,
+  selected,
+  onPress,
+  onLayout,
+}: {
+  label: string;
+  count?: number;
+  selected: boolean;
+  onPress: () => void;
+  onLayout: (event: LayoutChangeEvent) => void;
+}) {
+  const t = useTheme();
+  const s = useStyles();
+  const on = useSwitch(selected, 'base');
+  const idle = t.colors.mutedForeground;
+  const point = t.colors.primary;
+  const tone = useAnimatedStyle(() => ({
+    color: interpolateColor(on.value, [0, 1], [idle, point]),
+  }));
+  return (
+    <PressableBase
+      accessibilityRole="tab"
+      accessibilityState={{ selected }}
+      accessibilityLabel={count === undefined ? label : `${label} ${count}`}
+      feedback="row"
+      onPress={onPress}
+      onLayout={onLayout}
+      style={s.tab}
+    >
+      <SteadyText
+        selected={selected}
+        style={s.label}
+        strongStyle={s.strong}
+        animatedStyle={tone}
+      >
+        {label}
+      </SteadyText>
+      {count === undefined ? null : (
+        <Animated.Text
+          maxFontSizeMultiplier={t.maxFontScale}
+          style={[s.count, tone]}
+        >
+          {count}
+        </Animated.Text>
+      )}
+    </PressableBase>
+  );
+}
+
 export function SegmentedTabs<T extends string>({
   items,
   value,
   onValueChange,
   style,
 }: SegmentedTabsProps<T>) {
-  const t = useTheme();
   const s = useStyles();
+  const slide = useSlide(value);
   return (
     <View style={[s.root, style]}>
       <ScrollView
@@ -87,40 +143,19 @@ export function SegmentedTabs<T extends string>({
         {items.map((item) => {
           const selected = item.value === value;
           return (
-            <PressableBase
+            <Tab
               key={item.value}
-              accessibilityRole="tab"
-              accessibilityState={{ selected }}
-              accessibilityLabel={
-                item.count === undefined
-                  ? item.label
-                  : `${item.label} ${item.count}`
-              }
-              feedback="row"
+              label={item.label}
+              count={item.count}
+              selected={selected}
               onPress={() => {
                 if (!selected) onValueChange(item.value);
               }}
-              style={s.tab}
-            >
-              <Text
-                numberOfLines={1}
-                maxFontSizeMultiplier={t.maxFontScale}
-                style={[s.label, selected && s.on]}
-              >
-                {item.label}
-              </Text>
-              {item.count === undefined ? null : (
-                <Text
-                  maxFontSizeMultiplier={t.maxFontScale}
-                  style={[s.count, selected && s.countOn]}
-                >
-                  {item.count}
-                </Text>
-              )}
-              {selected ? <View style={s.bar} /> : null}
-            </PressableBase>
+              onLayout={slide.measure(item.value)}
+            />
           );
         })}
+        <Animated.View pointerEvents="none" style={[s.bar, slide.bar]} />
       </ScrollView>
     </View>
   );

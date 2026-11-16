@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import {
   Button,
+  FINISH_HOLD,
+  useFinish,
   Calendar,
   Checkbox,
   Dialog,
@@ -33,6 +35,35 @@ describe('Button', () => {
     await fireEvent.press(screen.getByText('로딩'));
     await fireEvent.press(screen.getByText('비활성'));
     expect(onPress).not.toHaveBeenCalled();
+  });
+
+  it('keeps the disabled state for assistive tech while it can be nudged', async () => {
+    await render(
+      <Button onPress={jest.fn()} disabled>
+        다음
+      </Button>
+    );
+    expect(screen.getByRole('button')).toBeDisabled();
+  });
+
+  it('moves on only after the finish hold', async () => {
+    jest.useFakeTimers();
+    const next = jest.fn();
+    function Finish() {
+      const { done, finish } = useFinish();
+      return (
+        <Button done={done} onPress={() => finish(next)}>
+          발송 처리
+        </Button>
+      );
+    }
+    await render(<Finish />);
+    await fireEvent.press(screen.getByText('발송 처리'));
+    await act(() => jest.advanceTimersByTime(FINISH_HOLD - 1));
+    expect(next).not.toHaveBeenCalled();
+    await act(() => jest.advanceTimersByTime(1));
+    expect(next).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
   });
 });
 

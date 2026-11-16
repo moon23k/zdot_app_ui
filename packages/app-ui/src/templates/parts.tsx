@@ -12,6 +12,7 @@ export type TemplateAction = {
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
+  done?: boolean;
   icon?: IconSlot;
   outline?: boolean;
   beside?: boolean;
@@ -117,6 +118,7 @@ export function BottomBar({
             onPress={primaryAction.onPress}
             disabled={primaryAction.disabled}
             loading={primaryAction.loading}
+            done={primaryAction.done}
             leftIcon={primaryAction.icon}
           >
             {primaryAction.label}
@@ -135,6 +137,7 @@ export function BottomBar({
         onPress={primaryAction.onPress}
         disabled={primaryAction.disabled}
         loading={primaryAction.loading}
+        done={primaryAction.done}
         leftIcon={primaryAction.icon}
       >
         {primaryAction.label}

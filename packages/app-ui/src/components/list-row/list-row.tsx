@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import { Text, View } from 'react-native';
-import { CheckGlyph, ChevronGlyph } from '../../internal/glyphs';
+import Animated from 'react-native-reanimated';
+import { DrawnCheck } from '../../internal/drawn-check';
+import { ChevronGlyph } from '../../internal/glyphs';
+import { FILL_FROM, usePop } from '../../internal/motion';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import {
   PressableBase,
@@ -137,6 +140,7 @@ export function ListRow({
   const t = useTheme();
   const s = useStyles();
   const flush = useContext(FlushRowContext);
+  const pop = usePop(selected, FILL_FROM);
   const icon = { color: t.colors.mutedForeground, size: t.iconSize.md };
   const showChevron = chevron ?? !!onPress;
   const lines = [overline, description].filter(Boolean).length;
@@ -152,20 +156,22 @@ export function ListRow({
   const content = (
     <>
       {selection ? (
-        <View
+        <Animated.View
           style={[
             s.mark,
             s[selection],
             selected && (selection === 'check' ? s.checkOn : s.radioOn),
+            pop,
           ]}
         >
-          {selected && selection === 'check' ? (
-            <CheckGlyph
+          {selection === 'check' ? (
+            <DrawnCheck
+              on={selected}
               color={t.colors.primaryForeground}
               size={t.iconSize.sm}
             />
           ) : null}
-        </View>
+        </Animated.View>
       ) : null}
       {leading
         ? renderIcon(

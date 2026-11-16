@@ -1,6 +1,15 @@
-import { Image, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Image,
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { TAB_ICONS } from '../../internal/tab-icon-pairs';
+import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import type { Theme } from '../../types';
 import { makeStyles } from '../../utils/styles';
@@ -25,6 +34,7 @@ export type FloatingTabBarProps<K extends string> = {
 const ICON = 24;
 const DOT = 6;
 const DOT_INSET = 6;
+const LIFT = 1.08;
 
 export function floatingTabBarSpace(t: Theme, bottomInset = 0) {
   return bottomInset + t.space['16'] + t.space['4'] + t.space['2'];
@@ -53,7 +63,13 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     borderRadius: t.radius.full,
   },
-  selected: { backgroundColor: t.colors.primaryTint },
+  pill: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.primaryTint,
+  },
   icon: { width: ICON, height: ICON },
   dot: {
     position: 'absolute',
@@ -66,6 +82,52 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
+function Tab<K extends string>({
+  item,
+  selected,
+  onPress,
+  onLayout,
+}: {
+  item: FloatingTabBarItem<K>;
+  selected: boolean;
+  onPress: () => void;
+  onLayout: (event: LayoutChangeEvent) => void;
+}) {
+  const t = useTheme();
+  const s = useStyles();
+  const lift = useSwitch(selected, 'spring', 'spring');
+  const grow = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + (LIFT - 1) * lift.value }],
+  }));
+  return (
+    <PressableBase
+      accessibilityRole="tab"
+      accessibilityState={{ selected }}
+      accessibilityLabel={
+        item.badge ? `${item.label}, ${item.badge}` : item.label
+      }
+      touchHeight={t.controlSize.md}
+      feedback="small"
+      onPress={onPress}
+      onLayout={onLayout}
+      style={s.tab}
+    >
+      <Animated.View style={[s.icon, grow]}>
+        <Image
+          source={{ uri: TAB_ICONS[item.icon][selected ? 'fill' : 'line'] }}
+          style={[
+            s.icon,
+            {
+              tintColor: selected ? t.colors.primary : t.colors.mutedForeground,
+            },
+          ]}
+        />
+        {item.badge ? <View testID="tab-badge" style={s.dot} /> : null}
+      </Animated.View>
+    </PressableBase>
+  );
+}
+
 export function FloatingTabBar<K extends string>({
   items,
   value,
@@ -75,45 +137,25 @@ export function FloatingTabBar<K extends string>({
 }: FloatingTabBarProps<K>) {
   const t = useTheme();
   const s = useStyles();
+  const slide = useSlide(value);
   return (
     <View
       accessibilityRole="tablist"
       style={[s.bar, { bottom: bottomInset + t.space['4'] }, style]}
     >
+      <Animated.View pointerEvents="none" style={[s.pill, slide.box]} />
       {items.map((item) => {
         const selected = item.key === value;
         return (
-          <PressableBase
+          <Tab
             key={item.key}
-            accessibilityRole="tab"
-            accessibilityState={{ selected }}
-            accessibilityLabel={
-              item.badge ? `${item.label}, ${item.badge}` : item.label
-            }
-            touchHeight={t.controlSize.md}
-            feedback="small"
+            item={item}
+            selected={selected}
             onPress={() => {
               if (!selected) onValueChange(item.key);
             }}
-            style={[s.tab, selected && s.selected]}
-          >
-            <View style={s.icon}>
-              <Image
-                source={{
-                  uri: TAB_ICONS[item.icon][selected ? 'fill' : 'line'],
-                }}
-                style={[
-                  s.icon,
-                  {
-                    tintColor: selected
-                      ? t.colors.primary
-                      : t.colors.mutedForeground,
-                  },
-                ]}
-              />
-              {item.badge ? <View testID="tab-badge" style={s.dot} /> : null}
-            </View>
-          </PressableBase>
+            onLayout={slide.measure(item.key)}
+          />
         );
       })}
     </View>

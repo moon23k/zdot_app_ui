@@ -4,3 +4,4 @@ export {
   type ButtonSize,
   type ButtonVariant,
 } from './button';
+export { FINISH_HOLD, useFinish } from './use-finish';

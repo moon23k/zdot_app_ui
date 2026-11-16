@@ -29,6 +29,7 @@ export type ChipGroupProps<T extends string> = (Single<T> | Multiple<T>) & {
   variant?: ChipVariant;
   scroll?: boolean;
   even?: boolean;
+  check?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -47,6 +48,7 @@ const useStyles = makeStyles((t) => ({
 export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
   const s = useStyles();
   const { items, size, variant, scroll, even, style } = props;
+  const check = props.check ?? !!props.multiple;
 
   const isSelected = (v: T) =>
     props.multiple ? props.value.includes(v) : props.value === v;
@@ -76,6 +78,7 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
       <Chip
         key={item.value}
         selected={selected}
+        check={check}
         size={size}
         variant={variant}
         count={item.count}
