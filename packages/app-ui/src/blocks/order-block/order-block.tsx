@@ -26,7 +26,7 @@ export type OrderBlockProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const PHOTO = 76;
+const PHOTO = 72;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -77,13 +77,10 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: t.space[2],
-    paddingLeft: t.layout.screenX,
-    paddingRight: t.space[3],
-    paddingVertical: t.space[2],
-    borderTopWidth: 1,
-    borderTopColor: t.colors.muted,
+    paddingHorizontal: t.layout.screenX,
+    paddingBottom: t.space[4],
   },
-  tall: { minHeight: t.controlSize.sm + t.space[4] },
+  tall: { minHeight: t.controlSize.sm },
 }));
 
 export function OrderBlock({

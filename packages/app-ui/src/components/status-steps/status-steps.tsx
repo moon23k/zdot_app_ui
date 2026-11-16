@@ -9,6 +9,7 @@ export type StatusStepsProps = {
   current: number;
   orientation?: 'horizontal' | 'vertical';
   times?: readonly (string | null | undefined)[];
+  notes?: readonly (string | null | undefined)[];
   done?: boolean;
   due?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -134,6 +135,7 @@ export function StatusSteps({
   current,
   orientation = 'horizontal',
   times,
+  notes,
   done = false,
   due = true,
   style,
@@ -170,6 +172,9 @@ export function StatusSteps({
                 numberOfLines={1}
               >
                 {label}
+                {notes?.[i] ? (
+                  <Text weight="regular" tone="muted">{`  ${notes[i]}`}</Text>
+                ) : null}
               </Text>
               {times?.[i] ? (
                 <Text

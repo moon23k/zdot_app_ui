@@ -1,8 +1,13 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
-export type AmountLine = { label: string; value: string };
+export type AmountLine = {
+  label: string;
+  value: string;
+  link?: { label: string; onPress: () => void };
+};
 
 export type AmountSummaryProps = {
   label: string;
@@ -34,6 +39,11 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.title,
   },
   lines: { gap: t.space[2] },
+  lineHead: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
+  link: {
+    textDecorationLine: 'underline',
+    textDecorationColor: t.colors.input,
+  },
   total: {
     paddingTop: t.space[3],
     borderTopWidth: 1,
@@ -86,9 +96,28 @@ export function AmountSummary({
         <View style={s.lines}>
           {lines.map((line) => (
             <View key={line.label} style={s.line}>
-              <Text style={s.lineLabel} maxFontSizeMultiplier={t.maxFontScale}>
-                {line.label}
-              </Text>
+              <View style={s.lineHead}>
+                <Text
+                  style={s.lineLabel}
+                  maxFontSizeMultiplier={t.maxFontScale}
+                >
+                  {line.label}
+                </Text>
+                {line.link ? (
+                  <PressableBase
+                    accessibilityRole="button"
+                    accessibilityLabel={line.link.label}
+                    onPress={line.link.onPress}
+                  >
+                    <Text
+                      style={[s.lineLabel, s.link]}
+                      maxFontSizeMultiplier={t.maxFontScale}
+                    >
+                      {line.link.label}
+                    </Text>
+                  </PressableBase>
+                ) : null}
+              </View>
               <Text style={s.lineValue} maxFontSizeMultiplier={t.maxFontScale}>
                 {line.value}
               </Text>

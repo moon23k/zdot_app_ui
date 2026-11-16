@@ -173,6 +173,7 @@ export function Notice({ notice }: { notice: TemplateNotice }) {
 
 export function ListSection({
   title,
+  count,
   action,
   inset,
   card,
@@ -180,6 +181,7 @@ export function ListSection({
   children,
 }: {
   title?: string;
+  count?: number;
   action?: ReactNode;
   inset?: boolean;
   card?: boolean;
@@ -189,7 +191,7 @@ export function ListSection({
   const s = useStyles();
   if (boxed) {
     return (
-      <ListSection card title={title} action={action}>
+      <ListSection card title={title} count={count} action={action}>
         {children}
       </ListSection>
     );
@@ -202,6 +204,11 @@ export function ListSection({
           <View style={s.cardHead}>
             <Text variant="body" weight="bold" accessibilityRole="header">
               {title}
+              {count !== undefined ? (
+                <Text variant="body" tone="muted">
+                  {` ${count}`}
+                </Text>
+              ) : null}
             </Text>
             {action}
           </View>

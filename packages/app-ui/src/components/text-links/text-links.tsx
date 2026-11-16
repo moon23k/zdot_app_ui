@@ -18,6 +18,10 @@ const useStyles = makeStyles((t) => ({
   },
   bar: { width: 1, height: t.space[3], backgroundColor: t.colors.border },
   link: { paddingVertical: t.space[1] },
+  under: {
+    textDecorationLine: 'underline',
+    textDecorationColor: t.colors.input,
+  },
 }));
 
 export function TextLinks({ items }: TextLinksProps) {
@@ -32,7 +36,7 @@ export function TextLinks({ items }: TextLinksProps) {
             accessibilityRole="button"
             onPress={item.onPress}
           >
-            <Text variant="caption" tone="muted">
+            <Text variant="label" tone="muted" style={s.under}>
               {item.label}
             </Text>
           </PressableBase>

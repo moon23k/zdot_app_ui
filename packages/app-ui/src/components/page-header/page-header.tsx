@@ -58,11 +58,17 @@ const useStyles = makeStyles((t) => ({
 
 export type HeaderButtonProps = {
   label: string;
+  primary?: boolean;
   disabled?: boolean;
   onPress: () => void;
 };
 
-export function HeaderButton({ label, disabled, onPress }: HeaderButtonProps) {
+export function HeaderButton({
+  label,
+  primary,
+  disabled,
+  onPress,
+}: HeaderButtonProps) {
   const s = useStyles();
   return (
     <PressableBase
@@ -76,7 +82,7 @@ export function HeaderButton({ label, disabled, onPress }: HeaderButtonProps) {
       <Text
         variant="bodyLg"
         weight="medium"
-        tone={disabled ? 'muted' : undefined}
+        tone={disabled ? 'muted' : primary ? 'primary' : undefined}
       >
         {label}
       </Text>

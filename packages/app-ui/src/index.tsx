@@ -102,6 +102,7 @@ export * from './components/bubble';
 export * from './components/icon-button';
 export * from './components/fact-list';
 export * from './components/amount-summary';
+export * from './components/value-rows';
 export * from './components/card-block';
 export * from './components/action-row';
 export * from './components/thumb-strip';

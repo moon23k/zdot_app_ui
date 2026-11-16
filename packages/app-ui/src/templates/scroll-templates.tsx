@@ -20,6 +20,8 @@ import {
 
 export type TemplateHero = {
   title: string;
+  overline?: ReactNode;
+  captionTone?: 'muted' | 'warning';
   aside?: ReactNode;
   caption?: string;
   onCopy?: () => void;
@@ -94,6 +96,7 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.mutedForeground,
   },
   heroBody: { marginTop: t.space[4] },
+  heroWarn: { color: t.colors.warningText, fontWeight: '500' },
   media: { width: MEDIA },
 }));
 
@@ -130,6 +133,7 @@ function ScrollTemplate({
       >
         {hero ? (
           <View style={s.hero}>
+            {hero.overline}
             <View style={s.heroHead}>
               <Text accessibilityRole="header" style={s.heroTitle}>
                 {hero.title}
@@ -144,7 +148,14 @@ function ScrollTemplate({
                 onPress={hero.onCopy}
                 style={s.heroCaption}
               >
-                <Text style={s.heroCaptionText}>{hero.caption}</Text>
+                <Text
+                  style={[
+                    s.heroCaptionText,
+                    hero.captionTone === 'warning' && s.heroWarn,
+                  ]}
+                >
+                  {hero.caption}
+                </Text>
                 {hero.onCopy ? (
                   <CopyGlyph
                     color={t.colors.mutedForeground}
