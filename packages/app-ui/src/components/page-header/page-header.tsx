@@ -20,7 +20,6 @@ export type PageHeaderProps = {
 };
 
 const DOT = 6;
-const ICON = 24;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -114,8 +113,8 @@ export function PageHeader({
           style={s.action}
         >
           {renderIcon(action.icon, {
-            color: t.colors.foreground,
-            size: ICON,
+            color: t.colors.mutedForeground,
+            size: t.iconSize.md,
           })}
           {action.badge ? <View style={s.dot} /> : null}
         </PressableBase>

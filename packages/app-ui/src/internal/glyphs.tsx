@@ -23,6 +23,7 @@ import {
   READ_ALL,
   RECEIVED,
   RETURN,
+  SEARCH,
   SEND,
   SHARE,
   SMS,
@@ -84,38 +85,6 @@ export function ScanGlyph({ color, size }: IconRenderProps) {
   );
 }
 
-export function SearchGlyph({ color, size }: IconRenderProps) {
-  const ring = size * 0.62;
-  const stroke = Math.max(1.5, size / 10);
-  return (
-    <View style={{ width: size, height: size }}>
-      <View
-        style={{
-          width: ring,
-          height: ring,
-          borderRadius: ring / 2,
-          borderWidth: stroke,
-          borderColor: color,
-        }}
-      />
-      <View
-        style={[
-          styles.absolute,
-          {
-            width: size * 0.36,
-            height: stroke,
-            backgroundColor: color,
-            borderRadius: stroke,
-            right: size * 0.02,
-            bottom: size * 0.14,
-            transform: [{ rotate: '45deg' }],
-          },
-        ]}
-      />
-    </View>
-  );
-}
-
 export function CloseGlyph({ color, size }: IconRenderProps) {
   const stroke = Math.max(1.5, size / 10);
   const bar = {
@@ -156,7 +125,6 @@ export function CheckGlyph({ color, size }: IconRenderProps) {
 
 const styles = StyleSheet.create({
   scanLine: { position: 'absolute' },
-  absolute: { position: 'absolute' },
   center: { alignItems: 'center', justifyContent: 'center' },
 });
 
@@ -250,6 +218,7 @@ function imageGlyph(uri: string) {
 }
 
 export const BellGlyph = imageGlyph(BELL);
+export const SearchGlyph = imageGlyph(SEARCH);
 export const HouseGlyph = imageGlyph(HOUSE);
 export const ReceiptGlyph = imageGlyph(RECEIPT);
 export const PackageGlyph = imageGlyph(PACKAGE);

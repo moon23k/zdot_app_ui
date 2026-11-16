@@ -36,6 +36,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   pressed: { backgroundColor: t.colors.muted },
+  still: { opacity: 1 },
   mid: {
     flexDirection: 'row',
     gap: t.space[3],
@@ -105,6 +106,7 @@ export function OrderBlock({
       <PressableBase
         onPress={onPress}
         disabled={!onPress}
+        disabledStyle={s.still}
         accessibilityRole={onPress ? 'button' : undefined}
         accessibilityLabel={[overline, title, meta, amount]
           .filter(Boolean)
