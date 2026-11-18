@@ -1,1 +1,1 @@
-export { formatPrice, Price, type PriceProps } from './price';
+export { formatPrice } from './price';
