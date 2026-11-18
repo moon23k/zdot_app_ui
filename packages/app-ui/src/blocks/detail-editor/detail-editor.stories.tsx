@@ -11,7 +11,6 @@ import { EditorBar } from './editor-bar';
 import { FontPicker } from './font-picker';
 import { LayoutPicker } from './layout-picker';
 import { CompareSlider } from './compare-slider';
-import { PhotoTray } from './photo-tray';
 import { ToolRow } from './tool-row';
 
 const photo = 'https://picsum.photos/seed/zdot-vase/600/750';
@@ -120,17 +119,6 @@ function Demo() {
           value={draft}
           onValueChange={setDraft}
           onMore={() => {}}
-        />
-      </Section>
-      <Section title="사진 칸">
-        <PhotoTray
-          photos={[
-            { key: 'a', uri: photo },
-            { key: 'b', uri: photo },
-            { key: 'c', uri: photo, reference: true },
-          ]}
-          onRemove={() => {}}
-          onAdd={() => {}}
         />
       </Section>
       <Section title="원본과 비교">

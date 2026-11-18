@@ -30,7 +30,6 @@ export default defineConfig([
       '**/__stories__/**',
       '**/__tests__/**',
       'packages/app-ui/src/charts/**',
-      'packages/app-ui/src/blocks/site-preview-frame/**',
       'packages/app-ui/src/blocks/color-swatch-picker/**',
     ],
     rules: {

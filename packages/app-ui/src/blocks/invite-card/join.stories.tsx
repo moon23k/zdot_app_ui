@@ -3,13 +3,11 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { Phone } from '../../__stories__/phone';
 import { useTheme } from '../../theme/theme-provider';
-import { CodeInput } from '../code-input/code-input';
 import { ConsentList } from '../consent-list/consent-list';
 import { InviteCard } from './invite-card';
 
 function Demo() {
   const t = useTheme();
-  const [code, setCode] = useState('VWBX');
   const [checked, setChecked] = useState<Record<string, boolean>>({
     terms: true,
   });
@@ -33,11 +31,6 @@ function Demo() {
           description="초대 코드로 스토어에 합류"
           onPress={() => {}}
         />
-        <CodeInput
-          value={code}
-          onChangeText={setCode}
-          accessibilityLabel="초대 코드"
-        />
         <ConsentList
           items={items}
           onChange={(key, v) => setChecked({ ...checked, [key]: v })}
@@ -51,7 +44,7 @@ function Demo() {
 }
 
 const meta = {
-  title: 'Blocks/Onboarding/InviteCard · CodeInput · ConsentList',
+  title: 'Blocks/Onboarding/InviteCard · ConsentList',
   component: Demo,
 } satisfies Meta<typeof Demo>;
 export default meta;

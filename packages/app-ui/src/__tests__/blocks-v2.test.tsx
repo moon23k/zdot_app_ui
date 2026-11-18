@@ -4,7 +4,7 @@ import {
   BulkShipList,
   Chip,
   ChipGroup,
-  ClaimRow,
+  claimStatusLabel,
   CreditWallet,
   Field,
   GenerationProgress,
@@ -12,76 +12,26 @@ import {
   orderStatusLabel,
   PhotoSlot,
   PlanCard,
-  ProductRow,
   ProgressBar,
   SelectionBar,
   ServiceStateBanner,
-  SitePreviewFrame,
   trackingIssues,
   type BulkShipRow,
 } from '../index';
 import { OptionEditor, type ProductOption } from '../sortable';
 import { estimateLabelWidth } from '../charts/line-chart';
 
-const DAY = 86400000;
-
-describe('ClaimRow', () => {
-  it('only opens detail on press and has no approve or reject buttons', async () => {
-    const onPress = jest.fn();
-    await render(
-      <ClaimRow
-        type="return"
-        amount={38000}
-        reason="상품 파손"
-        onPress={onPress}
-      />
-    );
-    expect(screen.queryByText('승인')).toBeNull();
-    expect(screen.queryByText('거부')).toBeNull();
-    await fireEvent.press(screen.getByRole('button'));
-    expect(onPress).toHaveBeenCalledTimes(1);
-  });
-
-  it.each([
-    ['collected', '반품 수거 완료'],
-    ['held', '반품 보류'],
-    ['withdrawn', '반품 철회'],
-    ['rejected', '반품 거부'],
-  ] as const)('labels %s', async (status, label) => {
-    await render(<ClaimRow type="return" status={status} amount={1000} />);
-    expect(screen.getByText(label)).toBeTruthy();
-  });
-
-  it('shows D-n for open claims and hides it when closed', async () => {
-    const dueAt = new Date(Date.now() + 3 * DAY);
-    const { rerender } = await render(
-      <ClaimRow type="exchange" amount={1000} dueAt={dueAt} />
-    );
-    expect(screen.getByText('D-3')).toBeTruthy();
-    await rerender(
-      <ClaimRow
-        type="exchange"
-        status="completed"
-        amount={1000}
-        dueAt={dueAt}
-      />
-    );
-    expect(screen.queryByText('D-3')).toBeNull();
-  });
-
-  it('shows D-day and overdue', async () => {
-    await render(
-      <>
-        <ClaimRow type="cancel" amount={1000} dueAt={new Date()} />
-        <ClaimRow
-          type="cancel"
-          amount={1000}
-          dueAt={new Date(Date.now() - 2 * DAY)}
-        />
-      </>
-    );
-    expect(screen.getByText('D-day')).toBeTruthy();
-    expect(screen.getByText('기한 지남')).toBeTruthy();
+describe('claimStatusLabel', () => {
+  it('uses API claim status keys', () => {
+    expect(Object.keys(claimStatusLabel)).toEqual([
+      'requested',
+      'collecting',
+      'collected',
+      'held',
+      'completed',
+      'rejected',
+      'withdrawn',
+    ]);
   });
 });
 
@@ -456,21 +406,6 @@ describe('limits and states', () => {
     expect(screen.getByText('운영 정책에 따라 판매가 중지됐어요')).toBeTruthy();
     expect(screen.getByText('사유: 상품 정보 불일치')).toBeTruthy();
   });
-
-  it('blocks publishing with a reason', async () => {
-    const onPublish = jest.fn();
-    await render(
-      <SitePreviewFrame
-        status="draft"
-        onPublish={onPublish}
-        publishDisabled
-        blockedReason="사업자 확인 중이에요"
-      />
-    );
-    expect(screen.getByText('사업자 확인 중이에요')).toBeTruthy();
-    await fireEvent.press(screen.getByText('사이트 게시하기'));
-    expect(onPublish).not.toHaveBeenCalled();
-  });
 });
 
 describe('LineChart label width', () => {
@@ -498,23 +433,5 @@ describe('Chip selection', () => {
     expect(screen.getByRole('button').props.accessibilityState.selected).toBe(
       true
     );
-  });
-});
-
-describe('ProductRow', () => {
-  it('reads name, price, and status and opens on press', async () => {
-    const onPress = jest.fn();
-    await render(
-      <ProductRow
-        title="린넨 쿠션 커버"
-        price={24000}
-        status={{ label: '품절', tone: 'warning' }}
-        onPress={onPress}
-      />
-    );
-    const row = screen.getByLabelText('린넨 쿠션 커버, 24,000원, 품절');
-    await fireEvent.press(row);
-    expect(onPress).toHaveBeenCalled();
-    expect(screen.getByText('품절')).toBeTruthy();
   });
 });

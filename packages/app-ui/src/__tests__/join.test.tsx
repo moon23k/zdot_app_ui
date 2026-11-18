@@ -1,27 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { cleanCode, CodeInput, ConsentList, InviteCard } from '../index';
-
-describe('CodeInput', () => {
-  it('cleans pasted text and completes at full length', async () => {
-    const onChangeText = jest.fn();
-    const onComplete = jest.fn();
-    await render(
-      <CodeInput
-        value=""
-        onChangeText={onChangeText}
-        onComplete={onComplete}
-        accessibilityLabel="초대 코드"
-      />
-    );
-    await fireEvent.changeText(
-      screen.getByLabelText('초대 코드'),
-      ' vwbx-mune '
-    );
-    expect(onChangeText).toHaveBeenCalledWith('VWBXMUNE');
-    expect(onComplete).toHaveBeenCalledWith('VWBXMUNE');
-    expect(cleanCode('ab', 8)).toBe('AB');
-  });
-});
+import { ConsentList, InviteCard } from '../index';
 
 describe('ConsentList', () => {
   it('lists required first and toggles all', async () => {

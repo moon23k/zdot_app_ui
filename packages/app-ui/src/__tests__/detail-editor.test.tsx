@@ -6,7 +6,6 @@ import {
   DraftStrip,
   FontPicker,
   LayoutPicker,
-  PhotoTray,
   type DetailDocValue,
   detailBlockSpace,
   detailLineHeight,
@@ -118,25 +117,7 @@ it('composer sends, attaches and removes', async () => {
   expect(onSend).toHaveBeenCalled();
 });
 
-it('photo tray adds and removes photos', async () => {
-  const onAdd = jest.fn();
-  const onRemove = jest.fn();
-  await render(
-    <PhotoTray
-      photos={[
-        { key: 'a', uri: 'https://x.test/a.jpg' },
-        { key: 'b', uri: 'https://x.test/b.jpg', reference: true },
-      ]}
-      onAdd={onAdd}
-      onRemove={onRemove}
-    />
-  );
-  expect(screen.getByText('대표')).toBeTruthy();
-  expect(screen.getByText('참고')).toBeTruthy();
-  await fireEvent.press(screen.getByLabelText('참고 캡처'));
-  await fireEvent.press(screen.getAllByLabelText('빼기')[1]!);
-  expect(onAdd).toHaveBeenCalledWith('capture');
-  expect(onRemove).toHaveBeenCalledWith('b');
+it('compare slider labels the comparison', async () => {
   await render(
     <CompareSlider before="https://x.test/a.jpg" after="https://x.test/b.jpg" />
   );

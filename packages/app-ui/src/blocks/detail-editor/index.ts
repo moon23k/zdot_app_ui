@@ -44,12 +44,6 @@ export { LayoutPicker, type LayoutPickerProps } from './layout-picker';
 export { ToolRow, type ToolRowItem } from './tool-row';
 export { CompareSlider, type CompareSliderProps } from './compare-slider';
 export {
-  PhotoTray,
-  type PhotoTrayProps,
-  type TrayPhoto,
-  type TraySource,
-} from './photo-tray';
-export {
   StructurePicker,
   type StructureOption,
   type StructurePickerProps,
