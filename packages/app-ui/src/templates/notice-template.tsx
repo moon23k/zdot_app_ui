@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
-import { Button } from '../components/button/button';
 import { Checkbox } from '../components/checkbox/checkbox';
 import { Text } from '../components/text/text';
 import { CloseGlyph } from '../internal/glyphs';
 import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
-import type { TemplateAction } from './parts';
+import { ActionButton, type TemplateAction } from './parts';
 
 export type NoticeConsent = {
   label: string;
@@ -123,25 +122,13 @@ export function NoticeTemplate({
           ) : null}
           <View style={s.buttons}>
             {secondaryAction ? (
-              <Button
-                size="lg"
+              <ActionButton
+                action={secondaryAction}
                 variant="ghost"
                 style={s.button}
-                onPress={secondaryAction.onPress}
-                disabled={secondaryAction.disabled}
-              >
-                {secondaryAction.label}
-              </Button>
+              />
             ) : null}
-            <Button
-              size="lg"
-              style={s.button}
-              onPress={primaryAction.onPress}
-              disabled={primaryAction.disabled}
-              loading={primaryAction.loading}
-            >
-              {primaryAction.label}
-            </Button>
+            <ActionButton action={primaryAction} style={s.button} />
           </View>
         </View>
       ) : null}

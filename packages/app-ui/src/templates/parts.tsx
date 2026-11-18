@@ -1,6 +1,10 @@
 import { Children, Fragment, type ReactNode } from 'react';
-import { View } from 'react-native';
-import { Button } from '../components/button/button';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Button,
+  type ButtonSize,
+  type ButtonVariant,
+} from '../components/button/button';
 import { Text } from '../components/text/text';
 import { AlertGlyph } from '../internal/glyphs';
 import type { IconSlot } from '../internal/icon';
@@ -77,6 +81,34 @@ const useStyles = makeStyles((t) => ({
   main: { flex: 2 },
 }));
 
+export function ActionButton({
+  action,
+  variant,
+  size = 'lg',
+  style,
+}: {
+  action: TemplateAction;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  style?: StyleProp<ViewStyle>;
+}) {
+  return (
+    <Button
+      size={size}
+      variant={variant ?? (action.quiet ? 'secondary' : 'primary')}
+      style={style}
+      onPress={action.onPress}
+      disabled={action.disabled}
+      loading={action.loading}
+      done={action.done}
+      onBlocked={action.onBlocked}
+      leftIcon={action.icon}
+    >
+      {action.label}
+    </Button>
+  );
+}
+
 export function BottomBar({
   primaryAction,
   secondaryAction,
@@ -101,30 +133,11 @@ export function BottomBar({
       >
         {secondaryAction ? (
           <View style={s.side}>
-            <Button
-              size="lg"
-              variant="secondary"
-              onPress={secondaryAction.onPress}
-              disabled={secondaryAction.disabled}
-              loading={secondaryAction.loading}
-            >
-              {secondaryAction.label}
-            </Button>
+            <ActionButton action={secondaryAction} variant="secondary" />
           </View>
         ) : null}
         <View style={s.main}>
-          <Button
-            size="lg"
-            variant={primaryAction.quiet ? 'secondary' : 'primary'}
-            onPress={primaryAction.onPress}
-            disabled={primaryAction.disabled}
-            loading={primaryAction.loading}
-            done={primaryAction.done}
-            onBlocked={primaryAction.onBlocked}
-            leftIcon={primaryAction.icon}
-          >
-            {primaryAction.label}
-          </Button>
+          <ActionButton action={primaryAction} />
         </View>
       </View>
     );
@@ -133,27 +146,9 @@ export function BottomBar({
     <View
       style={[s.bar, { paddingBottom: t.layout.footerBottom + bottomInset }]}
     >
-      <Button
-        size="lg"
-        variant={primaryAction.quiet ? 'secondary' : 'primary'}
-        onPress={primaryAction.onPress}
-        disabled={primaryAction.disabled}
-        loading={primaryAction.loading}
-        done={primaryAction.done}
-        onBlocked={primaryAction.onBlocked}
-        leftIcon={primaryAction.icon}
-      >
-        {primaryAction.label}
-      </Button>
+      <ActionButton action={primaryAction} />
       {secondaryAction ? (
-        <Button
-          variant="ghost"
-          onPress={secondaryAction.onPress}
-          disabled={secondaryAction.disabled}
-          loading={secondaryAction.loading}
-        >
-          {secondaryAction.label}
-        </Button>
+        <ActionButton action={secondaryAction} variant="ghost" size="md" />
       ) : null}
     </View>
   );
