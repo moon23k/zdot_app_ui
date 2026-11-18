@@ -9,7 +9,7 @@ describe('subpath entries', () => {
     expect(require('../charts').DayBars).toBeDefined();
     expect(require('../adjust').DialStrip).toBeDefined();
     expect(require('../sortable').SortableGrid).toBeDefined();
-    expect(require('../sortable').ImageGrid).toBeDefined();
+    expect(require('../sortable').PhotoField).toBeDefined();
   });
 });
 

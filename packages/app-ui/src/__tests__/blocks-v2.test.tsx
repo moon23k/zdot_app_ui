@@ -9,7 +9,6 @@ import {
   GenerationProgress,
   orderStatusLabel,
   orderStatusText,
-  PhotoSlot,
   ProgressBar,
   SelectionBar,
   ServiceStateBanner,
@@ -113,41 +112,6 @@ describe('Field count', () => {
     );
     expect(screen.getByText('제목')).toBeTruthy();
     expect(screen.getByText('5/20')).toBeTruthy();
-  });
-});
-
-describe('PhotoSlot', () => {
-  it('adds when empty and removes when filled, with no extra text', async () => {
-    const onAdd = jest.fn();
-    const onRemove = jest.fn();
-    const { rerender, toJSON } = await render(
-      <PhotoSlot label="사진" photo={null} onAdd={onAdd} />
-    );
-    await fireEvent.press(screen.getByLabelText('사진 추가'));
-    expect(onAdd).toHaveBeenCalled();
-    await rerender(
-      <PhotoSlot
-        label="사진"
-        photo={{ uri: 'https://example.com/a.jpg' }}
-        onRemove={onRemove}
-      />
-    );
-    await fireEvent.press(screen.getByLabelText('사진 삭제'));
-    expect(onRemove).toHaveBeenCalled();
-    expect(screen.queryByText('대표')).toBeNull();
-    expect(JSON.stringify(toJSON())).not.toContain('/1');
-  });
-
-  it('retries a failed upload', async () => {
-    const onRetry = jest.fn();
-    await render(
-      <PhotoSlot
-        photo={{ uri: 'https://example.com/a.jpg', status: 'failed' }}
-        onRetry={onRetry}
-      />
-    );
-    await fireEvent.press(screen.getByLabelText('사진 업로드 실패, 다시 시도'));
-    expect(onRetry).toHaveBeenCalled();
   });
 });
 

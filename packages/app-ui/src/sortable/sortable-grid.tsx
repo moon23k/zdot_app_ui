@@ -80,6 +80,12 @@ export function SortableGrid<T>({
   );
 }
 
-export function SortableHandle({ children }: { children: ReactNode }) {
-  return <Sortable.Handle>{children}</Sortable.Handle>;
+export function SortableHandle({
+  children,
+  mode,
+}: {
+  children: ReactNode;
+  mode?: 'draggable' | 'fixed-order';
+}) {
+  return <Sortable.Handle mode={mode}>{children}</Sortable.Handle>;
 }
