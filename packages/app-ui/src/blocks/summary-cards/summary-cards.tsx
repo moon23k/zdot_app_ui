@@ -12,8 +12,6 @@ import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
-const LONG_ANSWER = 24;
-
 const useStyles = makeStyles((t) => ({
   panel: {
     marginTop: t.space[2],
@@ -55,18 +53,6 @@ const useStyles = makeStyles((t) => ({
   cell: { alignSelf: 'stretch', height: 28, borderRadius: t.radius.sm },
   on: { backgroundColor: t.colors.primary },
   off: { backgroundColor: t.colors.muted },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.space[1] },
-  answer: { gap: t.space[1] },
-  step: { flexDirection: 'row', gap: t.space[3] },
-  rail: { alignItems: 'center' },
-  dot: {
-    width: 12,
-    height: 12,
-    marginTop: t.space[1],
-    borderRadius: t.radius.full,
-  },
-  line: { flex: 1, width: 2, backgroundColor: t.colors.muted },
-  stepBody: { flex: 1, paddingBottom: t.space[3] },
 }));
 
 export type PanelProps = {
@@ -365,72 +351,6 @@ export function YearBand({ label, months }: YearBandProps) {
             <Text variant="caption" tone="muted">
               {`${index + 1}`}
             </Text>
-          </View>
-        ))}
-      </View>
-    </Panel>
-  );
-}
-
-export type AnswerChipsProps = {
-  items: readonly { key: string; label: string; values: readonly string[] }[];
-};
-
-export function AnswerChips({ items }: AnswerChipsProps) {
-  const s = useStyles();
-  return (
-    <Panel>
-      {items.map((item) => (
-        <View key={item.key} style={s.answer}>
-          <Text variant="label" tone="muted">
-            {item.label}
-          </Text>
-          <View style={s.chips}>
-            {item.values.map((value) =>
-              value.length > LONG_ANSWER ? (
-                <Text key={value} variant="body">
-                  {value}
-                </Text>
-              ) : (
-                <StatusBadge key={value}>{value}</StatusBadge>
-              )
-            )}
-          </View>
-        </View>
-      ))}
-    </Panel>
-  );
-}
-
-export type HistoryListProps = {
-  items: readonly { key: string; title: string; at?: string; done: boolean }[];
-};
-
-export function HistoryList({ items }: HistoryListProps) {
-  const s = useStyles();
-  return (
-    <Panel>
-      <View>
-        {items.map((item, index) => (
-          <View key={item.key} style={s.step}>
-            <View style={s.rail}>
-              <View style={[s.dot, item.done ? s.on : s.off]} />
-              {index < items.length - 1 ? <View style={s.line} /> : null}
-            </View>
-            <View style={[s.between, s.stepBody]}>
-              <Text
-                variant="label"
-                weight={item.done ? 'semibold' : undefined}
-                tone={item.done ? undefined : 'muted'}
-              >
-                {item.title}
-              </Text>
-              {item.at ? (
-                <Text variant="caption" tone="muted">
-                  {item.at}
-                </Text>
-              ) : null}
-            </View>
           </View>
         ))}
       </View>

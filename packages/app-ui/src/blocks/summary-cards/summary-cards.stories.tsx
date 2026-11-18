@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { Stepper } from '../../components/stepper/stepper';
 import {
-  AnswerChips,
-  HistoryList,
   MetricCard,
   Panel,
   SummaryHeader,
@@ -50,15 +48,6 @@ function Demo() {
       <YearBand
         label="2026년"
         months={Array.from({ length: 12 }, (_, i) => i > 9)}
-      />
-      <AnswerChips
-        items={[{ key: 'a', label: '공간', values: ['원룸', '오피스텔'] }]}
-      />
-      <HistoryList
-        items={[
-          { key: 'a', title: '요청 접수', at: '11.05', done: true },
-          { key: 'b', title: '견적서 보내기', done: false },
-        ]}
       />
       <UsageCard
         title="오늘 응대"
