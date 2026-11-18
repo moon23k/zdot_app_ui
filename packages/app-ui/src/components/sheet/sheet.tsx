@@ -205,7 +205,7 @@ export function SheetOptions<T extends string>({
           chevron={false}
           trailing={item.value === value ? CheckGlyph : undefined}
           accessibilityRole="radio"
-          accessibilityState={{ selected: item.value === value }}
+          accessibilityState={{ checked: item.value === value }}
           onPress={() => onValueChange(item.value)}
         />
       ))}

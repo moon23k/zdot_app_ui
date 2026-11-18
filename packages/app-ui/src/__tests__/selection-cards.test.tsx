@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useState } from 'react';
-import { CircleGrid, SummaryHeader } from '../index';
+import { ChipGroup, CircleGrid, SheetOptions, SummaryHeader } from '../index';
 
 const items = [
   { value: 'a', label: '화병' },
@@ -65,8 +65,10 @@ describe('CircleGrid multiple', () => {
     expect(
       screen.getByLabelText('화병').props.accessibilityState
     ).toMatchObject({
-      selected: true,
+      checked: true,
     });
+    await fireEvent.press(screen.getByLabelText('화병'));
+    expect(onValueChange).not.toHaveBeenCalled();
     await fireEvent.press(screen.getByLabelText('포스터'));
     expect(onValueChange).toHaveBeenCalledWith('b');
   });
@@ -85,5 +87,39 @@ describe('SummaryHeader press', () => {
   it('stays static without onPress', async () => {
     await render(<SummaryHeader title="바닷가 펜션" />);
     expect(screen.queryByRole('button')).toBeNull();
+  });
+});
+
+describe('single choice reads as a checked radio', () => {
+  it('ChipGroup single marks the chosen chip checked', async () => {
+    await render(
+      <ChipGroup
+        items={[
+          { value: 'a', label: '택배' },
+          { value: 'b', label: '방문 수령' },
+        ]}
+        value="a"
+        onValueChange={() => {}}
+      />
+    );
+    const chosen = screen.getByRole('radio', { name: '택배' });
+    expect(chosen.props.accessibilityState).toMatchObject({ checked: true });
+    expect(chosen.props.accessibilityState.selected).toBeUndefined();
+  });
+
+  it('SheetOptions marks the chosen option checked', async () => {
+    await render(
+      <SheetOptions
+        items={[
+          { value: 'a', label: '최신순' },
+          { value: 'b', label: '금액순' },
+        ]}
+        value="b"
+        onValueChange={() => {}}
+      />
+    );
+    expect(
+      screen.getByRole('radio', { name: '금액순' }).props.accessibilityState
+    ).toMatchObject({ checked: true });
   });
 });

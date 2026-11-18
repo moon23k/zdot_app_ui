@@ -2,6 +2,7 @@ import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
 import { makeStyles } from '../../utils/styles';
 import { Chip, type ChipSize } from '../chip/chip';
 import { haptic } from '../../internal/haptics';
+import { nextMultiple, nextSingle } from '../../internal/selection';
 
 export type ChipGroupItem<T extends string> = {
   value: T;
@@ -55,15 +56,11 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
 
   const press = (v: T) => {
     if (props.multiple) {
-      if (props.value.includes(v)) {
-        props.onValueChange(props.value.filter((x) => x !== v));
-      } else if (props.max === undefined || props.value.length < props.max) {
-        props.onValueChange([...props.value, v]);
-      }
-    } else if (props.value === v) {
-      if (props.deselectable) props.onValueChange(null);
+      const next = nextMultiple(props.value, v, props.max);
+      if (next) props.onValueChange(next);
     } else {
-      props.onValueChange(v);
+      const next = nextSingle(props.value, v, props.deselectable);
+      if (next !== undefined) props.onValueChange(next);
     }
   };
 
@@ -83,9 +80,7 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
         count={item.count}
         disabled={item.disabled || (full && !selected)}
         accessibilityRole={props.multiple ? 'checkbox' : 'radio'}
-        accessibilityState={
-          props.multiple ? { checked: selected } : { selected }
-        }
+        accessibilityState={{ checked: selected }}
         onPress={() => {
           haptic('select');
           press(item.value);

@@ -19,6 +19,7 @@ import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { Text } from '../text/text';
 import { haptic } from '../../internal/haptics';
+import { nextMultiple, nextSingle } from '../../internal/selection';
 
 export type CircleGridItem<T extends string> = {
   value: T;
@@ -173,7 +174,7 @@ function Cell<T extends string>({
     <PressableBase
       feedback="none"
       accessibilityRole={multiple ? 'checkbox' : 'radio'}
-      accessibilityState={multiple ? { checked: on } : { selected: on }}
+      accessibilityState={{ checked: on }}
       accessibilityLabel={item.label}
       onPress={onPress}
       onPressIn={hold(true)}
@@ -208,14 +209,12 @@ export function CircleGrid<T extends string>(props: CircleGridProps<T>) {
   const isOn = (v: T) =>
     props.multiple ? props.value.includes(v) : props.value === v;
   const press = (v: T) => {
-    if (!props.multiple) {
-      props.onValueChange(v);
-      return;
-    }
-    if (props.value.includes(v)) {
-      props.onValueChange(props.value.filter((x) => x !== v));
-    } else if (props.max === undefined || props.value.length < props.max) {
-      props.onValueChange([...props.value, v]);
+    if (props.multiple) {
+      const next = nextMultiple(props.value, v, props.max);
+      if (next) props.onValueChange(next);
+    } else {
+      const next = nextSingle(props.value, v);
+      if (next) props.onValueChange(next);
     }
   };
   return (

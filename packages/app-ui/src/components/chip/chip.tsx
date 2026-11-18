@@ -93,7 +93,7 @@ export function Chip({
         accessibilityLabel ??
         (count === undefined ? undefined : `${children}, ${count}건`)
       }
-      accessibilityState={{ ...accessibilityState, selected }}
+      accessibilityState={accessibilityState ?? { selected }}
       touchHeight={HEIGHT[size]}
       style={[
         s.base,
