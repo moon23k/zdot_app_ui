@@ -1,4 +1,4 @@
-import { useState, type ComponentRef, type Ref } from 'react';
+import type { ComponentRef, Ref } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -24,11 +24,13 @@ export type PressableBaseProps = Omit<PressableProps, 'style'> & {
   ref?: Ref<ComponentRef<typeof Pressable>>;
   style?: StyleProp<ViewStyle>;
   animatedStyle?: StyleProp<AnimatedStyle<ViewStyle>>;
-  pressedStyle?: StyleProp<ViewStyle>;
   disabledStyle?: StyleProp<ViewStyle>;
   touchHeight?: number;
   feedback?: PressFeedback;
   onDisabledPress?: () => void;
+};
+
+type ButtonMotion = {
   live?: SharedValue<number>;
   nudge?: SharedValue<number>;
 };
@@ -41,7 +43,6 @@ const WIDTH_SHARE = 4;
 export function PressableBase({
   style,
   animatedStyle,
-  pressedStyle,
   disabledStyle,
   touchHeight,
   feedback,
@@ -60,11 +61,9 @@ export function PressableBase({
   children,
   ref,
   ...rest
-}: PressableBaseProps) {
+}: PressableBaseProps & ButtonMotion) {
   const t = useTheme();
-  const mode: PressFeedback =
-    feedback ?? (pressedStyle !== undefined ? 'none' : 'small');
-  const [pressed, setPressed] = useState(false);
+  const mode: PressFeedback = feedback ?? 'small';
   const progress = useSharedValue(0);
   const basis = useSharedValue(0);
   const shrinkTo = t.press.scale;
@@ -101,7 +100,6 @@ export function PressableBase({
       : undefined);
 
   const press = (into: boolean) => (event: GestureResponderEvent) => {
-    if (pressedStyle !== undefined) setPressed(into);
     if (mode !== 'none' && !disabled) {
       progress.value = withTiming(into ? 1 : 0, timing(t, 'press'));
     }
@@ -161,7 +159,6 @@ export function PressableBase({
         style,
         animatedStyle,
         motion,
-        pressed && !disabled && pressedStyle,
         disabled && (disabledStyle ?? { opacity: t.opacity.disabled }),
       ]}
     >

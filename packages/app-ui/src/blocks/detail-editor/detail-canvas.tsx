@@ -58,7 +58,7 @@ function Tap({ onPress, label, style, children }: TapProps) {
     <PressableBase
       onPress={onPress}
       accessibilityLabel={label}
-      pressedStyle={{}}
+      feedback="none"
       style={style}
     >
       {children}
@@ -352,7 +352,7 @@ export function DetailCanvas({
               <PressableBase
                 onPress={() => onSelect({ block: block.id })}
                 accessibilityLabel="블록"
-                pressedStyle={{}}
+                feedback="none"
                 style={s.fill}
               />
             ) : null}

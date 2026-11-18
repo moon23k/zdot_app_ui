@@ -72,11 +72,7 @@ const useStyles = makeStyles((t) => ({
   focused: {
     borderColor: t.colors.primaryEdge,
   },
-  invalid: {
-    borderWidth: 2,
-    paddingHorizontal: t.space[4] - 1,
-    borderColor: t.colors.danger,
-  },
+  invalid: { borderColor: t.colors.danger },
   disabled: { opacity: t.opacity.disabled, backgroundColor: t.colors.muted },
   readOnly: { borderColor: t.colors.muted, backgroundColor: t.colors.muted },
   input: {
@@ -95,11 +91,7 @@ const useStyles = makeStyles((t) => ({
     paddingLeft: t.space[1],
     color: t.colors.danger,
   },
-  warned: {
-    borderWidth: 2,
-    paddingHorizontal: t.space[4] - 1,
-    borderColor: t.colors.warningText,
-  },
+  warned: { borderColor: t.colors.warningText },
   noteRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',

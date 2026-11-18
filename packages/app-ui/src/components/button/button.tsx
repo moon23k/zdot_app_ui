@@ -27,7 +27,7 @@ export type { ButtonSize };
 
 export type ButtonProps = Omit<
   PressableBaseProps,
-  'children' | 'touchHeight' | 'live' | 'nudge' | 'onDisabledPress'
+  'children' | 'touchHeight' | 'onDisabledPress'
 > & {
   variant?: ButtonVariant;
   size?: ButtonSize;

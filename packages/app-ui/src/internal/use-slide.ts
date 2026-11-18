@@ -43,9 +43,11 @@ export function useSlide<T>(value: T | null) {
     placed.current = true;
   };
 
+  const latest = useRef(move);
+  latest.current = move;
   useEffect(() => {
-    move(true);
-  });
+    latest.current(true);
+  }, [value]);
 
   const measure = (key: T) => (event: LayoutChangeEvent) => {
     const { x: left, y: top, width: w, height: h } = event.nativeEvent.layout;
