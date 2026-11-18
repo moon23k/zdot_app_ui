@@ -61,7 +61,7 @@ export function TaskTiles({ items, style }: TaskTilesProps) {
             {item.label}
           </Text>
           <Text
-            weight="bold"
+            weight="semibold"
             tone={item.count > 0 ? 'point' : 'muted'}
             style={s.count}
           >

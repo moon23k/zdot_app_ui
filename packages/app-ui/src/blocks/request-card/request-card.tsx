@@ -60,13 +60,22 @@ export function RequestCard({
       style={[s.card, style]}
     >
       <View style={s.head}>
-        <Text variant="bodyLg" weight="bold" numberOfLines={1} style={s.name}>
+        <Text
+          variant="bodyLg"
+          weight="semibold"
+          numberOfLines={1}
+          style={s.name}
+        >
           {name}
         </Text>
         {tag ? <StatusBadge>{tag}</StatusBadge> : null}
         <View style={s.space} />
         {due ? (
-          <Text variant="label" weight="bold" tone={urgent ? 'point' : 'muted'}>
+          <Text
+            variant="label"
+            weight="semibold"
+            tone={urgent ? 'point' : 'muted'}
+          >
             {due}
           </Text>
         ) : null}
@@ -82,7 +91,7 @@ export function RequestCard({
             {meta ?? ''}
           </Text>
           {actionLabel && onAction ? (
-            <Button variant="outline" size="sm" onPress={onAction}>
+            <Button variant="secondary" size="sm" onPress={onAction}>
               {actionLabel}
             </Button>
           ) : null}

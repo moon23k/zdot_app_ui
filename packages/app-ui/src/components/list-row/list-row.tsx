@@ -38,7 +38,6 @@ export type ListRowProps = Omit<
   titleLines?: number;
   selection?: 'check' | 'radio';
   selected?: boolean;
-  leadingTone?: 'muted' | 'point';
 };
 
 const IMAGE = 48;
@@ -133,7 +132,6 @@ export function ListRow({
   titleLines = 1,
   selection,
   selected = false,
-  leadingTone = 'muted',
   onPress,
   style,
   ...rest
@@ -174,14 +172,7 @@ export function ListRow({
           ) : null}
         </Animated.View>
       ) : null}
-      {leading
-        ? renderIcon(
-            leading,
-            leadingTone === 'point'
-              ? { ...icon, color: t.colors.mutedForeground }
-              : icon
-          )
-        : null}
+      {leading ? renderIcon(leading, icon) : null}
       {image !== undefined ? (
         <Photo
           source={{ uri: image ?? '' }}

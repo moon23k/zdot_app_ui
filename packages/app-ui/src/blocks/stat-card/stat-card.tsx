@@ -60,12 +60,12 @@ export function StatCard({
         <View style={s.body}>
           {meta ? null : <Text tone="muted">{label}</Text>}
           <View style={s.value}>
-            <Text variant="title" weight="bold">
+            <Text variant="title" weight="semibold">
               {value}
             </Text>
             {hasChange ? (
               <Text
-                weight="bold"
+                weight="semibold"
                 tone={flat ? 'muted' : up ? 'danger' : 'default'}
                 style={!flat && !up && s.down}
               >

@@ -173,7 +173,7 @@ export function ListTemplate<T>({
             color: t.colors.primaryForeground,
             size: t.iconSize.md,
           })}
-          <Text weight="bold" style={s.fabText}>
+          <Text weight="semibold" style={s.fabText}>
             {floatingAction.label}
           </Text>
         </PressableBase>

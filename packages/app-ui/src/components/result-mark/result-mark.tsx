@@ -36,7 +36,7 @@ export function ResultMark({ kind, style }: ResultMarkProps) {
       {kind === 'done' ? (
         <CheckGlyph color={t.colors.foreground} size={t.iconSize.md} />
       ) : (
-        <Text variant="title" weight="bold">
+        <Text variant="title" weight="semibold">
           !
         </Text>
       )}

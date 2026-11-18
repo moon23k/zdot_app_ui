@@ -1,6 +1,6 @@
 import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
 import { makeStyles } from '../../utils/styles';
-import { Chip, type ChipSize, type ChipVariant } from '../chip/chip';
+import { Chip, type ChipSize } from '../chip/chip';
 import { haptic } from '../../internal/haptics';
 
 export type ChipGroupItem<T extends string> = {
@@ -27,7 +27,6 @@ type Multiple<T extends string> = {
 export type ChipGroupProps<T extends string> = (Single<T> | Multiple<T>) & {
   items: readonly ChipGroupItem<T>[];
   size?: ChipSize;
-  variant?: ChipVariant;
   scroll?: boolean;
   even?: boolean;
   check?: boolean;
@@ -48,7 +47,7 @@ const useStyles = makeStyles((t) => ({
 
 export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
   const s = useStyles();
-  const { items, size, variant, scroll, even, style } = props;
+  const { items, size, scroll, even, style } = props;
   const check = props.check ?? !!props.multiple;
 
   const isSelected = (v: T) =>
@@ -81,7 +80,6 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
         selected={selected}
         check={check}
         size={size}
-        variant={variant}
         count={item.count}
         disabled={item.disabled || (full && !selected)}
         accessibilityRole={props.multiple ? 'checkbox' : 'radio'}

@@ -142,7 +142,7 @@ export function EmptyState({
       </Text>
       {action ? (
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           leftIcon={action.icon}
           style={s.button}
@@ -156,7 +156,7 @@ export function EmptyState({
           {actions.map((item) => (
             <Button
               key={item.label}
-              variant="outline"
+              variant="secondary"
               size="sm"
               loading={item.loading}
               onPress={item.onPress}

@@ -56,14 +56,19 @@ export function ServiceStateBanner({
       accessibilityRole="alert"
       style={[s.root, { backgroundColor: bg }, style]}
     >
-      <Text weight="bold" style={{ color: fg }}>
+      <Text weight="semibold" style={{ color: fg }}>
         {title(state, daysLeft)}
       </Text>
       {state === 'stopped' && reason ? (
         <Text style={{ color: fg }}>사유: {reason}</Text>
       ) : null}
       {onAction ? (
-        <Button size="sm" variant="outline" onPress={onAction} style={s.start}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onPress={onAction}
+          style={s.start}
+        >
           {actionLabel ??
             (state === 'closed'
               ? '다시 시작하기'

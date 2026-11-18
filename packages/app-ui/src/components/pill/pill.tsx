@@ -1,5 +1,4 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import type { IconSlot } from '../../internal/icon';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -7,7 +6,6 @@ export type PillTone = 'neutral' | 'warning' | 'success' | 'point';
 
 export type PillProps = {
   children: string;
-  icon?: IconSlot;
   tone?: PillTone;
   style?: StyleProp<ViewStyle>;
 };

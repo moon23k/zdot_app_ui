@@ -10,7 +10,7 @@ const meta = {
 } satisfies Meta<typeof Button>;
 export default meta;
 
-const variants = ['primary', 'outline', 'ghost', 'danger'] as const;
+const variants = ['primary', 'secondary', 'ghost', 'danger'] as const;
 
 export const AllVariants: StoryObj<typeof meta> = {
   render: () => (
@@ -33,12 +33,12 @@ export const AllVariants: StoryObj<typeof meta> = {
       </Section>
       <Section title="icon · loading · disabled">
         <Row>
-          <Button variant="outline" leftIcon={SearchGlyph}>
+          <Button variant="secondary" leftIcon={SearchGlyph}>
             검색
           </Button>
           <Button loading>저장 중</Button>
           <Button disabled>비활성</Button>
-          <Button variant="outline" disabled>
+          <Button variant="secondary" disabled>
             비활성
           </Button>
         </Row>

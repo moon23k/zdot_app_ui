@@ -49,11 +49,10 @@ function Demo() {
           onValueChange={setTab}
         />
       </Section>
-      <Section title="가로 넘김 · 외곽선">
+      <Section title="가로 넘김">
         <ChipGroup<Counted>
           scroll
           size="md"
-          variant="outline"
           items={counted}
           value={tab}
           onValueChange={setTab}

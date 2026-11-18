@@ -59,7 +59,7 @@ export function ScanModal({
       >
         <View style={s.head}>
           <View style={s.title}>
-            <Text variant="title" weight="bold" accessibilityRole="header">
+            <Text variant="title" weight="semibold" accessibilityRole="header">
               {title}
             </Text>
             {progress ? (

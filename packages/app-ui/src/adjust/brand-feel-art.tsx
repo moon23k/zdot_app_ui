@@ -79,7 +79,7 @@ export function BrandFeelArt({
               <AxisRing value={axis.value} on={on} />
               <Text
                 variant="caption"
-                weight={on ? 'bold' : 'regular'}
+                weight={on ? 'semibold' : 'regular'}
                 tone={on ? 'default' : 'muted'}
               >
                 {axis.label}

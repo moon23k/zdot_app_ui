@@ -110,7 +110,7 @@ function Detail() {
         <ListSection title="톤 단계" inset>
           <ToneStrip colors={tones} />
         </ListSection>
-        <ListSection title="어울리는 컬러" boxed>
+        <ListSection title="어울리는 컬러" card>
           {palettes.map((p) => (
             <ListRow
               key={p.key}

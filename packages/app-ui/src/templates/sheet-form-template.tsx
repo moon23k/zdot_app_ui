@@ -106,7 +106,11 @@ export function SheetBlock({
       <View style={s.head}>
         <View style={s.lead}>
           {lead}
-          <Text weight="bold" accessibilityRole="header" style={s.blockTitle}>
+          <Text
+            weight="semibold"
+            accessibilityRole="header"
+            style={s.blockTitle}
+          >
             {title}
           </Text>
         </View>
@@ -151,7 +155,7 @@ export function SheetFormTemplate({
           </View>
           <View style={s.titleRow}>
             <Text
-              weight="bold"
+              weight="semibold"
               numberOfLines={1}
               accessibilityRole="header"
               style={[s.title, titleTag ? s.shrink : null]}

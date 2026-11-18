@@ -124,7 +124,7 @@ export function SummaryHeader({
         ) : null}
         {avatar !== undefined ? <Avatar size="md" uri={avatar} /> : null}
         <View style={s.grow}>
-          <Text variant="title" weight="bold" numberOfLines={1}>
+          <Text variant="title" weight="semibold" numberOfLines={1}>
             {title}
           </Text>
           {subtitle ? (
@@ -151,7 +151,7 @@ export function SummaryHeader({
           {actions.map((item) => (
             <Button
               key={item.key}
-              variant="outline"
+              variant="secondary"
               size="sm"
               style={s.side}
               onPress={item.onPress}
@@ -195,7 +195,7 @@ export function MetricCard({
           </Text>
           <Text
             variant={emphasis ? 'screenTitle' : 'title'}
-            weight="bold"
+            weight="semibold"
             tone={emphasis ? 'point' : undefined}
           >
             {value}
@@ -207,7 +207,7 @@ export function MetricCard({
           ) : null}
         </View>
         {aside ? (
-          <Text variant="bodyLg" weight="bold" tone="point">
+          <Text variant="bodyLg" weight="semibold" tone="point">
             {aside}
           </Text>
         ) : null}
@@ -240,7 +240,7 @@ export function ValueTiles({ items }: ValueTilesProps) {
             </Text>
             <Text
               variant="bodyLg"
-              weight="bold"
+              weight="semibold"
               tone={item.emphasis ? 'point' : undefined}
               numberOfLines={1}
             >
@@ -303,7 +303,7 @@ export function TimeSpanCard({
           <Text variant="label" tone="muted">
             {startLabel}
           </Text>
-          <Text variant="title" weight="bold">
+          <Text variant="title" weight="semibold">
             {start}
           </Text>
         </PressableBase>
@@ -323,7 +323,7 @@ export function TimeSpanCard({
           <Text variant="label" tone="muted">
             {endLabel}
           </Text>
-          <Text variant="title" weight="bold">
+          <Text variant="title" weight="semibold">
             {end}
           </Text>
         </PressableBase>
@@ -402,7 +402,7 @@ export function ToggleCard({
     <Panel>
       <View style={s.between}>
         <View style={s.grow}>
-          <Text variant="bodyLg" weight="bold">
+          <Text variant="bodyLg" weight="semibold">
             {title}
           </Text>
           {description ? (

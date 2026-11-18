@@ -15,13 +15,10 @@ import { makeStyles } from '../../utils/styles';
 
 export type ChipSize = 'sm' | 'md' | 'lg';
 
-export type ChipVariant = 'solid' | 'outline';
-
 export type ChipProps = Omit<PressableBaseProps, 'children' | 'touchHeight'> & {
   selected?: boolean;
   check?: boolean;
   size?: ChipSize;
-  variant?: ChipVariant;
   leftIcon?: IconSlot;
   count?: number;
   children: string;
@@ -41,7 +38,6 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
   },
   lg: { paddingHorizontal: t.space[4] },
-  outlineSelected: { borderColor: t.colors.primaryTint },
   mark: {
     flexDirection: 'row',
     overflow: 'hidden',
@@ -60,7 +56,6 @@ export function Chip({
   selected = false,
   check = false,
   size = 'sm',
-  variant = 'solid',
   leftIcon,
   count,
   children,
@@ -71,7 +66,6 @@ export function Chip({
 }: ChipProps) {
   const t = useTheme();
   const s = useStyles();
-  const outline = variant === 'outline';
   const color = selected ? t.colors.primary : t.colors.foreground;
   const off = t.colors.muted;
   const on = t.colors.primaryTint;
@@ -105,7 +99,6 @@ export function Chip({
         s.base,
         { height: HEIGHT[size], minWidth: MIN_WIDTH[size] },
         size === 'lg' && s.lg,
-        outline && selected && s.outlineSelected,
         style,
       ]}
       animatedStyle={face}

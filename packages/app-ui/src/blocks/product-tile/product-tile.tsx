@@ -37,7 +37,7 @@ export function ProductTile({
       <Photo source={{ uri: image ?? '' }} seed={name} />
       <View style={s.body}>
         <Text numberOfLines={1}>{name}</Text>
-        <Text weight="bold">{price}</Text>
+        <Text weight="semibold">{price}</Text>
         {state ? (
           <Text variant="caption" tone="muted">
             {state}

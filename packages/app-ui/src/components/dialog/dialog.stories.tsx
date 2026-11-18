@@ -17,13 +17,13 @@ function Demo() {
 
   return (
     <Row>
-      <Button variant="outline" onPress={() => setBasic(true)}>
+      <Button variant="secondary" onPress={() => setBasic(true)}>
         기본
       </Button>
-      <Button variant="outline" onPress={() => setDanger(true)}>
+      <Button variant="secondary" onPress={() => setDanger(true)}>
         삭제 확인
       </Button>
-      <Button variant="outline" onPress={() => setSheet(true)}>
+      <Button variant="secondary" onPress={() => setSheet(true)}>
         Sheet 위 Dialog
       </Button>
 

@@ -62,7 +62,7 @@ export function StructurePicker<T extends string>({
             </View>
             <Text
               variant="caption"
-              weight={on ? 'bold' : undefined}
+              weight={on ? 'semibold' : undefined}
               tone={on ? 'default' : 'muted'}
             >
               {item.label}

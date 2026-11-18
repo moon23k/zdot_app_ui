@@ -186,7 +186,6 @@ export function ListSection({
   action,
   inset,
   card,
-  boxed,
   children,
 }: {
   title?: string;
@@ -194,24 +193,16 @@ export function ListSection({
   action?: ReactNode;
   inset?: boolean;
   card?: boolean;
-  boxed?: boolean;
   children: ReactNode;
 }) {
   const s = useStyles();
-  if (boxed) {
-    return (
-      <ListSection card title={title} count={count} action={action}>
-        {children}
-      </ListSection>
-    );
-  }
   if (card) {
     const rows = Children.toArray(children);
     return (
       <View style={s.card}>
         {title ? (
           <View style={s.cardHead}>
-            <Text variant="body" weight="bold" accessibilityRole="header">
+            <Text variant="body" weight="semibold" accessibilityRole="header">
               {title}
               {count !== undefined ? (
                 <Text variant="body" tone="muted">

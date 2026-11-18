@@ -191,7 +191,7 @@ function Cell<T extends string>({
       </View>
       <Text
         variant="label"
-        weight={on ? 'bold' : 'regular'}
+        weight={on ? 'semibold' : 'regular'}
         style={s.label}
         numberOfLines={2}
       >

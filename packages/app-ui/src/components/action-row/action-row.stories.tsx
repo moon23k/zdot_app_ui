@@ -13,7 +13,7 @@ export default meta;
 export const Reply: StoryObj<typeof meta> = {
   render: () => (
     <ActionRow>
-      <Button variant="outline" size="sm" leftIcon={PencilGlyph}>
+      <Button variant="secondary" size="sm" leftIcon={PencilGlyph}>
         고치기
       </Button>
       <Button size="sm" leftIcon={SendGlyph}>

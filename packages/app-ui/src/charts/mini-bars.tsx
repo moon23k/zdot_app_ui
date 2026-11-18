@@ -67,7 +67,7 @@ export function MiniBars({
               key={i}
               variant="caption"
               tone={i === last ? 'default' : 'muted'}
-              weight={i === last ? 'bold' : undefined}
+              weight={i === last ? 'semibold' : undefined}
               numberOfLines={1}
               style={[s.label, { width: barWidth }]}
               allowFontScaling={false}

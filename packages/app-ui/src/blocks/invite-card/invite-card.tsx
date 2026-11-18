@@ -84,7 +84,7 @@ export function InviteCard({
     const content = (
       <>
         <View style={s.small}>
-          <Text variant="bodyLg" weight="bold">
+          <Text variant="bodyLg" weight="semibold">
             {initial(title)}
           </Text>
         </View>

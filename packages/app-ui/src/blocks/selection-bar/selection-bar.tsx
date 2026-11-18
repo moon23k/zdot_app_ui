@@ -119,7 +119,7 @@ export function SelectionBar({
       >
         <View style={s.info} accessibilityLiveRegion="polite">
           <Animated.View style={roll}>
-            <Text weight="bold" style={s.count} numberOfLines={1}>
+            <Text weight="semibold" style={s.count} numberOfLines={1}>
               {shown}개 선택됨
             </Text>
           </Animated.View>

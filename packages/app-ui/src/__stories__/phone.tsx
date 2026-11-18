@@ -231,7 +231,7 @@ export function SitePreview({
         </Text>
       </View>
       <View style={s.nav}>
-        <Text variant="label" weight="bold">
+        <Text variant="label" weight="semibold">
           {name}
         </Text>
         <Text variant="label">☰</Text>
@@ -246,7 +246,7 @@ export function SitePreview({
       </View>
       {Array.from({ length: sections }).map((_, i) => (
         <View key={i} style={s.block}>
-          <Text variant="label" weight="bold">
+          <Text variant="label" weight="semibold">
             새로 들어온 상품
           </Text>
           <View style={s.grid}>

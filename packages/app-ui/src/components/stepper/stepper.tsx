@@ -65,7 +65,7 @@ export function Stepper({
         >
           <Text variant="bodyLg">−</Text>
         </PressableBase>
-        <Text variant="bodyLg" weight="bold" style={s.value}>
+        <Text variant="bodyLg" weight="semibold" style={s.value}>
           {`${value}${suffix}`}
         </Text>
         <PressableBase

@@ -9,7 +9,7 @@ function Demo() {
   const [open, setOpen] = useState(false);
   return (
     <Row>
-      <Button variant="outline" onPress={() => setOpen(true)}>
+      <Button variant="secondary" onPress={() => setOpen(true)}>
         스캔 열기
       </Button>
       <ScanModal open={open} onClose={() => setOpen(false)} title="송장 스캔">

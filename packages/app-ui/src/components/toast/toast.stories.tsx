@@ -11,13 +11,13 @@ function Demo() {
   return (
     <Row>
       <Button
-        variant="outline"
+        variant="secondary"
         onPress={() => toast.show({ message: '임시 저장했어요' })}
       >
         neutral
       </Button>
       <Button
-        variant="outline"
+        variant="secondary"
         onPress={() =>
           toast.show({ message: '정산 계좌를 등록했어요', tone: 'success' })
         }
@@ -25,7 +25,7 @@ function Demo() {
         success
       </Button>
       <Button
-        variant="outline"
+        variant="secondary"
         onPress={() =>
           toast.show({
             message: '사진 업로드에 실패했어요',
@@ -37,7 +37,7 @@ function Demo() {
         danger (4초)
       </Button>
       <Button
-        variant="outline"
+        variant="secondary"
         onPress={() =>
           toast.show({
             message: '옵션 삭제됨',
@@ -47,7 +47,7 @@ function Demo() {
       >
         실행 취소
       </Button>
-      <Button variant="outline" onPress={() => setSheet(true)}>
+      <Button variant="secondary" onPress={() => setSheet(true)}>
         Sheet 안에서
       </Button>
       <Sheet open={sheet} onOpenChange={setSheet} title="Toast 겹침 확인">

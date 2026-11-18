@@ -72,7 +72,7 @@ export function StoreSheet({
             >
               <StoreMark name={store.name} size="lg" />
               <View style={s.body}>
-                <Text variant="bodyLg" weight="bold" numberOfLines={1}>
+                <Text variant="bodyLg" weight="semibold" numberOfLines={1}>
                   {store.name}
                 </Text>
                 {store.description ? (

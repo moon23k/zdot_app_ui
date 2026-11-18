@@ -88,7 +88,7 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
       </Svg>
       <Text
         variant="caption"
-        weight={on ? 'bold' : 'medium'}
+        weight={on ? 'semibold' : 'medium'}
         tone={on ? 'default' : 'muted'}
         style={s.value}
       >
@@ -136,7 +136,7 @@ export function DialStrip({
             <Ring item={item} on={on} />
             <Text
               variant="caption"
-              weight={on ? 'bold' : 'regular'}
+              weight={on ? 'semibold' : 'regular'}
               tone={on ? 'default' : 'muted'}
             >
               {item.label}

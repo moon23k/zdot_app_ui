@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { Pill } from '../../components/pill/pill';
-import { ClockGlyph, ScanGlyph } from '../../internal/glyphs';
+import { ScanGlyph } from '../../internal/glyphs';
 import { OrderBlock, SwipeAction } from './order-block';
 
 const meta = {
@@ -11,11 +11,7 @@ const meta = {
     meta: '박서연 · 2개',
     amount: '71,000원',
     image: null,
-    badge: (
-      <Pill icon={ClockGlyph} tone="warning">
-        오늘까지 발송
-      </Pill>
-    ),
+    badge: <Pill tone="warning">오늘까지 발송</Pill>,
     action: { label: '송장 입력', icon: ScanGlyph, onPress: () => {} },
     onPress: () => {},
   },

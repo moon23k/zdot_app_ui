@@ -20,7 +20,6 @@ function Demo() {
           <ChipGroup
             multiple
             size="lg"
-            variant="outline"
             items={items}
             value={first}
             onValueChange={setFirst}
@@ -30,7 +29,6 @@ function Demo() {
           <ChipGroup
             multiple
             size="lg"
-            variant="outline"
             items={items}
             value={second}
             onValueChange={setSecond}

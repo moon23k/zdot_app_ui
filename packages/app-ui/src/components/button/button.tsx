@@ -16,10 +16,14 @@ import {
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
-import type { ButtonSize, ButtonVariant } from '../../theme/contract';
+import type {
+  ButtonSize,
+  ButtonVariant as ContractVariant,
+} from '../../theme/contract';
 import { haptic } from '../../internal/haptics';
 
-export type { ButtonSize, ButtonVariant };
+export type ButtonVariant = Exclude<ContractVariant, 'outline'>;
+export type { ButtonSize };
 
 export type ButtonProps = Omit<
   PressableBaseProps,
@@ -79,7 +83,6 @@ const useStyles = makeStyles((t) => ({
   primary: { backgroundColor: t.colors.primary },
   tint: { backgroundColor: t.colors.primaryTint },
   secondary: { backgroundColor: t.colors.muted },
-  outline: { backgroundColor: t.colors.muted },
   bare: { paddingHorizontal: 0 },
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: t.colors.danger },
@@ -123,7 +126,6 @@ export function Button({
   const color = {
     primary: tint ? t.colors.primary : t.colors.primaryForeground,
     secondary: t.colors.title,
-    outline: t.colors.title,
     ghost: t.colors.title,
     danger: t.colors.dangerForeground,
   }[variant];
@@ -199,8 +201,7 @@ export function Button({
             style={[
               s.label,
               s[`${size}Label`],
-              (variant === 'secondary' || variant === 'outline' || point) &&
-                s.quiet,
+              (variant === 'secondary' || point) && s.quiet,
               { color: ink },
             ]}
           >

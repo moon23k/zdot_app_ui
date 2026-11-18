@@ -77,7 +77,7 @@ export function StoreMark({ name, size = 'sm', style }: StoreMarkProps) {
         style,
       ]}
     >
-      <Text weight="bold" variant={size === 'lg' ? 'bodyLg' : 'label'}>
+      <Text weight="semibold" variant={size === 'lg' ? 'bodyLg' : 'label'}>
         {name.trim().slice(0, 1)}
       </Text>
     </View>
@@ -96,7 +96,7 @@ export function StoreHeader({
   const store = (
     <>
       <StoreMark name={name} />
-      <Text variant="bodyLg" weight="bold" numberOfLines={1} style={s.name}>
+      <Text variant="bodyLg" weight="semibold" numberOfLines={1} style={s.name}>
         {name}
       </Text>
       {onPress ? (

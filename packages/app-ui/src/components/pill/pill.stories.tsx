@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { Row } from '../../__stories__/helpers';
-import { ClockGlyph } from '../../internal/glyphs';
 import { Pill } from './pill';
 
 const meta = {
@@ -13,10 +12,8 @@ export default meta;
 export const Deadlines: StoryObj<typeof meta> = {
   render: () => (
     <Row>
-      <Pill icon={ClockGlyph} tone="warning">
-        오늘 18:00까지
-      </Pill>
-      <Pill icon={ClockGlyph}>D-3 발송</Pill>
+      <Pill tone="warning">오늘 18:00까지</Pill>
+      <Pill>D-3 발송</Pill>
       <Pill>단순 변심</Pill>
     </Row>
   ),

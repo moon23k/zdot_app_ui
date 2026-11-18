@@ -67,7 +67,7 @@ function ResultDemo() {
   return (
     <Section title="일괄 결과 (Sheet 안 내용 예시)">
       <View>
-        <Text weight="bold" variant="bodyLg">
+        <Text weight="semibold" variant="bodyLg">
           3건 중 2건 등록했어요
         </Text>
         <ListRow

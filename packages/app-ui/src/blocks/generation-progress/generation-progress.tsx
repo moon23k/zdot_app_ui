@@ -122,7 +122,7 @@ export function GenerationProgress({
     <Card style={style}>
       <Text
         variant="bodyLg"
-        weight="bold"
+        weight="semibold"
         accessibilityRole="header"
         accessibilityLiveRegion="polite"
       >
@@ -166,7 +166,7 @@ export function GenerationProgress({
         </Text>
       ) : null}
       {status === 'failed' && onRetry ? (
-        <Button variant="outline" onPress={onRetry} style={s.start}>
+        <Button variant="secondary" onPress={onRetry} style={s.start}>
           다시 시도
         </Button>
       ) : null}

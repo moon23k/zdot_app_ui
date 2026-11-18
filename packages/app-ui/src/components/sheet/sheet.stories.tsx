@@ -13,13 +13,13 @@ function Demo() {
   const [carrier, setCarrier] = useState<string | null>('cj');
   return (
     <Row>
-      <Button variant="outline" onPress={() => setMemo(true)}>
+      <Button variant="secondary" onPress={() => setMemo(true)}>
         메모 입력 (키보드)
       </Button>
-      <Button variant="outline" onPress={() => setConfirm(true)}>
+      <Button variant="secondary" onPress={() => setConfirm(true)}>
         닫기 막힘
       </Button>
-      <Button variant="outline" onPress={() => setPick(true)}>
+      <Button variant="secondary" onPress={() => setPick(true)}>
         하나 고르기
       </Button>
 

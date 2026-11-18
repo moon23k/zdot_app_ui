@@ -90,7 +90,7 @@ export function LogoCandidateGrid({
               {onRetry ? (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="secondary"
                   accessibilityLabel="로고 다시 만들기"
                   onPress={() => onRetry(c.id)}
                   style={s.retry}
