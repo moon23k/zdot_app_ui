@@ -16,6 +16,7 @@ export type CompareSliderProps = {
 };
 
 const KNOB = 32;
+const STEP = 0.1;
 
 const useStyles = makeStyles((t) => ({
   root: { width: '100%', overflow: 'hidden', backgroundColor: t.colors.muted },
@@ -86,8 +87,15 @@ export function CompareSlider({
   return (
     <View
       onLayout={layout}
+      accessible
       accessibilityLabel={label}
       accessibilityRole="adjustable"
+      accessibilityValue={{ min: 0, max: 100, now: Math.round(split * 100) }}
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      onAccessibilityAction={(e) => {
+        const step = e.nativeEvent.actionName === 'increment' ? STEP : -STEP;
+        setSplit((now) => Math.min(1, Math.max(0, now + step)));
+      }}
       style={[s.root, { aspectRatio }]}
       {...pan.panHandlers}
     >
