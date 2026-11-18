@@ -21,6 +21,7 @@ import Animated, {
   LinearTransition,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import { FieldLabel } from '../../internal/field-label';
 import { AlertGlyph } from '../../internal/glyphs';
 import { PopCheck } from '../../internal/pop-check';
 import { renderIcon, type IconSlot } from '../../internal/icon';
@@ -44,18 +45,12 @@ export type FieldProps = Omit<TextInputProps, 'style'> & {
   onTrailingPress?: () => void;
   trailingLabel?: string;
   valid?: boolean;
+  showCount?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.space[2] },
-  label: {
-    fontFamily: t.fontFamily,
-    fontSize: t.typography.body.fontSize,
-    lineHeight: t.typography.body.lineHeight,
-    fontWeight: '500',
-    color: t.colors.foreground,
-  },
   frame: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,7 +95,6 @@ const useStyles = makeStyles((t) => ({
     paddingLeft: t.space[1],
     color: t.colors.danger,
   },
-  errorLabel: { color: t.colors.danger },
   warned: {
     borderWidth: 2,
     paddingHorizontal: t.space[4] - 1,
@@ -142,6 +136,7 @@ export function Field({
   onTrailingPress,
   trailingLabel,
   valid,
+  showCount = false,
   style,
   editable = true,
   onFocus,
@@ -208,14 +203,15 @@ export function Field({
       layout={LinearTransition.duration(t.motion.duration.press)}
       style={[s.root, style]}
     >
-      {label ? (
-        <Text
-          maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.label, !!error && s.errorLabel]}
-        >
-          {label}
-        </Text>
-      ) : null}
+      <FieldLabel
+        label={label}
+        count={
+          showCount && input.maxLength !== undefined
+            ? `${(input.value ?? '').length}/${input.maxLength}`
+            : undefined
+        }
+        error={!!error}
+      />
       <Animated.View
         style={[
           s.frame,

@@ -10,6 +10,7 @@ import {
   GenerationProgress,
   OrderCard,
   orderStatusLabel,
+  PhotoSlot,
   PlanCard,
   ProductRow,
   ProgressBar,
@@ -152,6 +153,55 @@ describe('Field', () => {
     );
     expect(screen.getByText('형식 오류')).toBeTruthy();
     expect(screen.queryByText('중복이에요')).toBeNull();
+  });
+});
+
+describe('Field count', () => {
+  it('shows length over maxLength only with showCount', async () => {
+    const { rerender } = await render(
+      <Field label="제목" value="겨울 햇차" maxLength={20} />
+    );
+    expect(screen.queryByText('5/20')).toBeNull();
+    await rerender(
+      <Field label="제목" value="겨울 햇차" maxLength={20} showCount />
+    );
+    expect(screen.getByText('제목')).toBeTruthy();
+    expect(screen.getByText('5/20')).toBeTruthy();
+  });
+});
+
+describe('PhotoSlot', () => {
+  it('adds when empty and removes when filled, with no extra text', async () => {
+    const onAdd = jest.fn();
+    const onRemove = jest.fn();
+    const { rerender, toJSON } = await render(
+      <PhotoSlot label="사진" photo={null} onAdd={onAdd} />
+    );
+    await fireEvent.press(screen.getByLabelText('사진 추가'));
+    expect(onAdd).toHaveBeenCalled();
+    await rerender(
+      <PhotoSlot
+        label="사진"
+        photo={{ uri: 'https://example.com/a.jpg' }}
+        onRemove={onRemove}
+      />
+    );
+    await fireEvent.press(screen.getByLabelText('사진 삭제'));
+    expect(onRemove).toHaveBeenCalled();
+    expect(screen.queryByText('대표')).toBeNull();
+    expect(JSON.stringify(toJSON())).not.toContain('/1');
+  });
+
+  it('retries a failed upload', async () => {
+    const onRetry = jest.fn();
+    await render(
+      <PhotoSlot
+        photo={{ uri: 'https://example.com/a.jpg', status: 'failed' }}
+        onRetry={onRetry}
+      />
+    );
+    await fireEvent.press(screen.getByLabelText('사진 업로드 실패, 다시 시도'));
+    expect(onRetry).toHaveBeenCalled();
   });
 });
 

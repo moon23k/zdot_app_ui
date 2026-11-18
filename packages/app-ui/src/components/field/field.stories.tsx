@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
+import { useState } from 'react';
 import { Text } from 'react-native';
 import { Column, demoProducts, demoStore } from '../../__stories__/helpers';
 import { Field } from './field';
@@ -9,6 +10,20 @@ const meta = {
   args: { label: '상품명', placeholder: `예) ${demoProducts.shirt}` },
 } satisfies Meta<typeof Field>;
 export default meta;
+
+function Counted({ multiline = false }: { multiline?: boolean }) {
+  const [value, setValue] = useState(multiline ? demoStore.tagline : '');
+  return (
+    <Field
+      label={multiline ? '내용' : '제목'}
+      value={value}
+      onChangeText={setValue}
+      maxLength={multiline ? 60 : 20}
+      multiline={multiline}
+      showCount
+    />
+  );
+}
 
 export const AllVariants: StoryObj<typeof meta> = {
   render: () => (
@@ -25,6 +40,8 @@ export const AllVariants: StoryObj<typeof meta> = {
         maxLength={40}
         defaultValue={demoStore.tagline}
       />
+      <Counted />
+      <Counted multiline />
       <Field
         label="가격"
         keyboardType="number-pad"
