@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, type StyleProp, type ViewStyle } from 'react-native';
+import { useNativeDriver } from '../../internal/overlay';
 import { useReducedMotion } from '../../internal/use-reduced-motion';
 import { useTheme } from '../../theme/theme-provider';
 
@@ -26,7 +27,7 @@ export function ProgressCircle({
         toValue: 1,
         duration: 900,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver,
       })
     );
     loop.start();
