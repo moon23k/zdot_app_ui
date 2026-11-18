@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react-native';
 import { StyleSheet } from 'react-native';
 import {
   DetailTemplate,
+  ListRow,
   OrderBlock,
   PressableBase,
   ThumbStrip,
@@ -53,6 +54,18 @@ describe('rows without a press handler', () => {
   it('OrderBlock without onPress is not a disabled button', async () => {
     await render(<OrderBlock title="머그컵" meta="1개" amount="12,000원" />);
     expect(screen.queryAllByRole('button')).toHaveLength(0);
+  });
+
+  it('ListRow without onPress keeps testID and accessibilityLabel', async () => {
+    await render(
+      <ListRow
+        title="배송비"
+        testID="fee-row"
+        accessibilityLabel="배송비 3,000원"
+      />
+    );
+    expect(screen.getByTestId('fee-row')).toBeTruthy();
+    expect(screen.getByLabelText('배송비 3,000원')).toBeTruthy();
   });
 
   it('keeps a real disabled button readable as disabled', async () => {

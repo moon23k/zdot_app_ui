@@ -236,8 +236,13 @@ export function ListRow({
   );
 
   if (!onPress) {
+    const { testID, accessibilityLabel, accessibilityHint, accessible } = rest;
     return (
       <View
+        testID={testID}
+        accessible={accessible ?? (accessibilityLabel ? true : undefined)}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
         style={[
           s.row,
           flush && s.flush,
