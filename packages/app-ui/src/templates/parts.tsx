@@ -7,7 +7,8 @@ import {
 } from '../components/button/button';
 import { Text } from '../components/text/text';
 import { AlertGlyph } from '../internal/glyphs';
-import type { IconSlot } from '../internal/icon';
+import { renderIcon, type IconSlot } from '../internal/icon';
+import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 
@@ -79,7 +80,74 @@ const useStyles = makeStyles((t) => ({
   },
   side: { flex: 1 },
   main: { flex: 2 },
+  headerIcon: {
+    width: t.minTouchSize,
+    height: t.minTouchSize,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mirror: { transform: [{ scaleX: -1 }] },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: t.space[2],
+  },
+  dot: {
+    width: t.space[2],
+    height: t.space[2],
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.input,
+  },
+  dotOn: { width: t.space[5], backgroundColor: t.colors.primary },
 }));
+
+export function HeaderIconButton({
+  icon,
+  label,
+  onPress,
+  size,
+  mirror = false,
+}: {
+  icon: IconSlot;
+  label: string;
+  onPress: () => void;
+  size?: number;
+  mirror?: boolean;
+}) {
+  const t = useTheme();
+  const s = useStyles();
+  return (
+    <PressableBase
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={[s.headerIcon, mirror && s.mirror]}
+    >
+      {renderIcon(icon, {
+        color: t.colors.foreground,
+        size: size ?? t.iconSize.md,
+      })}
+    </PressableBase>
+  );
+}
+
+export function PageDots({
+  keys,
+  index,
+  style,
+}: {
+  keys: readonly string[];
+  index: number;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const s = useStyles();
+  return (
+    <View style={[s.dots, style]}>
+      {keys.map((key, i) => (
+        <View key={key} style={[s.dot, i === index && s.dotOn]} />
+      ))}
+    </View>
+  );
+}
 
 export function ActionButton({
   action,

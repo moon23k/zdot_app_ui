@@ -11,6 +11,7 @@ import { Text } from '../components/text/text';
 import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
+import { PageDots } from './parts';
 
 export type IntroPage = {
   key: string;
@@ -53,18 +54,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
     paddingTop: t.layout.footerTop,
   },
-  dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: t.space[2],
-  },
-  dot: {
-    width: t.space[2],
-    height: t.space[2],
-    borderRadius: t.radius.full,
-    backgroundColor: t.colors.input,
-  },
-  dotOn: { width: t.space[5], backgroundColor: t.colors.primary },
 }));
 
 export function IntroTemplate({
@@ -139,11 +128,7 @@ export function IntroTemplate({
           { paddingBottom: t.layout.footerBottom + bottomInset },
         ]}
       >
-        <View style={s.dots}>
-          {pages.map((page, i) => (
-            <View key={page.key} style={[s.dot, i === index && s.dotOn]} />
-          ))}
-        </View>
+        <PageDots keys={pages.map((page) => page.key)} index={index} />
         <Button size="lg" onPress={next}>
           {last ? doneLabel : nextLabel}
         </Button>

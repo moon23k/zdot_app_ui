@@ -11,7 +11,7 @@ import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import { FlushRowContext } from '../internal/flush-row';
-import { BottomBar, type TemplateAction } from './parts';
+import { BottomBar, HeaderIconButton, type TemplateAction } from './parts';
 
 export type SheetFormTemplateProps = {
   title: string;
@@ -52,13 +52,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
   end: { alignItems: 'flex-end', paddingHorizontal: t.space[3] },
-  back: {
-    width: t.minTouchSize,
-    height: t.minTouchSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-    transform: [{ scaleX: -1 }],
-  },
   titleRow: {
     flex: 1,
     flexDirection: 'row',
@@ -144,13 +137,13 @@ export function SheetFormTemplate({
         <View style={s.header}>
           <View style={s.side}>
             {onBack ? (
-              <PressableBase
-                accessibilityLabel={backLabel}
+              <HeaderIconButton
+                icon={ChevronGlyph}
+                label={backLabel}
                 onPress={onBack}
-                style={s.back}
-              >
-                <ChevronGlyph color={t.colors.foreground} size={24} />
-              </PressableBase>
+                size={24}
+                mirror
+              />
             ) : null}
           </View>
           <View style={s.titleRow}>

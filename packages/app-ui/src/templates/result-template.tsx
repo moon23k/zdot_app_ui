@@ -14,7 +14,9 @@ import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import {
   BottomBar,
+  HeaderIconButton,
   Notice,
+  PageDots,
   type TemplateAction,
   type TemplateNotice,
 } from './parts';
@@ -66,19 +68,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: t.space[2],
-    paddingVertical: t.layout.groupGap,
-  },
-  dot: {
-    width: t.space[2],
-    height: t.space[2],
-    borderRadius: t.radius.full,
-    backgroundColor: t.colors.input,
-  },
-  dotOn: { width: t.space[5], backgroundColor: t.colors.primary },
+  dots: { paddingVertical: t.layout.groupGap },
   progress: { flex: 1, paddingHorizontal: t.layout.screenX },
   notice: { paddingBottom: t.layout.groupGap },
   viewer: { flex: 1, backgroundColor: t.colors.background },
@@ -88,12 +78,6 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     paddingHorizontal: t.space[1],
     gap: t.space[1],
-  },
-  close: {
-    width: t.minTouchSize,
-    height: t.minTouchSize,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   full: { flex: 1 },
 }));
@@ -115,20 +99,17 @@ function Viewer({
   closeLabel: string;
   insets: { top: number; bottom: number };
 }) {
-  const t = useTheme();
   const s = useStyles();
   const [width, setWidth] = useState(0);
   const current = previews[index];
   return (
     <View style={[s.viewer, { paddingTop: insets.top }]}>
       <View style={s.viewerHead}>
-        <PressableBase
+        <HeaderIconButton
+          icon={CloseGlyph}
+          label={closeLabel}
           onPress={onClose}
-          accessibilityLabel={closeLabel}
-          style={s.close}
-        >
-          <CloseGlyph color={t.colors.foreground} size={t.iconSize.md} />
-        </PressableBase>
+        />
         <Text variant="bodyLg" weight="semibold" accessibilityRole="header">
           {current
             ? `${current.label} · ${index + 1} / ${previews.length}`
@@ -245,14 +226,11 @@ export function ResultTemplate({
               ))}
             </ScrollView>
             {previews.length > 1 ? (
-              <View style={s.dots}>
-                {previews.map((preview, i) => (
-                  <View
-                    key={preview.key}
-                    style={[s.dot, i === index ? s.dotOn : null]}
-                  />
-                ))}
-              </View>
+              <PageDots
+                keys={previews.map((preview) => preview.key)}
+                index={index}
+                style={s.dots}
+              />
             ) : null}
           </>
         )}

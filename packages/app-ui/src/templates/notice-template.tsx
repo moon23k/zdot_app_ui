@@ -3,10 +3,9 @@ import { ScrollView, View } from 'react-native';
 import { Checkbox } from '../components/checkbox/checkbox';
 import { Text } from '../components/text/text';
 import { CloseGlyph } from '../internal/glyphs';
-import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
-import { ActionButton, type TemplateAction } from './parts';
+import { ActionButton, HeaderIconButton, type TemplateAction } from './parts';
 
 export type NoticeConsent = {
   label: string;
@@ -35,12 +34,6 @@ const useStyles = makeStyles((t) => ({
     height: t.headerHeight,
     justifyContent: 'center',
     paddingHorizontal: t.space[1],
-  },
-  close: {
-    width: t.minTouchSize,
-    height: t.minTouchSize,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   body: {
     flexGrow: 1,
@@ -81,14 +74,11 @@ export function NoticeTemplate({
     <View style={[s.root, { paddingTop: topInset }]}>
       <View style={s.header}>
         {onClose ? (
-          <PressableBase
-            style={s.close}
-            accessibilityRole="button"
-            accessibilityLabel={closeLabel}
+          <HeaderIconButton
+            icon={CloseGlyph}
+            label={closeLabel}
             onPress={onClose}
-          >
-            <CloseGlyph size={t.iconSize.md} color={t.colors.foreground} />
-          </PressableBase>
+          />
         ) : null}
       </View>
       <ScrollView contentContainerStyle={[s.body, center && s.center]}>
