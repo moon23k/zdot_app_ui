@@ -34,7 +34,6 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.input,
     backgroundColor: t.colors.surface,
   },
-  off: { opacity: t.opacity.disabled },
   value: { minWidth: SIZE, textAlign: 'center' },
 }));
 
@@ -61,7 +60,7 @@ export function Stepper({
           disabled={!down}
           onPress={() => onValueChange(value - step)}
           feedback="small"
-          style={[s.button, !down && s.off]}
+          style={s.button}
         >
           <Text variant="bodyLg">−</Text>
         </PressableBase>
@@ -74,7 +73,7 @@ export function Stepper({
           disabled={!up}
           onPress={() => onValueChange(value + step)}
           feedback="small"
-          style={[s.button, !up && s.off]}
+          style={s.button}
         >
           <Text variant="bodyLg">+</Text>
         </PressableBase>

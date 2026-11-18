@@ -76,7 +76,6 @@ export function HeaderButton({
       disabled={disabled}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityState={{ disabled }}
       style={[s.action, s.text]}
     >
       <Text
