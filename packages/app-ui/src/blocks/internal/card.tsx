@@ -1,11 +1,7 @@
 import type { ReactNode } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import { CheckGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
-import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
-
-const MARK = 22;
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -16,69 +12,29 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.border,
     backgroundColor: t.colors.surface,
   },
-  selected: {
-    paddingRight: MARK + t.space[3],
-    borderColor: t.colors.primaryTint,
-    backgroundColor: t.colors.primaryTint,
-  },
-  mark: {
-    position: 'absolute',
-    top: t.space[2],
-    right: t.space[2],
-    width: MARK,
-    height: MARK,
-    borderRadius: MARK / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: t.colors.primary,
-  },
 }));
 
 export function Card({
   children,
   onPress,
-  onLongPress,
-  selected,
   accessibilityLabel,
   style,
 }: {
   children: ReactNode;
   onPress?: () => void;
-  onLongPress?: () => void;
-  selected?: boolean;
   accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
 }) {
-  const t = useTheme();
   const s = useStyles();
-  const frame = [s.card, selected && s.selected, style];
-  const mark = selected ? (
-    <View style={s.mark} testID="card-selected-mark">
-      <CheckGlyph color={t.colors.primaryForeground} size={14} />
-    </View>
-  ) : null;
-  if (!onPress && !onLongPress) {
-    return (
-      <View
-        style={frame}
-        accessibilityState={selected === undefined ? undefined : { selected }}
-      >
-        {children}
-        {mark}
-      </View>
-    );
-  }
+  if (!onPress) return <View style={[s.card, style]}>{children}</View>;
   return (
     <PressableBase
       onPress={onPress}
-      onLongPress={onLongPress}
       accessibilityLabel={accessibilityLabel}
-      accessibilityState={selected === undefined ? undefined : { selected }}
       feedback="row"
-      style={frame}
+      style={[s.card, style]}
     >
       {children}
-      {mark}
     </PressableBase>
   );
 }

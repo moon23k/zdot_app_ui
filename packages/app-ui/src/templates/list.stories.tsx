@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Chip } from '../components/chip/chip';
-import { OrderCard } from '../blocks/order-card/order-card';
+import { OrderBlock } from '../blocks/order-block/order-block';
 import { SegmentedTabs } from '../components/segmented-tabs/segmented-tabs';
 import { SearchGlyph } from '../internal/glyphs';
 import { useTheme } from '../theme/theme-provider';
@@ -15,6 +15,18 @@ type Order = {
   total: number;
   dueInDays?: number;
 };
+
+function Row({ order }: { order: Order }) {
+  const [first, ...rest] = order.items;
+  return (
+    <OrderBlock
+      title={rest.length ? `${first!.name} 외 ${rest.length}건` : first!.name}
+      meta={`${order.items.reduce((n, i) => n + i.quantity, 0)}개`}
+      amount={`${order.total.toLocaleString('ko-KR')}원`}
+      onPress={() => {}}
+    />
+  );
+}
 
 const orders: Order[] = [
   {
@@ -100,24 +112,14 @@ function Screen({
           pinned.length ? (
             <View style={s.cards}>
               {pinned.map((o) => (
-                <OrderCard
-                  key={o.id}
-                  items={o.items}
-                  total={o.total}
-                  dueInDays={o.dueInDays}
-                  onPress={() => {}}
-                />
+                <Row key={o.id} order={o} />
               ))}
             </View>
           ) : null
         }
         renderItem={({ item }) => (
           <View style={s.card}>
-            <OrderCard
-              items={item.items}
-              total={item.total}
-              onPress={() => {}}
-            />
+            <Row order={item} />
           </View>
         )}
         empty={{

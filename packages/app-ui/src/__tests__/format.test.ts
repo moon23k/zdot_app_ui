@@ -4,7 +4,7 @@ import {
   formatDeadline,
   formatManwon,
 } from '../blocks/internal/format';
-import { orderStatusText } from '../blocks/order-card/order-card';
+import { orderStatusText } from '../blocks/order-status/order-status';
 
 describe('format', () => {
   it.each([
@@ -55,9 +55,7 @@ describe('orderStatusText', () => {
     expect(orderStatusText({ status: 'delivered', fulfillment: 'local' })).toBe(
       '배송 완료'
     );
-    expect(
-      orderStatusText({ status: 'pending_payment', awaitingDeposit: true })
-    ).toBe('입금 대기');
+    expect(orderStatusText({ status: 'pending_payment' })).toBe('결제 대기');
     expect(orderStatusText({ status: 'canceled' })).toBe('주문 취소');
   });
 });

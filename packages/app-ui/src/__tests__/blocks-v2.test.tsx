@@ -5,20 +5,16 @@ import {
   Chip,
   ChipGroup,
   claimStatusLabel,
-  CreditWallet,
   Field,
   GenerationProgress,
-  OrderCard,
   orderStatusLabel,
   PhotoSlot,
-  PlanCard,
   ProgressBar,
   SelectionBar,
   ServiceStateBanner,
   trackingIssues,
   type BulkShipRow,
 } from '../index';
-import { OptionEditor, type ProductOption } from '../sortable';
 import { estimateLabelWidth } from '../charts/line-chart';
 
 describe('claimStatusLabel', () => {
@@ -35,7 +31,7 @@ describe('claimStatusLabel', () => {
   });
 });
 
-describe('OrderCard', () => {
+describe('orderStatusLabel', () => {
   it('uses API status keys', () => {
     expect(Object.keys(orderStatusLabel)).toEqual([
       'pending_payment',
@@ -46,24 +42,6 @@ describe('OrderCard', () => {
       'completed',
       'canceled',
     ]);
-  });
-
-  it('reports long press and selected state', async () => {
-    const onLongPress = jest.fn();
-    await render(
-      <OrderCard
-        items={[{ name: '머그컵', quantity: 1 }]}
-        total={12000}
-        selected
-        onPress={() => {}}
-        onLongPress={onLongPress}
-      />
-    );
-    const card = screen.getByRole('button');
-    expect(card.props.accessibilityState.selected).toBe(true);
-    expect(screen.getByTestId('card-selected-mark')).toBeTruthy();
-    await fireEvent(card, 'longPress');
-    expect(onLongPress).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -152,42 +130,6 @@ describe('PhotoSlot', () => {
     );
     await fireEvent.press(screen.getByLabelText('사진 업로드 실패, 다시 시도'));
     expect(onRetry).toHaveBeenCalled();
-  });
-});
-
-describe('OptionEditor', () => {
-  const options: ProductOption[] = [
-    {
-      id: 'a',
-      name: '미니',
-      priceDelta: -1000,
-      active: true,
-      note: '재고 3개',
-    },
-    { id: 'b', name: '큰 사이즈', priceDelta: 3000, active: true },
-  ];
-
-  it('formats negative price without +-', async () => {
-    await render(<OptionEditor options={options} onOptionsChange={() => {}} />);
-    expect(screen.getByText(/^[-−]1,000원$/)).toBeTruthy();
-    expect(screen.queryByText(/\+-/)).toBeNull();
-    expect(screen.getByText('+3,000원')).toBeTruthy();
-    expect(screen.getByText('재고 3개')).toBeTruthy();
-  });
-
-  it('calls onActiveChange instead of onOptionsChange', async () => {
-    const onActiveChange = jest.fn();
-    const onOptionsChange = jest.fn();
-    await render(
-      <OptionEditor
-        options={options}
-        onOptionsChange={onOptionsChange}
-        onActiveChange={onActiveChange}
-      />
-    );
-    await fireEvent(screen.getByLabelText('미니 판매'), 'valueChange', false);
-    expect(onActiveChange).toHaveBeenCalledWith('a', false);
-    expect(onOptionsChange).not.toHaveBeenCalled();
   });
 });
 
@@ -358,47 +300,6 @@ describe('ProgressBar', () => {
 });
 
 describe('limits and states', () => {
-  it('shows unlimited daily limit', async () => {
-    await render(
-      <>
-        <PlanCard
-          name="프로"
-          price={1000}
-          monthlyCredits={10}
-          dailyLimit={null}
-        />
-        <CreditWallet balance={10} todayUsed={4} dailyLimit={null} />
-      </>
-    );
-    expect(screen.getByText('하루 생성 무제한')).toBeTruthy();
-    expect(screen.getByText(/\/ 무제한$/)).toBeTruthy();
-    expect(screen.queryByRole('progressbar')).toBeNull();
-  });
-
-  it('shows none and trial plan states', async () => {
-    await render(
-      <>
-        <PlanCard
-          name="A"
-          price={1}
-          monthlyCredits={1}
-          dailyLimit={1}
-          state="none"
-        />
-        <PlanCard
-          name="B"
-          price={1}
-          monthlyCredits={1}
-          dailyLimit={1}
-          current
-          state="trial"
-        />
-      </>
-    );
-    expect(screen.getByText('구독 전')).toBeTruthy();
-    expect(screen.getByText('체험 중')).toBeTruthy();
-  });
-
   it('shows stopped banner with reason', async () => {
     await render(
       <ServiceStateBanner state="stopped" reason="상품 정보 불일치" />

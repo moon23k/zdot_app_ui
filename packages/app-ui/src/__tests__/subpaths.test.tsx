@@ -16,9 +16,7 @@ describe('subpath entries', () => {
     expect(require('../charts').LineChart).toBeDefined();
     expect(require('../adjust').DialStrip).toBeDefined();
     expect(require('../sortable').SortableGrid).toBeDefined();
-    expect(require('../charts').SalesChart).toBeDefined();
     expect(require('../sortable').ImageGrid).toBeDefined();
-    expect(require('../sortable').OptionEditor).toBeDefined();
   });
 });
 
