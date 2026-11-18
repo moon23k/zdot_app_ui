@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { PressableBase } from '../../internal/pressable-base';
 import { APPLE_LOGO, GOOGLE_G, KAKAO_SYMBOL, NAVER_N } from './logos';
+import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
 export type OAuthProvider = 'kakao' | 'naver' | 'google' | 'apple';
@@ -88,6 +89,7 @@ export function OAuthButtons({
   labels = {},
   style,
 }: OAuthButtonsProps) {
+  const t = useTheme();
   const s = useStyles();
   const shown = providers.filter((p) => p !== 'apple' || Platform.OS === 'ios');
   return (
@@ -117,7 +119,11 @@ export function OAuthButtons({
             {loading === p ? (
               <ActivityIndicator size="small" color={brand.fg} />
             ) : (
-              <Text numberOfLines={1} style={[s.label, { color: brand.fg }]}>
+              <Text
+                numberOfLines={1}
+                maxFontSizeMultiplier={t.maxFontScale}
+                style={[s.label, { color: brand.fg }]}
+              >
                 {label}
               </Text>
             )}

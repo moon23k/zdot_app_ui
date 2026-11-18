@@ -199,7 +199,7 @@ export function Calendar({
   const weekdays = (pinned: boolean) => (
     <View style={[s.weekdays, pinned && s.weekdaysPinned]}>
       {WEEKDAYS.map((w) => (
-        <Text key={w} style={s.weekday}>
+        <Text key={w} style={s.weekday} maxFontSizeMultiplier={t.maxFontScale}>
           {w}
         </Text>
       ))}
@@ -255,11 +255,17 @@ export function Calendar({
                 disabled={blocked}
                 onPress={() => day && pick(day)}
               >
-                <Text style={[s.number, { color }]}>{d}</Text>
+                <Text
+                  style={[s.number, { color }]}
+                  maxFontSizeMultiplier={t.maxFontScale}
+                >
+                  {d}
+                </Text>
               </PressableBase>
               {day?.label ? (
                 <Text
                   numberOfLines={1}
+                  maxFontSizeMultiplier={t.maxFontScale}
                   style={[
                     s.label,
                     {
@@ -293,7 +299,9 @@ export function Calendar({
         <ScrollView contentContainerStyle={s.months}>
           {months.map((month) => (
             <View key={month}>
-              <Text style={s.subhead}>{title(month)}</Text>
+              <Text style={s.subhead} maxFontSizeMultiplier={t.maxFontScale}>
+                {title(month)}
+              </Text>
               {grid(month)}
             </View>
           ))}
@@ -326,7 +334,9 @@ export function Calendar({
   return (
     <View style={style}>
       <View style={s.head}>
-        <Text style={s.headTitle}>{title(month)}</Text>
+        <Text style={s.headTitle} maxFontSizeMultiplier={t.maxFontScale}>
+          {title(month)}
+        </Text>
         {arrow(-1)}
         {arrow(1)}
       </View>
