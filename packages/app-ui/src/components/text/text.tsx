@@ -14,7 +14,7 @@ export type TextProps = RNTextProps & {
   weight?: TextWeight;
 };
 
-export type TextWeight = 'regular' | 'medium' | 'semibold' | 'bold';
+export type TextWeight = 'regular' | 'medium' | 'semibold';
 
 const useStyles = makeStyles((t) => ({
   caption: t.typography.caption,
@@ -36,7 +36,6 @@ const useStyles = makeStyles((t) => ({
   regular: { fontWeight: '400' },
   medium: { fontWeight: '500' },
   semibold: { fontWeight: '600' },
-  bold: { fontWeight: '600' },
 }));
 
 export function Text({
@@ -60,8 +59,7 @@ export function Text({
           (variant === 'screenTitle' ||
             variant === 'title' ||
             variant === 'display' ||
-            weight === 'semibold' ||
-            weight === 'bold') &&
+            weight === 'semibold') &&
           s.heading,
         weight && s[weight],
         style,

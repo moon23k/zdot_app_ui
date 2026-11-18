@@ -62,7 +62,7 @@ export function PhotoGrid({ items, addLabel, onAdd, onPress }: PhotoGridProps) {
         style={[s.cell, cell, s.add]}
       >
         <PlusGlyph color={t.colors.primary} size={t.iconSize.md} />
-        <Text variant="label" weight="bold" tone="point">
+        <Text variant="label" weight="semibold" tone="point">
           {addLabel}
         </Text>
       </PressableBase>

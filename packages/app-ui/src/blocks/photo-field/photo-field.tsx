@@ -199,7 +199,7 @@ export function PhotoField<T extends FieldPhoto>({
             style={[s.fill, s.light]}
           >
             <RetryGlyph color={t.colors.danger} size={t.iconSize.md} />
-            <Text variant="caption" weight="bold" tone="danger">
+            <Text variant="caption" weight="semibold" tone="danger">
               실패
             </Text>
           </PressableBase>
