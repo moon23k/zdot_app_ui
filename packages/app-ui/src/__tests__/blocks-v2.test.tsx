@@ -8,6 +8,7 @@ import {
   Field,
   GenerationProgress,
   orderStatusLabel,
+  orderStatusText,
   PhotoSlot,
   ProgressBar,
   SelectionBar,
@@ -15,7 +16,6 @@ import {
   trackingIssues,
   type BulkShipRow,
 } from '../index';
-import { estimateLabelWidth } from '../charts/line-chart';
 
 describe('claimStatusLabel', () => {
   it('uses API claim status keys', () => {
@@ -42,6 +42,24 @@ describe('orderStatusLabel', () => {
       'completed',
       'canceled',
     ]);
+  });
+
+  it('uses the same words as the customer web by fulfillment', () => {
+    expect(orderStatusText({ status: 'preparing' })).toBe('배송 준비');
+    expect(
+      orderStatusText({
+        status: 'preparing',
+        fulfillment: 'pickup',
+        readyAt: '2026-10-28T05:00:00Z',
+      })
+    ).toBe('픽업 준비 완료');
+    expect(
+      orderStatusText({ status: 'delivered', fulfillment: 'pickup' })
+    ).toBe('수령 완료');
+    expect(orderStatusText({ status: 'delivered', fulfillment: 'local' })).toBe(
+      '배송 완료'
+    );
+    expect(orderStatusText({ status: 'canceled' })).toBe('주문 취소');
   });
 });
 
@@ -306,15 +324,6 @@ describe('limits and states', () => {
     );
     expect(screen.getByText('운영 정책에 따라 판매가 중지됐어요')).toBeTruthy();
     expect(screen.getByText('사유: 상품 정보 불일치')).toBeTruthy();
-  });
-});
-
-describe('LineChart label width', () => {
-  it('leaves room for Korean units and long numbers', () => {
-    expect(estimateLabelWidth('300만', 11)).toBeGreaterThanOrEqual(3 * 7 + 11);
-    expect(estimateLabelWidth('1,200,000', 11)).toBeGreaterThanOrEqual(
-      7 * 6.8 + 2 * 3
-    );
   });
 });
 

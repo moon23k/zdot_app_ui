@@ -26,7 +26,6 @@ export * from './selection-bar';
 export * from './service-state-banner';
 export * from './stat-card';
 export * from './step-screen';
-export { formatDeadline, formatManwon } from './internal/format';
 export * from './stage-bar';
 export * from './store-sheet';
 export * from './task-tiles';
