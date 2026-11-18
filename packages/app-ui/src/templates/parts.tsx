@@ -106,26 +106,29 @@ export function HeaderIconButton({
   label,
   onPress,
   size,
+  color,
   mirror = false,
 }: {
   icon: IconSlot;
   label: string;
   onPress: () => void;
   size?: number;
+  color?: string;
   mirror?: boolean;
 }) {
   const t = useTheme();
   const s = useStyles();
+  const glyph = renderIcon(icon, {
+    color: color ?? t.colors.foreground,
+    size: size ?? t.iconSize.md,
+  });
   return (
     <PressableBase
       accessibilityLabel={label}
       onPress={onPress}
-      style={[s.headerIcon, mirror && s.mirror]}
+      style={s.headerIcon}
     >
-      {renderIcon(icon, {
-        color: t.colors.foreground,
-        size: size ?? t.iconSize.md,
-      })}
+      {mirror ? <View style={s.mirror}>{glyph}</View> : glyph}
     </PressableBase>
   );
 }

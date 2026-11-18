@@ -3,10 +3,13 @@ import { KeyboardAvoidingView, ScrollView, View } from 'react-native';
 import { Button } from '../../components/button/button';
 import { Text } from '../../components/text/text';
 import { ChevronGlyph } from '../../internal/glyphs';
-import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
-import { Notice, type TemplateNotice } from '../../templates/parts';
+import {
+  HeaderIconButton,
+  Notice,
+  type TemplateNotice,
+} from '../../templates/parts';
 
 export type StepAction = {
   label: string;
@@ -40,13 +43,6 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     paddingHorizontal: t.space[1],
   },
-  back: {
-    width: t.minTouchSize,
-    height: t.minTouchSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backIcon: { transform: [{ scaleX: -1 }] },
   track: { height: 3, backgroundColor: t.colors.muted },
   fill: { height: 3, backgroundColor: t.colors.primary },
   body: {
@@ -107,15 +103,13 @@ export function StepScreen({
     <KeyboardAvoidingView behavior="padding" style={s.root}>
       {onBack ? (
         <View style={s.header}>
-          <PressableBase
+          <HeaderIconButton
+            icon={ChevronGlyph}
+            label={backLabel}
             onPress={onBack}
-            accessibilityLabel={backLabel}
-            style={s.back}
-          >
-            <View style={s.backIcon}>
-              <ChevronGlyph color={t.colors.foreground} size={24} />
-            </View>
-          </PressableBase>
+            size={24}
+            mirror
+          />
         </View>
       ) : null}
       {total ? (

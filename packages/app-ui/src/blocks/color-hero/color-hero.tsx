@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { Text } from '../../components/text/text';
 import { ChevronGlyph } from '../../internal/glyphs';
-import { PressableBase } from '../../internal/pressable-base';
+import { HeaderIconButton } from '../../templates/parts';
 import { useTheme } from '../../theme/theme-provider';
 import { pickForeground } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
@@ -33,13 +33,6 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     paddingHorizontal: t.space[1],
   },
-  back: {
-    width: t.minTouchSize,
-    height: t.minTouchSize,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backIcon: { transform: [{ scaleX: -1 }] },
   name: {
     gap: t.space[1],
     paddingHorizontal: t.layout.screenX,
@@ -75,15 +68,14 @@ export function ColorHero({
       >
         <View style={s.header}>
           {onBack ? (
-            <PressableBase
+            <HeaderIconButton
+              icon={ChevronGlyph}
+              label={backLabel}
               onPress={onBack}
-              accessibilityLabel={backLabel}
-              style={s.back}
-            >
-              <View style={s.backIcon}>
-                <ChevronGlyph color={ink.color} size={24} />
-              </View>
-            </PressableBase>
+              size={24}
+              color={ink.color}
+              mirror
+            />
           ) : null}
         </View>
         <View style={s.name}>
