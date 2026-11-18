@@ -104,6 +104,7 @@ describe('PhotoField', () => {
     );
     await fireEvent.press(screen.getByLabelText('사진 추가'));
     expect(onAdd).toHaveBeenCalled();
+    expect(screen.queryByText('0/1')).toBeNull();
     await rerender(
       <PhotoField
         label="사진"

@@ -128,9 +128,11 @@ export function PhotoField<T extends FieldPhoto>({
         style={s.add}
       >
         <CameraGlyph color={t.colors.mutedForeground} size={t.iconSize.md} />
-        <Text variant="caption" tone="muted" style={s.count}>
-          {photos.length}/{max}
-        </Text>
+        {many ? (
+          <Text variant="caption" tone="muted" style={s.count}>
+            {photos.length}/{max}
+          </Text>
+        ) : null}
       </PressableBase>
     </SortableHandle>
   );
