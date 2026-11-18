@@ -89,7 +89,6 @@ const useStyles = makeStyles((t) => ({
   cells: { flexDirection: 'row' },
   cell: { flex: 1, alignItems: 'center', gap: t.space[1] / 2 },
   divider: { borderLeftWidth: 1, borderLeftColor: t.colors.muted },
-  still: { opacity: 1 },
   key: { flexDirection: 'row', alignItems: 'center', gap: t.space[1] },
   keyText: {
     fontFamily: t.fontFamily,
@@ -148,9 +147,6 @@ export function StoreTop({
         <View style={s.body}>
           <PressableBase
             onPress={onSwitch}
-            disabled={!onSwitch}
-            disabledStyle={s.still}
-            accessibilityRole={onSwitch ? 'button' : undefined}
             accessibilityLabel={name}
             feedback="row"
             style={s.nameRow}
@@ -208,9 +204,6 @@ export function StoreTop({
           <PressableBase
             key={cell.key}
             onPress={cell.onPress}
-            disabled={!cell.onPress}
-            disabledStyle={s.still}
-            accessibilityRole={cell.onPress ? 'button' : undefined}
             accessibilityLabel={`${cell.label} ${cell.count}`}
             feedback="row"
             style={[s.cell, i > 0 && s.divider]}

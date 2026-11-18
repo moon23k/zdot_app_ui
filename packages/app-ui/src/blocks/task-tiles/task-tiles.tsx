@@ -49,7 +49,6 @@ export function TaskTiles({ items, style }: TaskTilesProps) {
         <PressableBase
           key={item.key}
           onPress={item.onPress}
-          disabled={!item.onPress}
           accessibilityLabel={`${item.label} ${item.count}${item.note ? ` ${item.note}` : ''}`}
           style={s.tile}
           feedback="row"

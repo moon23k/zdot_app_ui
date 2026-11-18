@@ -43,7 +43,6 @@ const useStyles = makeStyles((t) => ({
   },
   warning: { color: t.colors.warningText },
   success: { color: t.colors.success },
-  still: { opacity: 1 },
 }));
 
 export function ValueRows({ rows, style }: ValueRowsProps) {
@@ -58,9 +57,6 @@ export function ValueRows({ rows, style }: ValueRowsProps) {
           feedback="row"
           key={row.label}
           onPress={row.onPress}
-          disabled={!row.onPress}
-          disabledStyle={s.still}
-          accessibilityRole={row.onPress ? 'button' : undefined}
           style={s.row}
         >
           <Text

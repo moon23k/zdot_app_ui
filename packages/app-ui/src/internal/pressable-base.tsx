@@ -53,10 +53,12 @@ export function PressableBase({
   accessibilityRole = 'button',
   accessibilityState,
   onPress,
+  onLongPress,
   onPressIn,
   onPressOut,
   onLayout,
   children,
+  ref,
   ...rest
 }: PressableBaseProps) {
   const t = useTheme();
@@ -126,9 +128,27 @@ export function PressableBase({
 
   const answer = !!disabled && !!onDisabledPress;
 
+  if (!onPress && !onLongPress && !onDisabledPress && !disabled) {
+    return (
+      <Animated.View
+        {...rest}
+        accessible={rest.accessible ?? true}
+        accessibilityState={accessibilityState}
+        onLayout={onLayout}
+        style={[style, animatedStyle]}
+      >
+        {typeof children === 'function'
+          ? children({ pressed: false })
+          : children}
+      </Animated.View>
+    );
+  }
+
   return (
     <AnimatedPressable
       {...rest}
+      ref={ref}
+      onLongPress={onLongPress}
       disabled={answer ? undefined : disabled}
       hitSlop={slop}
       accessibilityRole={accessibilityRole}

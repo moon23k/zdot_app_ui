@@ -39,7 +39,6 @@ const useStyles = makeStyles((t) => ({
     marginTop: t.space[2],
     backgroundColor: t.colors.surface,
   },
-  still: { opacity: 1 },
   mid: {
     flexDirection: 'row',
     gap: t.space[3],
@@ -149,11 +148,7 @@ export function OrderBlock({
       <PressableBase
         onPress={onPress}
         onLongPress={onLongPress}
-        disabled={!onPress}
-        disabledStyle={s.still}
-        accessibilityRole={
-          picking ? 'checkbox' : onPress ? 'button' : undefined
-        }
+        accessibilityRole={picking ? 'checkbox' : 'button'}
         accessibilityState={picking ? { checked: !!selected } : undefined}
         accessibilityLabel={[overline, title, meta, amount]
           .filter(Boolean)

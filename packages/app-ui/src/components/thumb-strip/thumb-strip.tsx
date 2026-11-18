@@ -31,8 +31,7 @@ export function ThumbStrip({ images, onPress, style }: ThumbStripProps) {
           key={`${uri}-${index}`}
           accessibilityRole="imagebutton"
           accessibilityLabel={`사진 ${index + 1}`}
-          disabled={!onPress}
-          onPress={() => onPress?.(index)}
+          onPress={onPress ? () => onPress(index) : undefined}
         >
           <Photo source={{ uri }} radius={t.radius.md} style={s.thumb} />
         </PressableBase>

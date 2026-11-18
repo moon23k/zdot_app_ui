@@ -31,7 +31,6 @@ export function ProductTile({
     <PressableBase
       feedback="row"
       onPress={onPress}
-      disabled={!onPress}
       accessibilityLabel={[name, price, state].filter(Boolean).join(' ')}
       style={[s.root, style]}
     >
