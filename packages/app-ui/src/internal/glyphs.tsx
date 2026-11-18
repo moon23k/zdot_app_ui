@@ -8,7 +8,6 @@ import {
   CHECKLIST,
   CLOCK,
   COPY,
-  DEVICES,
   EYE,
   FILE,
   GLOBE,
@@ -19,36 +18,24 @@ import {
   PENCIL,
   PHONE,
   PICTURE,
-  PIN,
-  READ_ALL,
   RECEIVED,
   RETURN,
   SEARCH,
   SEND,
   SHARE,
   SMS,
-  SORT,
   SPARKLES,
   STAR,
   MORE,
   STAR_FILL,
   STORE,
-  SWAP,
   TEXT_SIZE,
   TRUCK,
   TYPE,
   USERS,
   WALLET,
 } from './line-icons';
-import {
-  CAMERA,
-  HOUSE,
-  MENU,
-  MESSAGE,
-  PACKAGE,
-  PERSON,
-  RECEIPT,
-} from './tab-icons';
+import { CAMERA, MENU, MESSAGE, PERSON, RECEIPT } from './tab-icons';
 import type { IconRenderProps } from './icon';
 
 export function ScanGlyph({ color, size }: IconRenderProps) {
@@ -221,9 +208,7 @@ function imageGlyph(uri: string) {
 
 export const BellGlyph = imageGlyph(BELL);
 export const SearchGlyph = imageGlyph(SEARCH);
-export const HouseGlyph = imageGlyph(HOUSE);
 export const ReceiptGlyph = imageGlyph(RECEIPT);
-export const PackageGlyph = imageGlyph(PACKAGE);
 export const MessageGlyph = imageGlyph(MESSAGE);
 export const MenuGlyph = imageGlyph(MENU);
 export const PersonGlyph = imageGlyph(PERSON);
@@ -252,16 +237,11 @@ export const PencilGlyph = imageGlyph(PENCIL);
 export const TypeGlyph = imageGlyph(TYPE);
 export const TextSizeGlyph = imageGlyph(TEXT_SIZE);
 export const AlignGlyph = imageGlyph(ALIGN);
-export const DevicesGlyph = imageGlyph(DEVICES);
 export const CopyGlyph = imageGlyph(COPY);
-export const PinGlyph = imageGlyph(PIN);
 export const SmsGlyph = imageGlyph(SMS);
 export const NoteGlyph = imageGlyph(NOTE);
 export const SendGlyph = imageGlyph(SEND);
-export const SwapGlyph = imageGlyph(SWAP);
 export const ReceivedGlyph = imageGlyph(RECEIVED);
-export const SortGlyph = imageGlyph(SORT);
 export const ChecklistGlyph = imageGlyph(CHECKLIST);
 export const AddProductGlyph = imageGlyph(ADD_PRODUCT);
 export const OpenGlyph = imageGlyph(OPEN);
-export const ReadAllGlyph = imageGlyph(READ_ALL);

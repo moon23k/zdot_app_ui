@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import {
   DetailTemplate,
-  EditorTemplate,
   FormTemplate,
   Group,
   ListRow,
@@ -141,31 +140,6 @@ describe('ResultTemplate', () => {
     expect(screen.getByText('card')).toBeTruthy();
     await fireEvent.press(screen.getByLabelText('1안 크게 보기'));
     expect(screen.getByText('full')).toBeTruthy();
-  });
-});
-
-describe('EditorTemplate', () => {
-  it('opens the section sheet only when given and closes it', async () => {
-    const onClose = jest.fn();
-    const onTool = jest.fn();
-    const tools = [{ key: 'sections', label: '섹션 목록', onPress: onTool }];
-    const view = await render(
-      <EditorTemplate preview={<Text>미리보기</Text>} tools={tools} />
-    );
-    expect(screen.queryByText('첫 화면')).toBeNull();
-    await fireEvent.press(screen.getByText('섹션 목록'));
-    expect(onTool).toHaveBeenCalledTimes(1);
-    await view.rerender(
-      <EditorTemplate
-        preview={<Text>미리보기</Text>}
-        tools={tools}
-        sheet={{ title: '첫 화면', onClose, children: <Text>큰 문구</Text> }}
-      />
-    );
-    expect(screen.getByText('미리보기')).toBeTruthy();
-    expect(screen.getByText('큰 문구')).toBeTruthy();
-    await fireEvent.press(screen.getByLabelText('닫기'));
-    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
 

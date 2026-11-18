@@ -25,12 +25,10 @@ export {
   EyeGlyph,
   FileGlyph,
   GlobeGlyph,
-  HouseGlyph,
   ImageGlyph,
   LinkGlyph,
   MenuGlyph,
   MessageGlyph,
-  PackageGlyph,
   PaletteGlyph,
   PersonGlyph,
   PhoneGlyph,
@@ -44,19 +42,14 @@ export {
   TypeGlyph,
   TextSizeGlyph,
   AlignGlyph,
-  DevicesGlyph,
   CopyGlyph,
-  PinGlyph,
   SmsGlyph,
   NoteGlyph,
   SendGlyph,
-  SwapGlyph,
   ReceivedGlyph,
-  SortGlyph,
   ChecklistGlyph,
   AddProductGlyph,
   OpenGlyph,
-  ReadAllGlyph,
   SparklesGlyph,
   StarGlyph,
   StarFillGlyph,
@@ -88,7 +81,6 @@ export * from './components/price';
 export * from './components/progress-bar';
 export * from './components/search-field';
 export * from './components/status-steps';
-export * from './components/step-slider';
 export * from './components/slider';
 export * from './components/stepper';
 export * from './components/progress-circle';
