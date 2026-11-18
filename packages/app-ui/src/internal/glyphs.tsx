@@ -37,6 +37,7 @@ import {
 } from './line-icons';
 import { CAMERA, MENU, MESSAGE, PERSON, RECEIPT } from './tab-icons';
 import type { IconRenderProps } from './icon';
+import { useTheme } from '../theme/theme-provider';
 
 export function ScanGlyph({ color, size }: IconRenderProps) {
   const stroke = Math.max(1.5, size / 12);
@@ -140,10 +141,11 @@ export function AlertGlyph({
   color,
   size,
   filled = false,
-  onColor = '#ffffff',
+  onColor,
 }: IconRenderProps & { filled?: boolean; onColor?: string }) {
+  const t = useTheme();
   const stroke = Math.max(1.5, size / (filled ? 10 : 16));
-  const mark = filled ? onColor : color;
+  const mark = filled ? (onColor ?? t.colors.surface) : color;
   const ring = filled ? 0 : stroke;
   return (
     <View

@@ -28,6 +28,7 @@ export const semantic = {
     successTint: '#f0fdf4',
     info: '#2563eb',
     infoForeground: '#ffffff',
+    inverseLink: '#93c5fd',
   },
   dark: {
     background: '#0a0a0a',
@@ -58,6 +59,7 @@ export const semantic = {
     successTint: '#052e16',
     info: '#60a5fa',
     infoForeground: '#0a0a0a',
+    inverseLink: '#1d4ed8',
   },
 } as const;
 

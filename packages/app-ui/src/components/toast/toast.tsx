@@ -206,8 +206,7 @@ function ToastHostInner({ store }: { store: ToastStore }) {
     success: [t.colors.success, t.colors.successForeground],
     danger: [t.colors.danger, t.colors.dangerForeground],
   }[view.tone];
-  const actionColor =
-    view.tone !== 'neutral' ? fg : t.scheme === 'light' ? '#93c5fd' : '#1d4ed8';
+  const actionColor = view.tone !== 'neutral' ? fg : t.colors.inverseLink;
 
   return (
     <View

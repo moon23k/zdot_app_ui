@@ -1,40 +1,13 @@
 import type { TextStyle } from 'react-native';
+import type { semantic, space, typography } from '../theme/base';
 
 export type ColorScheme = 'light' | 'dark';
 
-export type ThemeColors = {
-  background: string;
-  surface: string;
-  foreground: string;
-  title: string;
-  selectSurface: string;
-  selectForeground: string;
-  muted: string;
-  mutedForeground: string;
-  border: string;
-  input: string;
-  ring: string;
-  primary: string;
-  primaryForeground: string;
-  primaryTint: string;
-  primaryContainer: string;
-  primaryEdge: string;
-  point: string;
-  danger: string;
-  dangerForeground: string;
-  success: string;
-  successForeground: string;
-  warning: string;
-  warningForeground: string;
-  warningText: string;
-  warningTint: string;
-  successTint: string;
-  info: string;
-  infoForeground: string;
-};
+export type ThemeColors = { [K in keyof typeof semantic.light]: string };
 
-export type TypographyVariant =
-  'caption' | 'label' | 'body' | 'bodyLg' | 'title' | 'screenTitle' | 'display';
+export type TypographyKey = keyof typeof typography;
+
+export type TypographyVariant = Exclude<TypographyKey, 'eyebrow' | 'question'>;
 
 export type TypographyToken = {
   fontSize: number;
@@ -44,24 +17,9 @@ export type TypographyToken = {
 };
 
 export type ThemeTokens = {
-  space: {
-    0: number;
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
-    6: number;
-    8: number;
-    10: number;
-    12: number;
-    16: number;
-  };
+  space: { [K in keyof typeof space]: number };
   radius: { sm: number; md: number; lg: number; xl: number; full: number };
-  typography: Record<
-    TypographyVariant | 'eyebrow' | 'question',
-    TypographyToken
-  >;
+  typography: Record<TypographyKey, TypographyToken>;
   fontFamily: string | undefined;
   maxFontScale: number;
   shadow: { sm: string; md: string; panel: string };
