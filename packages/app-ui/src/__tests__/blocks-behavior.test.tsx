@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import {
   defaultThemes,
   OrderBlock,
+  PaletteLegend,
+  PaletteThumbs,
   QuestionAccordion,
   SliderList,
   StageBar,
@@ -142,5 +144,69 @@ describe('SliderList', () => {
     });
     expect(onChange).toHaveBeenLastCalledWith('energy', expect.closeTo(0.4, 5));
     expect(screen.getAllByText('시원한')).toHaveLength(1);
+  });
+});
+
+describe('PaletteThumbs', () => {
+  const colors = {
+    main: '#9D6038',
+    secondary: '#F7E0CC',
+    accent: '#5B2F12',
+    background: '#FBF0EA',
+    text: '#1E130E',
+  };
+  const items = [
+    { key: 'tonal', label: '톤 온 톤', colors },
+    { key: 'analogous', label: '유사색', colors },
+    { key: 'complementary', label: '보색', colors },
+  ] as const;
+  const { mutedForeground } = defaultThemes.light.colors;
+
+  it('keeps order and marks only the chosen palette', async () => {
+    await render(
+      <PaletteThumbs items={items} value="analogous" onValueChange={() => {}} />
+    );
+    const radios = screen.getAllByRole('radio');
+    expect(radios.map((radio) => radio.props.accessibilityLabel)).toEqual([
+      '톤 온 톤',
+      '유사색',
+      '보색',
+    ]);
+    expect(radios[1]!.props.accessibilityState).toMatchObject({
+      checked: true,
+    });
+    expect(radios[0]!.props.accessibilityState).toMatchObject({
+      checked: false,
+    });
+    expect(screen.getByText('유사색')).toHaveStyle({ fontWeight: '600' });
+    expect(screen.getByText('보색')).toHaveStyle({ color: mutedForeground });
+  });
+
+  it('reports the pressed palette', async () => {
+    const onValueChange = jest.fn();
+    await render(
+      <PaletteThumbs
+        items={items}
+        value="tonal"
+        onValueChange={onValueChange}
+      />
+    );
+    await fireEvent.press(screen.getByRole('radio', { name: '보색' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('complementary');
+  });
+
+  it('labels legend roles in muted text of at least 14px', async () => {
+    await render(
+      <PaletteLegend
+        items={[
+          { key: 'main', label: '메인', color: colors.main },
+          { key: 'text', label: '글자', color: colors.text },
+        ]}
+      />
+    );
+    expect(screen.getByText('메인')).toHaveStyle({
+      color: mutedForeground,
+      fontSize: 14,
+    });
   });
 });

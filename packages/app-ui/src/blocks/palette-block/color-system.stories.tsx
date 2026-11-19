@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { ListRow } from '../../components/list-row/list-row';
 import { Phone } from '../../__stories__/phone';
 import { ListSection } from '../../templates/parts';
-import { ResultTemplate } from '../../templates/result-template';
+import { Group } from '../../templates/group';
 import { DetailTemplate } from '../../templates/scroll-templates';
 import { BrandPaletteArt } from '../brand-palette-art/brand-palette-art';
 import { ColorBandList } from '../color-band-list/color-band-list';
@@ -12,7 +12,12 @@ import { ColorFamilyTabs } from '../color-family-tabs/color-family-tabs';
 import { ColorHero } from '../color-hero/color-hero';
 import { StepScreen } from '../step-screen/step-screen';
 import { ToneStrip } from '../tone-strip/tone-strip';
-import { ColorDots, PaletteBlock } from './palette-block';
+import {
+  ColorDots,
+  PaletteBlock,
+  PaletteLegend,
+  PaletteThumbs,
+} from './palette-block';
 
 const families = [
   { value: 'red', label: '빨강', color: '#B64C2F' },
@@ -163,22 +168,46 @@ function Detail() {
   );
 }
 
+const roles = [
+  { key: 'main', label: '메인' },
+  { key: 'secondary', label: '보조' },
+  { key: 'accent', label: '강조' },
+  { key: 'background', label: '배경' },
+  { key: 'text', label: '글자' },
+] as const;
+
 function Palettes() {
-  const [index, setIndex] = useState(0);
+  const [value, setValue] = useState('tonal');
+  const current = palettes.find((p) => p.key === value) ?? palettes[0]!;
   return (
     <Phone>
-      <ResultTemplate
+      <StepScreen
         title="팔레트를 골라 주세요"
-        index={index}
-        onIndexChange={setIndex}
-        previews={palettes.map((p) => ({
-          key: p.key,
-          label: p.label,
-          render: () => <PaletteBlock colors={p.colors} label={p.label} />,
-        }))}
-        primaryAction={{ label: '이 팔레트로 정하기', onPress: () => {} }}
-        secondaryAction={{ label: '팔레트 상세', onPress: () => {} }}
-      />
+        total={3}
+        current={1}
+        onBack={() => {}}
+        primaryAction={{ label: '적용', onPress: () => {} }}
+      >
+        <Group>
+          <PaletteBlock
+            colors={current.colors}
+            height={252}
+            label={current.label}
+          />
+          <PaletteLegend
+            items={roles.map((role) => ({
+              key: role.key,
+              label: role.label,
+              color: current.colors[role.key],
+            }))}
+          />
+        </Group>
+        <PaletteThumbs
+          items={palettes}
+          value={value}
+          onValueChange={setValue}
+        />
+      </StepScreen>
     </Phone>
   );
 }
