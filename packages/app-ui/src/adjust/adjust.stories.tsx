@@ -13,11 +13,11 @@ import { hslToHex } from './hsl';
 import { ScrubRuler } from './scrub-ruler';
 
 const axes = [
-  { key: 'temperature', label: '온도', neg: '차가운', pos: '따뜻한' },
-  { key: 'energy', label: '활기', neg: '정적인', pos: '동적인' },
-  { key: 'softness', label: '부드러움', neg: '단단한', pos: '부드러운' },
-  { key: 'era', label: '시대감', neg: '클래식', pos: '모던' },
-  { key: 'intensity', label: '강도', neg: '은은한', pos: '강렬한' },
+  { key: 'temperature', label: '색감', neg: '시원한', pos: '따뜻한' },
+  { key: 'energy', label: '움직임', neg: '차분한', pos: '활기찬' },
+  { key: 'softness', label: '모양', neg: '반듯한', pos: '둥근' },
+  { key: 'era', label: '스타일', neg: '클래식', pos: '모던' },
+  { key: 'intensity', label: '존재감', neg: '은은한', pos: '강한' },
 ];
 
 const sets = [

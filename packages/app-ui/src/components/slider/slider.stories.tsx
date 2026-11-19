@@ -5,8 +5,8 @@ import { FieldGroup } from '../field-group/field-group';
 import { Slider } from './slider';
 
 const axes = [
-  { key: 'temp', label: '온도', start: '차가운', end: '따뜻한' },
-  { key: 'energy', label: '활기', start: '정적인', end: '동적인' },
+  { key: 'temp', label: '색감', start: '시원한', end: '따뜻한' },
+  { key: 'energy', label: '움직임', start: '차분한', end: '활기찬' },
   { key: 'size', label: '크기', start: '작게', end: '크게' },
 ];
 

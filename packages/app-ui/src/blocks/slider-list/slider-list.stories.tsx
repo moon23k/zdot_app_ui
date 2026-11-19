@@ -6,19 +6,19 @@ import { SliderList } from './slider-list';
 const axes = [
   {
     key: 'temperature',
-    label: '온도',
-    startLabel: '차가운',
+    label: '색감',
+    startLabel: '시원한',
     endLabel: '따뜻한',
   },
-  { key: 'energy', label: '리듬', startLabel: '정적인', endLabel: '동적인' },
+  { key: 'energy', label: '움직임', startLabel: '차분한', endLabel: '활기찬' },
   {
     key: 'softness',
-    label: '질감',
-    startLabel: '단단한',
-    endLabel: '부드러운',
+    label: '모양',
+    startLabel: '반듯한',
+    endLabel: '둥근',
   },
-  { key: 'era', label: '시대감', startLabel: '클래식한', endLabel: '모던한' },
-  { key: 'intensity', label: '강도', startLabel: '은은한', endLabel: '강렬한' },
+  { key: 'era', label: '스타일', startLabel: '클래식', endLabel: '모던' },
+  { key: 'intensity', label: '존재감', startLabel: '은은한', endLabel: '강한' },
 ];
 
 function Demo() {
