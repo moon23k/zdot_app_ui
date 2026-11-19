@@ -3,7 +3,7 @@ import {
   ThemeProvider,
   useTheme,
   type ColorScheme,
-} from '@ezpg/app-ui';
+} from '@zdot/app-ui';
 import { useState } from 'react';
 import {
   Pressable,
@@ -42,7 +42,7 @@ function Catalog({ onToggleScheme }: { onToggleScheme: () => void }) {
             <Text style={s.action}>‹ 목록</Text>
           </Pressable>
         ) : (
-          <Text style={s.title}>EZPG Native UI</Text>
+          <Text style={s.title}>ZDOT Native UI</Text>
         )}
         <Pressable onPress={onToggleScheme} hitSlop={12}>
           <Text style={s.muted}>{t.scheme === 'light' ? 'Dark' : 'Light'}</Text>

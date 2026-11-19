@@ -1,4 +1,4 @@
-# @ezpg/app-ui
+# @zdot/app-ui
 
 ## 0.19.1
 

@@ -1,12 +1,12 @@
-# @ezpg/app-ui
+# @zdot/app-ui
 
-EZPG partner app UI components
+ZDOT partner app UI components
 
 ## Installation
 
 
 ```sh
-npm install @ezpg/app-ui
+npm install @zdot/app-ui
 ```
 
 
@@ -14,7 +14,7 @@ npm install @ezpg/app-ui
 
 
 ```js
-import { multiply } from '@ezpg/app-ui';
+import { multiply } from '@zdot/app-ui';
 
 // ...
 

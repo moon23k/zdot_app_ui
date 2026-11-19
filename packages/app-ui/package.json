@@ -1,7 +1,7 @@
 {
-  "name": "@ezpg/app-ui",
+  "name": "@zdot/app-ui",
   "version": "0.19.1",
-  "description": "React Native UI components for EZPG partner apps",
+  "description": "React Native UI components for ZDOT partner apps",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -52,15 +52,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/moon23k/EZPG_APP_UI.git",
+    "url": "git+https://github.com/moon23k/zdot_app_ui.git",
     "directory": "packages/app-ui"
   },
   "author": "moon23k <d.moon23k@gmail.com> (https://github.com/moon23k)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/moon23k/EZPG_APP_UI/issues"
+    "url": "https://github.com/moon23k/zdot_app_ui/issues"
   },
-  "homepage": "https://github.com/moon23k/EZPG_APP_UI#readme",
+  "homepage": "https://github.com/moon23k/zdot_app_ui#readme",
   "publishConfig": {
     "access": "public"
   },
