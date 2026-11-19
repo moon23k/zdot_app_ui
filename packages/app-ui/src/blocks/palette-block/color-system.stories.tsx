@@ -2,30 +2,64 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListRow } from '../../components/list-row/list-row';
-import { SectionTabs } from '../../components/section-tabs/section-tabs';
 import { Phone } from '../../__stories__/phone';
 import { ListSection } from '../../templates/parts';
 import { ResultTemplate } from '../../templates/result-template';
 import { DetailTemplate } from '../../templates/scroll-templates';
 import { BrandPaletteArt } from '../brand-palette-art/brand-palette-art';
-import { ColorChipGrid } from '../color-chip-grid/color-chip-grid';
+import { ColorBandList } from '../color-band-list/color-band-list';
+import { ColorFamilyTabs } from '../color-family-tabs/color-family-tabs';
 import { ColorHero } from '../color-hero/color-hero';
 import { StepScreen } from '../step-screen/step-screen';
 import { ToneStrip } from '../tone-strip/tone-strip';
 import { ColorDots, PaletteBlock } from './palette-block';
 
-const chips = [
-  { key: '05-C06', color: '#9D6038', name: 'ANTIQUE AMBER', code: 'YR 57' },
-  { key: '08-C10', color: '#003C5D', name: 'VELVET INK', code: 'BB 34' },
-  { key: '05-C12', color: '#5B7537', name: 'SATIN FERN', code: 'GY 56' },
-  { key: '05-C16', color: '#974F5A', name: 'SATIN ROSE', code: 'RP 52' },
-  { key: '01-D2', color: '#3A2C26', name: 'DARK UMBER', code: 'NT 31' },
-  { key: '07-C07', color: '#1B827F', name: 'FRESH CYPRESS', code: 'BG 55' },
+const families = [
+  { value: 'red', label: '빨강', color: '#B64C2F' },
+  { value: 'orange', label: '주황', color: '#AF6100' },
+  { value: 'yellow', label: '노랑', color: '#8F7000' },
+  { value: 'green', label: '초록', color: '#52820E' },
+  { value: 'teal', label: '청록', color: '#008285' },
+  { value: 'blue', label: '파랑', color: '#1275C1' },
+  { value: 'violet', label: '보라', color: '#815AB8' },
+  { value: 'rose', label: '자주', color: '#B04774' },
+  { value: 'neutral', label: '검정', color: '#221B19' },
 ];
 
-const tabs = ['전체', '01', '02', '03', '04', '05', '06', '07', '08'].map(
-  (label) => ({ value: label, label })
-);
+const bands = [
+  {
+    key: '05-C01',
+    color: '#717A59',
+    name: '그레이 모스',
+    caption: 'GREY MOSS',
+  },
+  { key: '05-C02', color: '#627459', name: '그레이 펀', caption: 'GREY FERN' },
+  {
+    key: '05-C03',
+    color: '#5B6646',
+    name: '앤티크 모스',
+    caption: 'ANTIQUE MOSS',
+  },
+  {
+    key: '05-C04',
+    color: '#43533B',
+    name: '옹브레 모스',
+    caption: 'OMBRÉ MOSS',
+  },
+  { key: '05-C12', color: '#697D42', name: '새틴 펀', caption: 'SATIN FERN' },
+  {
+    key: '05-C13',
+    color: '#4F7648',
+    name: '알파인 모스',
+    caption: 'ALPINE MOSS',
+  },
+  {
+    key: '05-C14',
+    color: '#52820E',
+    name: '와일드 그래스',
+    caption: 'WILD GRASS',
+  },
+];
 
 const palettes = [
   {
@@ -70,8 +104,8 @@ const styles = StyleSheet.create({
 });
 
 function Pick() {
-  const [tab, setTab] = useState('전체');
-  const [value, setValue] = useState<string | null>('05-C06');
+  const [family, setFamily] = useState('green');
+  const [value, setValue] = useState<string | null>('05-C03');
   return (
     <Phone>
       <StepScreen
@@ -81,13 +115,12 @@ function Pick() {
         onBack={() => {}}
         primaryAction={{ label: '다음', onPress: () => {}, disabled: !value }}
       >
-        <SectionTabs
-          scrollable
-          items={tabs}
-          value={tab}
-          onValueChange={setTab}
+        <ColorFamilyTabs
+          items={families}
+          value={family}
+          onValueChange={setFamily}
         />
-        <ColorChipGrid items={chips} value={value} onValueChange={setValue} />
+        <ColorBandList items={bands} value={value} onValueChange={setValue} />
       </StepScreen>
     </Phone>
   );
