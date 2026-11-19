@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { StyleSheet } from 'react-native';
 import {
   Button,
   defaultThemes,
@@ -362,5 +363,46 @@ describe('Slider', () => {
     });
     expect(onChange).toHaveBeenLastCalledWith(2);
     expect(onSlidingStart).toHaveBeenCalledTimes(2);
+  });
+  it('fills from zero and marks it when the range spans both sides', async () => {
+    await render(
+      <Slider
+        value={-2}
+        min={-5}
+        max={10}
+        onChange={jest.fn()}
+        accessibilityLabel="자간"
+      />
+    );
+    await fireEvent(screen.getByLabelText('자간'), 'layout', {
+      nativeEvent: { layout: { width: 328 } },
+    });
+    const fill = StyleSheet.flatten(
+      screen.getByTestId('slider-fill').props.style
+    );
+    expect(fill.left).toBeCloseTo(74);
+    expect(fill.width).toBeCloseTo(40);
+    expect(screen.getByTestId('slider-origin')).toBeTruthy();
+  });
+
+  it('fills from the start without a mark when zero is an end', async () => {
+    await render(
+      <Slider
+        value={5}
+        min={0}
+        max={10}
+        onChange={jest.fn()}
+        accessibilityLabel="위 여백"
+      />
+    );
+    await fireEvent(screen.getByLabelText('위 여백'), 'layout', {
+      nativeEvent: { layout: { width: 328 } },
+    });
+    const fill = StyleSheet.flatten(
+      screen.getByTestId('slider-fill').props.style
+    );
+    expect(fill.left).toBe(0);
+    expect(fill.width).toBeCloseTo(164);
+    expect(screen.queryByTestId('slider-origin')).toBeNull();
   });
 });

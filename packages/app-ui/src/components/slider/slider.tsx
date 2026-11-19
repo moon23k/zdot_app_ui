@@ -21,29 +21,54 @@ export type SliderProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const TRACK = 4;
-const THUMB = 20;
+const TRACK = 6;
+const THUMB = 28;
+const TICK_WIDTH = 2;
+const TICK_HEIGHT = 16;
 const NUDGE = 10;
+
+export function sliderOrigin(min: number, max: number) {
+  return min < 0 && max > 0 ? 0 : min;
+}
 
 const useStyles = makeStyles((t) => ({
   root: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   end: { width: t.space[12] },
   endRight: { width: t.space[12], textAlign: 'right' },
-  area: { flex: 1, height: t.minTouchSize, justifyContent: 'center' },
+  area: { flex: 1, height: t.minTouchSize },
   track: {
     position: 'absolute',
     left: 0,
     right: 0,
+    top: (t.minTouchSize - TRACK) / 2,
     height: TRACK,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.input,
+  },
+  fill: {
+    position: 'absolute',
+    top: (t.minTouchSize - TRACK) / 2,
+    height: TRACK,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.primary,
+  },
+  tick: {
+    position: 'absolute',
+    top: (t.minTouchSize - TICK_HEIGHT) / 2,
+    width: TICK_WIDTH,
+    height: TICK_HEIGHT,
     borderRadius: t.radius.full,
     backgroundColor: t.colors.ring,
   },
   thumb: {
     position: 'absolute',
+    top: (t.minTouchSize - THUMB) / 2,
     width: THUMB,
     height: THUMB,
     borderRadius: t.radius.full,
-    backgroundColor: t.colors.foreground,
+    backgroundColor:
+      t.scheme === 'dark' ? t.colors.foreground : t.colors.surface,
+    boxShadow: t.shadow.md,
   },
 }));
 
@@ -95,7 +120,12 @@ export function Slider({
   );
   const ratio =
     span > 0 ? (Math.min(max, Math.max(min, value)) - min) / span : 0;
-  const left = width > 0 ? ratio * (width - THUMB) : 0;
+  const base = sliderOrigin(min, max);
+  const baseRatio = span > 0 ? (base - min) / span : 0;
+  const room = Math.max(0, width - THUMB);
+  const left = ratio * room;
+  const center = left + THUMB / 2;
+  const baseCenter = base === min ? 0 : baseRatio * room + THUMB / 2;
   return (
     <View style={[s.root, style]}>
       {startLabel ? (
@@ -124,7 +154,27 @@ export function Slider({
       >
         <View style={s.track} pointerEvents="none" />
         {width > 0 ? (
-          <View style={[s.thumb, { left }]} pointerEvents="none" />
+          <>
+            <View
+              testID="slider-fill"
+              style={[
+                s.fill,
+                {
+                  left: Math.min(baseCenter, center),
+                  width: Math.abs(center - baseCenter),
+                },
+              ]}
+              pointerEvents="none"
+            />
+            {base > min ? (
+              <View
+                testID="slider-origin"
+                style={[s.tick, { left: baseCenter - TICK_WIDTH / 2 }]}
+                pointerEvents="none"
+              />
+            ) : null}
+            <View style={[s.thumb, { left }]} pointerEvents="none" />
+          </>
         ) : null}
       </View>
       {endLabel ? (

@@ -1,6 +1,5 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import { Divider } from '../../components/divider/divider';
-import { Slider } from '../../components/slider/slider';
+import { Slider, sliderOrigin } from '../../components/slider/slider';
 import { Text } from '../../components/text/text';
 import { makeStyles } from '../../utils/styles';
 
@@ -21,7 +20,12 @@ export type SliderListProps = {
 };
 
 const useStyles = makeStyles((t) => ({
-  row: { paddingTop: t.space[2], gap: t.space[1] },
+  list: { gap: t.space[4] },
+  row: { gap: t.space[1] },
+  head: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
+  start: { flex: 1 },
+  end: { flex: 1, textAlign: 'right' },
+  lean: { color: t.colors.foreground },
 }));
 
 export function SliderList({
@@ -33,25 +37,48 @@ export function SliderList({
   style,
 }: SliderListProps) {
   const s = useStyles();
+  const base = sliderOrigin(min, max);
   return (
-    <View style={style}>
-      {items.map((item) => (
-        <View key={item.key}>
-          <Divider />
-          <View style={s.row}>
-            <Text weight="medium">{item.label}</Text>
+    <View style={[s.list, style]}>
+      {items.map((item) => {
+        const value = values[item.key] ?? min;
+        const toStart = value < base;
+        const toEnd = value > base;
+        return (
+          <View key={item.key} style={s.row}>
+            <View style={s.head}>
+              <Text
+                variant="label"
+                tone="muted"
+                weight={toStart ? 'semibold' : undefined}
+                numberOfLines={1}
+                style={[s.start, toStart && s.lean]}
+              >
+                {item.startLabel}
+              </Text>
+              <Text weight="semibold" numberOfLines={1}>
+                {item.label}
+              </Text>
+              <Text
+                variant="label"
+                tone="muted"
+                weight={toEnd ? 'semibold' : undefined}
+                numberOfLines={1}
+                style={[s.end, toEnd && s.lean]}
+              >
+                {item.endLabel}
+              </Text>
+            </View>
             <Slider
-              value={values[item.key] ?? min}
+              value={value}
               min={min}
               max={max}
-              onChange={(value) => onChange(item.key, value)}
-              startLabel={item.startLabel}
-              endLabel={item.endLabel}
+              onChange={(next) => onChange(item.key, next)}
               accessibilityLabel={item.label}
             />
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }

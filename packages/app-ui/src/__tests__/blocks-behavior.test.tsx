@@ -1,5 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { OrderBlock, QuestionAccordion, StageBar } from '../index';
+import {
+  defaultThemes,
+  OrderBlock,
+  QuestionAccordion,
+  SliderList,
+  StageBar,
+} from '../index';
 
 describe('OrderBlock', () => {
   it('reads as a checkbox while picking and reports long press', async () => {
@@ -81,5 +87,60 @@ describe('QuestionAccordion', () => {
     expect(onValueChange).toHaveBeenLastCalledWith('mood', ['a', 'b']);
     await fireEvent.press(screen.getByLabelText('따뜻한'));
     expect(onValueChange).toHaveBeenLastCalledWith('mood', ['b']);
+  });
+});
+
+describe('SliderList', () => {
+  const items = [
+    {
+      key: 'temperature',
+      label: '색감',
+      startLabel: '시원한',
+      endLabel: '따뜻한',
+    },
+    {
+      key: 'energy',
+      label: '움직임',
+      startLabel: '차분한',
+      endLabel: '활기찬',
+    },
+  ];
+  const { foreground, mutedForeground } = defaultThemes.light.colors;
+
+  it('emphasizes only the end the value leans to', async () => {
+    await render(
+      <SliderList
+        items={items}
+        values={{ temperature: 0.8, energy: 0 }}
+        min={-2}
+        max={2}
+        onChange={() => {}}
+      />
+    );
+    expect(screen.getByText('따뜻한')).toHaveStyle({
+      color: foreground,
+      fontWeight: '600',
+    });
+    expect(screen.getByText('시원한')).toHaveStyle({ color: mutedForeground });
+    expect(screen.getByText('차분한')).toHaveStyle({ color: mutedForeground });
+    expect(screen.getByText('활기찬')).toHaveStyle({ color: mutedForeground });
+  });
+
+  it('reports changes by key from a full width slider', async () => {
+    const onChange = jest.fn();
+    await render(
+      <SliderList
+        items={items}
+        values={{ temperature: 0, energy: 0 }}
+        min={-2}
+        max={2}
+        onChange={onChange}
+      />
+    );
+    await fireEvent(screen.getByLabelText('움직임'), 'accessibilityAction', {
+      nativeEvent: { actionName: 'increment' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith('energy', expect.closeTo(0.4, 5));
+    expect(screen.getAllByText('시원한')).toHaveLength(1);
   });
 });

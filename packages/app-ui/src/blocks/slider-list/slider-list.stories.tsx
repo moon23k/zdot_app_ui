@@ -22,7 +22,13 @@ const axes = [
 ];
 
 function Demo() {
-  const [values, setValues] = useState<Record<string, number>>({});
+  const [values, setValues] = useState<Record<string, number>>({
+    temperature: 0.8,
+    energy: -1.2,
+    softness: 0,
+    era: 1.6,
+    intensity: -0.4,
+  });
   return (
     <Section title="느낌 축">
       <SliderList
@@ -45,3 +51,5 @@ const meta = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {};
+
+export const Dark: StoryObj<typeof meta> = { globals: { scheme: 'dark' } };

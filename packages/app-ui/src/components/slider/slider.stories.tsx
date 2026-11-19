@@ -5,16 +5,39 @@ import { FieldGroup } from '../field-group/field-group';
 import { Slider } from './slider';
 
 const axes = [
-  { key: 'temp', label: '색감', start: '시원한', end: '따뜻한' },
-  { key: 'energy', label: '움직임', start: '차분한', end: '활기찬' },
-  { key: 'size', label: '크기', start: '작게', end: '크게' },
+  {
+    key: 'temp',
+    label: '색감',
+    start: '시원한',
+    end: '따뜻한',
+    min: -2,
+    max: 2,
+  },
+  {
+    key: 'size',
+    label: '글자 크기',
+    start: '작게',
+    end: '크게',
+    min: 1,
+    max: 10,
+  },
+  {
+    key: 'tracking',
+    label: '자간',
+    start: '자간',
+    end: '넓게',
+    min: -5,
+    max: 10,
+  },
+  { key: 'space', label: '위 여백', start: '위', end: '넓게', min: 0, max: 10 },
 ];
 
 function Demo() {
   const [values, setValues] = useState<Record<string, number>>({
     temp: 0.7,
-    energy: -1.3,
     size: 5.4,
+    tracking: -2,
+    space: 0,
   });
   return (
     <Section title="interactive">
@@ -22,9 +45,9 @@ function Demo() {
         {axes.map((axis) => (
           <FieldGroup key={axis.key} label={axis.label}>
             <Slider
-              value={values[axis.key] ?? 0}
-              min={axis.key === 'size' ? 1 : -2}
-              max={axis.key === 'size' ? 10 : 2}
+              value={values[axis.key] ?? axis.min}
+              min={axis.min}
+              max={axis.max}
               onChange={(v) => setValues({ ...values, [axis.key]: v })}
               startLabel={axis.start}
               endLabel={axis.end}
@@ -44,3 +67,5 @@ const meta = {
 export default meta;
 
 export const AllVariants: StoryObj<typeof meta> = {};
+
+export const Dark: StoryObj<typeof meta> = { globals: { scheme: 'dark' } };
