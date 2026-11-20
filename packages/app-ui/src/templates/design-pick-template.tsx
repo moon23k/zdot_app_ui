@@ -12,6 +12,7 @@ import { PressableBase } from '../internal/pressable-base';
 import { SteadyText } from '../internal/steady-text';
 import { useSlide } from '../internal/use-slide';
 import { useTheme } from '../theme/theme-provider';
+import { tokens } from '../theme/tokens';
 import { makeStyles } from '../utils/styles';
 import { ActionButton, HeaderIconButton, type TemplateAction } from './parts';
 
@@ -41,6 +42,13 @@ export type DesignPickTemplateProps<T extends string> = {
   topInset?: number;
   bottomInset?: number;
 };
+
+const BAR_BORDER = 1;
+
+export function designPickBarSpace(bottomInset = 0): number {
+  const gap = tokens.space[2];
+  return bottomInset + gap * 3 + BAR_BORDER * 2 + tokens.controlSize.lg;
+}
 
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, backgroundColor: t.colors.background },
@@ -93,7 +101,7 @@ const useStyles = makeStyles((t) => ({
     right: t.space[4],
     padding: t.space[2],
     borderRadius: t.radius.xl,
-    borderWidth: 1,
+    borderWidth: BAR_BORDER,
     borderColor: t.colors.border,
     backgroundColor: t.colors.surface,
     boxShadow: t.shadow.md,

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { DesignPickTemplate } from '../index';
+import { DesignPickTemplate, designPickBarSpace } from '../index';
 
 const options = [
   { value: 'a', label: '1안' },
@@ -78,5 +78,10 @@ describe('DesignPickTemplate', () => {
     ).toMatchObject({ selected: true });
     await fireEvent.press(screen.getByRole('button', { name: '색' }));
     expect(onColor).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports the height the floating bar covers above the bottom edge', () => {
+    expect(designPickBarSpace()).toBe(78);
+    expect(designPickBarSpace(34)).toBe(112);
   });
 });
