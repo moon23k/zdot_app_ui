@@ -5,6 +5,7 @@ import {
   PaletteLegend,
   PaletteThumbs,
   QuestionAccordion,
+  QuestionPager,
   SliderList,
   StageBar,
 } from '../index';
@@ -208,5 +209,111 @@ describe('PaletteThumbs', () => {
       color: mutedForeground,
       fontSize: 14,
     });
+  });
+});
+
+describe('QuestionPager', () => {
+  const question = (key: string) => ({
+    key,
+    label: `${key} 질문`,
+    options: ['a', 'b', 'c', 'd'].map((o) => ({
+      value: o,
+      label: `${key}-${o}`,
+    })),
+  });
+  const groups = [
+    { key: 'g1', label: '손님', questions: [question('q1'), question('q2')] },
+    { key: 'g2', label: '구매', questions: [question('q3'), question('q4')] },
+  ];
+
+  function setup(active: string, value: Record<string, string | undefined>) {
+    const onValueChange = jest.fn();
+    const onActiveGroupChange = jest.fn();
+    const view = render(
+      <QuestionPager
+        groups={groups}
+        value={value}
+        onValueChange={onValueChange}
+        activeGroup={active}
+        onActiveGroupChange={onActiveGroupChange}
+      />
+    );
+    return { view, onValueChange, onActiveGroupChange };
+  }
+
+  it('shows only the active group as one-of radios', async () => {
+    const { view } = setup('g1', { q1: 'b' });
+    await view;
+    expect(screen.getAllByRole('radio')).toHaveLength(8);
+    expect(screen.getByText('q2 질문')).toBeTruthy();
+    expect(screen.queryByLabelText('q3-a')).toBeNull();
+    expect(
+      screen.getByRole('radio', { name: 'q1-b' }).props.accessibilityState
+    ).toMatchObject({ checked: true });
+    expect(
+      screen.getByRole('tab', { name: '손님' }).props.accessibilityState
+    ).toMatchObject({ selected: true });
+  });
+
+  it('picks one option and ignores pressing the chosen one', async () => {
+    const { view, onValueChange, onActiveGroupChange } = setup('g1', {
+      q1: 'b',
+    });
+    await view;
+    await fireEvent.press(screen.getByRole('radio', { name: 'q1-b' }));
+    expect(onValueChange).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByRole('radio', { name: 'q1-c' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('q1', 'c');
+    expect(onActiveGroupChange).not.toHaveBeenCalled();
+  });
+
+  it('moves to any group from the strip', async () => {
+    const { view, onActiveGroupChange } = setup('g1', {});
+    await view;
+    await fireEvent.press(screen.getByRole('tab', { name: '구매' }));
+    expect(onActiveGroupChange).toHaveBeenLastCalledWith('g2');
+  });
+
+  it('advances when the pick just completes the group', async () => {
+    const { view, onValueChange, onActiveGroupChange } = setup('g1', {
+      q1: 'a',
+    });
+    await view;
+    await fireEvent.press(screen.getByRole('radio', { name: 'q2-d' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('q2', 'd');
+    expect(onActiveGroupChange).toHaveBeenLastCalledWith('g2');
+    expect(onValueChange.mock.invocationCallOrder[0]).toBeLessThan(
+      onActiveGroupChange.mock.invocationCallOrder[0]!
+    );
+  });
+
+  it('stays when changing an answer in a finished group', async () => {
+    const { view, onValueChange, onActiveGroupChange } = setup('g1', {
+      q1: 'a',
+      q2: 'b',
+    });
+    await view;
+    await fireEvent.press(screen.getByRole('radio', { name: 'q2-c' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('q2', 'c');
+    expect(onActiveGroupChange).not.toHaveBeenCalled();
+  });
+
+  it('stays on the last group when it is completed', async () => {
+    const { view, onValueChange, onActiveGroupChange } = setup('g2', {
+      q1: 'a',
+      q2: 'b',
+      q3: 'a',
+    });
+    await view;
+    await fireEvent.press(screen.getByRole('radio', { name: 'q4-a' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('q4', 'a');
+    expect(onActiveGroupChange).not.toHaveBeenCalled();
+  });
+
+  it('marks a finished group that is not active', async () => {
+    const { selectForeground } = defaultThemes.light.colors;
+    const { view } = setup('g2', { q1: 'a', q2: 'b' });
+    await view;
+    expect(screen.getByText('손님')).toHaveStyle({ color: selectForeground });
   });
 });

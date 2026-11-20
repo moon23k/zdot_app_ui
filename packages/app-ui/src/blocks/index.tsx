@@ -34,6 +34,7 @@ export * from './feed-row';
 export * from './product-tile';
 export * from './quick-actions';
 export * from './question-accordion';
+export * from './question-pager';
 export * from './slider-list';
 export * from './scan-modal';
 export * from './summary-cards';
