@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Phone } from '../__stories__/phone';
 import { useTheme } from '../theme/theme-provider';
+import { StepScreen } from '../blocks/step-screen/step-screen';
 import { AdjustTemplate } from './adjust-template';
+import { AxisDialGroup } from './axis-dial-group';
 import { BrandFeelArt } from './brand-feel-art';
 import { ColorAdjustNote } from './color-adjust-note';
 import { ColorTrack } from './color-track';
@@ -187,4 +189,42 @@ export const BrandFeel: StoryObj = {
 const feel = StyleSheet.create({
   stack: { gap: 16 },
   rings: { flexDirection: 'row', gap: 12 },
+});
+
+function DialDemo() {
+  const [values, setValues] = useState<Record<string, number>>({
+    temperature: 1,
+    energy: -1,
+    era: 2,
+  });
+  return (
+    <View style={dial.frame}>
+      <StepScreen
+        total={3}
+        current={1}
+        onBack={() => {}}
+        title="가게 분위기를 맞춰 볼까요?"
+        primaryAction={{ label: '다음', onPress: () => {} }}
+      >
+        <AxisDialGroup
+          items={axes.map((a) => ({
+            key: a.key,
+            label: a.label,
+            startLabel: a.neg,
+            endLabel: a.pos,
+          }))}
+          values={values}
+          onChange={(key, v) => setValues({ ...values, [key]: v })}
+        />
+      </StepScreen>
+    </View>
+  );
+}
+
+export const Dial: StoryObj = {
+  render: () => <DialDemo />,
+};
+
+const dial = StyleSheet.create({
+  frame: { height: 760, maxWidth: 390 },
 });

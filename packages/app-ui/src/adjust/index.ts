@@ -1,4 +1,10 @@
 export { AdjustTemplate, type AdjustTemplateProps } from './adjust-template';
+export { AxisDial, type AxisDialProps } from './axis-dial';
+export {
+  AxisDialGroup,
+  type AxisDialGroupItem,
+  type AxisDialGroupProps,
+} from './axis-dial-group';
 export {
   ColorAdjustNote,
   type ColorAdjustNoteProps,

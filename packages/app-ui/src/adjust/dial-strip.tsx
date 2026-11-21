@@ -18,6 +18,7 @@ export type DialStripProps = {
   items: readonly DialItem[];
   selected: string;
   onSelect: (key: string) => void;
+  spread?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -26,6 +27,11 @@ const STROKE = 3;
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.space[3], paddingHorizontal: t.layout.screenX },
+  spread: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    paddingHorizontal: 0,
+  },
   item: { alignItems: 'center', gap: t.space[1] },
   ring: {
     width: SIZE,
@@ -108,6 +114,7 @@ export function DialStrip({
   items,
   selected,
   onSelect,
+  spread = false,
   style,
 }: DialStripProps) {
   const s = useStyles();
@@ -115,7 +122,7 @@ export function DialStrip({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.row}
+      contentContainerStyle={[s.row, spread && s.spread]}
       style={style}
     >
       {items.map((item) => {

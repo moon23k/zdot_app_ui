@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import {
   AdjustTemplate,
+  AxisDial,
+  AxisDialGroup,
   ColorAdjustNote,
   ColorTrack,
   DialStrip,
@@ -36,6 +38,68 @@ describe('DialStrip', () => {
     expect(screen.getByText('+2')).toBeTruthy();
     await fireEvent.press(screen.getByLabelText('활기 +2'));
     expect(onSelect).toHaveBeenCalledWith('b');
+  });
+});
+
+describe('AxisDial', () => {
+  it('steps by one inside range and marks the leaning end', async () => {
+    const onChange = jest.fn();
+    await render(
+      <AxisDial
+        value={2}
+        onChange={onChange}
+        valueLabel="따뜻한"
+        startLabel="시원한"
+        endLabel="따뜻한"
+        accessibilityLabel="색감"
+      />
+    );
+    const dial = screen.getByLabelText('색감');
+    expect(dial.props.accessibilityValue).toEqual({
+      min: -2,
+      max: 2,
+      now: 2,
+      text: '따뜻한',
+    });
+    await fireEvent(dial, 'accessibilityAction', {
+      nativeEvent: { actionName: 'increment' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith(2);
+    await fireEvent(dial, 'accessibilityAction', {
+      nativeEvent: { actionName: 'decrement' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith(1);
+  });
+});
+
+describe('AxisDialGroup', () => {
+  it('switches the dial to the picked axis and reports its key', async () => {
+    const onChange = jest.fn();
+    await render(
+      <AxisDialGroup
+        items={[
+          { key: 'a', label: '색감', startLabel: '시원한', endLabel: '따뜻한' },
+          {
+            key: 'b',
+            label: '움직임',
+            startLabel: '차분한',
+            endLabel: '활기찬',
+          },
+        ]}
+        values={{ a: 1, b: -2 }}
+        onChange={onChange}
+      />
+    );
+    expect(screen.getByLabelText('색감').props.accessibilityValue.text).toBe(
+      '따뜻한'
+    );
+    await fireEvent.press(screen.getByLabelText('움직임 -2'));
+    const dial = screen.getByLabelText('움직임');
+    expect(dial.props.accessibilityValue.text).toBe('차분한');
+    await fireEvent(dial, 'accessibilityAction', {
+      nativeEvent: { actionName: 'increment' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith('b', -1);
   });
 });
 
