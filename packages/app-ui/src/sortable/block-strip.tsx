@@ -41,7 +41,8 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.border,
     backgroundColor: t.colors.surface,
   },
-  on: { borderWidth: 2.5, borderColor: t.colors.primary },
+  on: { borderWidth: 2.5, borderColor: t.colors.raised },
+  lifted: { borderRadius: t.radius.md, boxShadow: t.shadow.lift },
   num: {
     position: 'absolute',
     left: t.space[1],
@@ -51,12 +52,16 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
+  numOn: { backgroundColor: t.colors.primary, boxShadow: 'none' },
   numText: {
     fontSize: t.typography.caption.fontSize - 1,
     fontWeight: '600',
-    color: t.colors.primaryForeground,
+    color: t.colors.title,
   },
+  numTextOn: { color: t.colors.primaryForeground },
   add: {
     width: W,
     height: H,
@@ -129,27 +134,22 @@ export function BlockStrip({
           renderItem={({ item, index }) => {
             const on = item.key === value;
             return (
-              <PressableBase
-                onPress={() => onValueChange(item.key)}
-                accessibilityLabel={`블록 ${index + 1}`}
-                accessibilityState={{ selected: on }}
-                feedback="small"
-                style={[s.chip, on && s.on]}
-              >
-                {item.thumb}
-                <View
-                  style={[
-                    s.num,
-                    {
-                      backgroundColor: on
-                        ? t.colors.primary
-                        : t.colors.foreground,
-                    },
-                  ]}
+              <View style={on && s.lifted}>
+                <PressableBase
+                  onPress={() => onValueChange(item.key)}
+                  accessibilityLabel={`블록 ${index + 1}`}
+                  accessibilityState={{ selected: on }}
+                  feedback="small"
+                  style={[s.chip, on && s.on]}
                 >
-                  <RNText style={s.numText}>{index + 1}</RNText>
-                </View>
-              </PressableBase>
+                  {item.thumb}
+                  <View style={[s.num, on && s.numOn]}>
+                    <RNText style={[s.numText, on && s.numTextOn]}>
+                      {index + 1}
+                    </RNText>
+                  </View>
+                </PressableBase>
+              </View>
             );
           }}
         />

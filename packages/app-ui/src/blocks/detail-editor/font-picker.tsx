@@ -30,7 +30,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[3],
     borderRadius: t.radius.md,
   },
-  on: { backgroundColor: t.colors.primaryTint },
+  on: { backgroundColor: t.colors.recess },
   sample: { flexShrink: 1 },
 }));
 

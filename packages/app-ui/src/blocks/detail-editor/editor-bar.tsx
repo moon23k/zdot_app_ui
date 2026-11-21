@@ -56,7 +56,7 @@ const useStyles = makeStyles((t) => ({
   tag: { alignSelf: 'center' },
   fill: { flex: 1 },
   mirror: { transform: [{ scaleX: -1 }] },
-  on: { backgroundColor: t.colors.primaryTint },
+  on: { backgroundColor: t.colors.recess },
 }));
 
 export function EditorBar({

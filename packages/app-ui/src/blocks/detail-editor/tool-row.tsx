@@ -29,7 +29,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.surface,
   },
-  on: { backgroundColor: t.colors.primaryTint },
+  on: { backgroundColor: t.colors.raised, boxShadow: t.shadow.liftSm },
 }));
 
 export function ToolRow({ items }: { items: readonly ToolRowItem[] }) {
@@ -48,7 +48,7 @@ export function ToolRow({ items }: { items: readonly ToolRowItem[] }) {
         >
           <View style={[s.round, item.active && s.on]}>
             {renderIcon(item.icon, {
-              color: item.active ? t.colors.primary : t.colors.foreground,
+              color: item.active ? t.colors.title : t.colors.foreground,
               size: t.iconSize.md,
             })}
           </View>

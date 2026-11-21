@@ -12,7 +12,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { CheckGlyph } from '../../internal/glyphs';
+import { CheckDisc } from '../../internal/check-disc';
 import { timing, useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -49,8 +49,11 @@ export type CircleGridProps<T extends string> = (Single<T> | Multiple<T>) & {
 };
 
 const RING = 3;
+const HALO = 4;
 const RING_FROM = 1.12;
-const BADGE = 26;
+const BADGE = 24;
+const BADGE_RING = 2.5;
+const BADGE_SHIFT = (BADGE + BADGE_RING * 2 - 26) / 2;
 const GLYPH = 40;
 
 const useStyles = makeStyles((t) => ({
@@ -74,13 +77,13 @@ const useStyles = makeStyles((t) => ({
   },
   hoop: {
     position: 'absolute',
-    top: -RING,
-    right: -RING,
-    bottom: -RING,
-    left: -RING,
-    borderWidth: RING,
+    top: RING - HALO,
+    right: RING - HALO,
+    bottom: RING - HALO,
+    left: RING - HALO,
     borderRadius: t.radius.full,
-    borderColor: t.colors.primary,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.lift,
   },
   fill: { flex: 1 },
   circle: {
@@ -95,16 +98,8 @@ const useStyles = makeStyles((t) => ({
   glyph: { fontSize: GLYPH, lineHeight: GLYPH * 1.25 },
   badge: {
     position: 'absolute',
-    right: 0,
-    bottom: 0,
-    width: BADGE,
-    height: BADGE,
-    borderRadius: t.radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: t.colors.background,
-    backgroundColor: t.colors.primary,
+    right: -BADGE_SHIFT,
+    bottom: -BADGE_SHIFT,
   },
   label: { textAlign: 'center' },
 }));
@@ -187,7 +182,7 @@ function Cell<T extends string>({
           <Circle uri={item.uri} source={item.source} glyph={item.glyph} />
         </Animated.View>
         <Animated.View pointerEvents="none" style={[s.badge, mark]}>
-          <CheckGlyph color={t.colors.primaryForeground} size={14} />
+          <CheckDisc size={BADGE} ring={BADGE_RING} />
         </Animated.View>
       </View>
       <Text

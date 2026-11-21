@@ -25,6 +25,7 @@ export type ChipProps = Omit<PressableBaseProps, 'children' | 'touchHeight'> & {
 };
 
 const HEIGHT: Record<ChipSize, number> = { sm: 32, md: 36, lg: 40 };
+const DOT = 6;
 const MIN_WIDTH: Record<ChipSize, number> = { sm: 44, md: 48, lg: 52 };
 
 const useStyles = makeStyles((t) => ({
@@ -38,10 +39,18 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
   },
   lg: { paddingHorizontal: t.space[4] },
+  picked: { boxShadow: t.shadow.liftSm },
   mark: {
     flexDirection: 'row',
+    alignItems: 'center',
     overflow: 'hidden',
     marginRight: -t.space[1],
+  },
+  dot: {
+    width: DOT,
+    height: DOT,
+    borderRadius: DOT / 2,
+    backgroundColor: t.colors.primary,
   },
   label: {
     fontFamily: t.fontFamily,
@@ -49,6 +58,7 @@ const useStyles = makeStyles((t) => ({
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
   },
+  strong: { fontWeight: '600' },
   count: { fontVariant: ['tabular-nums'], fontWeight: '600' },
 }));
 
@@ -66,15 +76,15 @@ export function Chip({
 }: ChipProps) {
   const t = useTheme();
   const s = useStyles();
-  const color = selected ? t.colors.primary : t.colors.foreground;
-  const off = t.colors.muted;
-  const on = t.colors.primaryTint;
-  const ink = t.colors.foreground;
-  const point = t.colors.primary;
-  const reach = t.iconSize.sm + t.space[1];
+  const color = selected ? t.colors.title : t.colors.mutedForeground;
+  const off = t.colors.recess;
+  const on = t.colors.raised;
+  const ink = t.colors.mutedForeground;
+  const point = t.colors.title;
+  const reach = (check ? t.iconSize.sm : DOT) + t.space[1];
 
   const pick = useSwitch(selected, 'base');
-  const mark = useSwitch(selected && check, 'base');
+  const mark = useSwitch(selected, 'base');
   const face = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(pick.value, [0, 1], [off, on]),
   }));
@@ -99,22 +109,25 @@ export function Chip({
         s.base,
         { height: HEIGHT[size], minWidth: MIN_WIDTH[size] },
         size === 'lg' && s.lg,
+        selected && s.picked,
         style,
       ]}
       animatedStyle={face}
     >
-      {check ? (
-        <Animated.View style={[s.mark, open]}>
-          <CheckGlyph color={point} size={t.iconSize.sm} />
-        </Animated.View>
-      ) : null}
+      <Animated.View style={[s.mark, open]}>
+        {check ? (
+          <CheckGlyph color={t.colors.primary} size={t.iconSize.sm} />
+        ) : (
+          <View style={s.dot} />
+        )}
+      </Animated.View>
       {leftIcon ? (
         <View>{renderIcon(leftIcon, { color, size: t.iconSize.sm })}</View>
       ) : null}
       <Animated.Text
         numberOfLines={1}
         maxFontSizeMultiplier={t.maxFontScale}
-        style={[s.label, tone]}
+        style={[s.label, selected && s.strong, tone]}
       >
         {children}
       </Animated.Text>

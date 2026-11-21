@@ -38,7 +38,9 @@ const useStyles = makeStyles((t) => ({
     height: SIZE,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: SIZE / 2,
   },
+  lifted: { boxShadow: t.shadow.liftSm },
   value: { position: 'absolute' },
 }));
 
@@ -51,14 +53,14 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
   const c = 2 * Math.PI * r;
   if (item.color) {
     return (
-      <View style={s.ring}>
+      <View style={[s.ring, on && s.lifted]}>
         <Svg width={SIZE} height={SIZE}>
           <Circle
             cx={SIZE / 2}
             cy={SIZE / 2}
             r={r}
             fill={item.color}
-            stroke={on ? t.colors.primary : t.colors.border}
+            stroke={on ? t.colors.raised : t.colors.border}
             strokeWidth={STROKE}
           />
         </Svg>
@@ -68,14 +70,14 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
   const v = item.value ?? 0;
   const frac = Math.min(1, Math.abs(v) / (item.max ?? 2));
   return (
-    <View style={s.ring}>
+    <View style={[s.ring, on && s.lifted]}>
       <Svg width={SIZE} height={SIZE}>
         <Circle
           cx={SIZE / 2}
           cy={SIZE / 2}
           r={r}
-          fill={on ? t.colors.primaryTint : t.colors.muted}
-          stroke={t.colors.border}
+          fill={on ? t.colors.raised : t.colors.recess}
+          stroke={t.colors.line}
           strokeWidth={STROKE}
         />
         {v ? (
@@ -84,7 +86,7 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
             cy={SIZE / 2}
             r={r}
             fill="none"
-            stroke={on ? t.colors.primary : t.colors.primaryEdge}
+            stroke={on ? t.colors.arc : t.colors.arcMuted}
             strokeWidth={STROKE}
             strokeLinecap="round"
             strokeDasharray={`${c * frac} ${c}`}

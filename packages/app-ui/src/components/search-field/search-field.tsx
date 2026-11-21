@@ -1,7 +1,7 @@
 import { CloseGlyph, SearchGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
-import { Field, type FieldProps } from '../field/field';
+import { FieldBase, type FieldProps } from '../field/field';
 
 export type SearchFieldProps = Omit<
   FieldProps,
@@ -20,7 +20,8 @@ export function SearchField({
 }: SearchFieldProps) {
   const t = useTheme();
   return (
-    <Field
+    <FieldBase
+      raised
       returnKeyType="search"
       accessibilityRole="search"
       autoCorrect={false}

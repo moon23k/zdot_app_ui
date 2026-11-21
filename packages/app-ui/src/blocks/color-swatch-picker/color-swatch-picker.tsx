@@ -37,7 +37,7 @@ const useStyles = makeStyles((t) => ({
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  ringOn: { borderColor: t.colors.primary },
+  ringOn: { borderColor: t.colors.raised, boxShadow: t.shadow.liftSm },
   cell: { width: GRID, height: GRID, borderRadius: t.radius.full },
   cellRing: {
     position: 'absolute',
@@ -47,7 +47,8 @@ const useStyles = makeStyles((t) => ({
     bottom: -(RING + RING_GAP),
     borderRadius: t.radius.full,
     borderWidth: RING,
-    borderColor: t.colors.foreground,
+    borderColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
   card: {
     width: 148,
@@ -59,8 +60,9 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   cardOn: {
-    borderColor: t.colors.primaryTint,
-    backgroundColor: t.colors.primaryTint,
+    borderColor: t.colors.raised,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
   mark: {
     position: 'absolute',

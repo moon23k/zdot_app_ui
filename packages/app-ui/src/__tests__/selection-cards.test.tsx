@@ -1,6 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { useState } from 'react';
-import { ChipGroup, CircleGrid, SheetOptions, SummaryHeader } from '../index';
+import { StyleSheet } from 'react-native';
+import {
+  ChipGroup,
+  CircleGrid,
+  SheetOptions,
+  SummaryHeader,
+  defaultThemes,
+} from '../index';
 
 const items = [
   { value: 'a', label: '화병' },
@@ -105,6 +112,25 @@ describe('single choice reads as a checked radio', () => {
     const chosen = screen.getByRole('radio', { name: '택배' });
     expect(chosen.props.accessibilityState).toMatchObject({ checked: true });
     expect(chosen.props.accessibilityState.selected).toBeUndefined();
+  });
+
+  it('ChipGroup lifts the chosen chip and keeps the rest sunken', async () => {
+    const { shadow } = defaultThemes.light;
+    await render(
+      <ChipGroup
+        items={[
+          { value: 'a', label: '택배' },
+          { value: 'b', label: '방문 수령' },
+        ]}
+        value="a"
+        onValueChange={() => {}}
+      />
+    );
+    const face = (name: string) =>
+      StyleSheet.flatten(screen.getByRole('radio', { name }).props.style);
+    expect(face('택배').boxShadow).toBe(shadow.liftSm);
+    expect(face('방문 수령').boxShadow).toBeUndefined();
+    expect(screen.getByText('택배')).toHaveStyle({ fontWeight: '600' });
   });
 
   it('SheetOptions marks the chosen option checked', async () => {

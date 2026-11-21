@@ -32,6 +32,7 @@ export type PressableBaseProps = Omit<PressableProps, 'style'> & {
 
 type ButtonMotion = {
   live?: SharedValue<number>;
+  dim?: boolean;
   nudge?: SharedValue<number>;
 };
 
@@ -48,6 +49,7 @@ export function PressableBase({
   feedback,
   onDisabledPress,
   live,
+  dim = true,
   nudge,
   disabled,
   hitSlop,
@@ -84,7 +86,7 @@ export function PressableBase({
     }
     if (live) scale *= 1 - (1 - live.value) * (1 - dimScale);
     const transform = [{ translateX: nudge ? nudge.value : 0 }, { scale }];
-    return live
+    return live && dim
       ? { transform, opacity: dimOpacity + (1 - dimOpacity) * live.value }
       : { transform };
   });

@@ -17,8 +17,7 @@ export type ColorFamilyTabsProps<T extends string = string> = {
 };
 
 const SWATCH = 32;
-const RING = 2;
-const RING_GAP = 2;
+const HALO = 4;
 
 const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row' },
@@ -33,15 +32,15 @@ const useStyles = makeStyles((t) => ({
     height: SWATCH,
     borderRadius: t.radius.full,
   },
-  ring: {
+  halo: {
     position: 'absolute',
-    top: -(RING + RING_GAP),
-    left: -(RING + RING_GAP),
-    right: -(RING + RING_GAP),
-    bottom: -(RING + RING_GAP),
+    top: -HALO,
+    left: -HALO,
+    right: -HALO,
+    bottom: -HALO,
     borderRadius: t.radius.full,
-    borderWidth: RING,
-    borderColor: t.colors.primary,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
 }));
 
@@ -68,8 +67,9 @@ export function ColorFamilyTabs<T extends string = string>({
             }}
             style={s.cell}
           >
-            <View style={[s.swatch, { backgroundColor: item.color }]}>
-              {selected ? <View pointerEvents="none" style={s.ring} /> : null}
+            <View>
+              {selected ? <View pointerEvents="none" style={s.halo} /> : null}
+              <View style={[s.swatch, { backgroundColor: item.color }]} />
             </View>
             <Text
               variant="caption"

@@ -39,6 +39,31 @@ describe('Button', () => {
     expect(onPress).not.toHaveBeenCalled();
   });
 
+  it('greys out a disabled primary button without dimming it', async () => {
+    const { disabledSurface, disabledForeground } = defaultThemes.light.colors;
+    await render(
+      <Button onPress={jest.fn()} disabled>
+        다음
+      </Button>
+    );
+    const face = StyleSheet.flatten(screen.getByRole('button').props.style);
+    expect(face.backgroundColor).toBe(disabledSurface);
+    expect(face.opacity).toBeUndefined();
+    expect(screen.getByText('다음')).toHaveStyle({ color: disabledForeground });
+  });
+
+  it('fills a small primary button', async () => {
+    const { primary, primaryForeground } = defaultThemes.light.colors;
+    await render(
+      <Button size="sm" onPress={jest.fn()}>
+        완료
+      </Button>
+    );
+    const face = StyleSheet.flatten(screen.getByRole('button').props.style);
+    expect(face.backgroundColor).toBe(primary);
+    expect(screen.getByText('완료')).toHaveStyle({ color: primaryForeground });
+  });
+
   it('keeps the disabled state for assistive tech while it can be nudged', async () => {
     await render(
       <Button onPress={jest.fn()} disabled>

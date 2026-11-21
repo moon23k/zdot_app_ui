@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { StyleSheet } from 'react-native';
 import {
   defaultThemes,
   OrderBlock,
@@ -311,9 +312,23 @@ describe('QuestionPager', () => {
   });
 
   it('marks a finished group that is not active', async () => {
-    const { selectForeground } = defaultThemes.light.colors;
-    const { view } = setup('g2', { q1: 'a', q2: 'b' });
+    const { mutedForeground } = defaultThemes.light.colors;
+    const { view } = setup('g1', { q3: 'a', q4: 'b' });
     await view;
-    expect(screen.getByText('손님')).toHaveStyle({ color: selectForeground });
+    expect(screen.getByText('구매')).toHaveStyle({ color: mutedForeground });
+  });
+
+  it('sinks open tiles and lifts the picked one', async () => {
+    const { recess, raised, faint } = defaultThemes.light.colors;
+    const { view } = setup('g1', { q1: 'b' });
+    await view;
+    const flat = (name: string) =>
+      StyleSheet.flatten(screen.getByRole('radio', { name }).props.style);
+    expect(flat('q1-a').backgroundColor).toBe(recess);
+    expect(flat('q1-b')).toMatchObject({
+      backgroundColor: raised,
+      boxShadow: defaultThemes.light.shadow.liftSm,
+    });
+    expect(screen.getByText('구매')).toHaveStyle({ color: faint });
   });
 });

@@ -17,6 +17,15 @@ export const semantic = {
     primaryContainer: '#f6d3c3',
     primaryEdge: '#ed6431',
     point: '#1a1a1a',
+    recess: '#eceef1',
+    raised: '#ffffff',
+    line: '#e3e7ec',
+    faint: '#8c94a0',
+    disabledSurface: '#e4e7eb',
+    disabledForeground: '#a1a8b3',
+    arc: '#64748b',
+    arcMuted: '#a9b1bc',
+    focusRing: 'rgba(197, 66, 17, 0.14)',
     danger: '#b91c1c',
     dangerForeground: '#ffffff',
     success: '#15803d',
@@ -48,6 +57,15 @@ export const semantic = {
     primaryContainer: '#9a4120',
     primaryEdge: '#f39a79',
     point: '#f6b298',
+    recess: '#1c1c1f',
+    raised: '#2a2a2e',
+    line: '#34343a',
+    faint: '#7c828c',
+    disabledSurface: '#26262a',
+    disabledForeground: '#6b7079',
+    arc: '#b4bcc8',
+    arcMuted: '#5f6670',
+    focusRing: 'rgba(246, 178, 152, 0.22)',
     danger: '#f87171',
     dangerForeground: '#0a0a0a',
     success: '#4ade80',
@@ -148,6 +166,9 @@ export const shadow = {
   md: '0px 4px 12px rgba(0, 0, 0, 0.12)',
   panel:
     '0px 1px 2px rgba(17, 24, 39, 0.04), 0px 8px 24px rgba(17, 24, 39, 0.04)',
+  lift: '0px 1px 2px rgba(17, 24, 39, 0.06), 0px 8px 20px rgba(17, 24, 39, 0.1)',
+  liftSm:
+    '0px 1px 2px rgba(17, 24, 39, 0.08), 0px 4px 10px rgba(17, 24, 39, 0.1)',
 } as const;
 
 export const motion = {

@@ -8,6 +8,9 @@ import { useTheme } from './theme-provider';
 const pairs: [keyof ThemeColors, keyof ThemeColors][] = [
   ['background', 'foreground'],
   ['muted', 'mutedForeground'],
+  ['recess', 'mutedForeground'],
+  ['raised', 'title'],
+  ['disabledSurface', 'disabledForeground'],
   ['primary', 'primaryForeground'],
   ['danger', 'dangerForeground'],
   ['success', 'successForeground'],
@@ -56,14 +59,16 @@ function Colors() {
         ))}
       </View>
       <View style={s.grid}>
-        {(['border', 'ring'] as const).map((key) => (
-          <View key={key} style={s.line}>
-            <View style={[s.chip, { backgroundColor: t.colors[key] }]} />
-            <Text style={s.label}>
-              {key} {t.colors[key]}
-            </Text>
-          </View>
-        ))}
+        {(['border', 'ring', 'line', 'faint', 'arc', 'arcMuted'] as const).map(
+          (key) => (
+            <View key={key} style={s.line}>
+              <View style={[s.chip, { backgroundColor: t.colors[key] }]} />
+              <Text style={s.label}>
+                {key} {t.colors[key]}
+              </Text>
+            </View>
+          )
+        )}
       </View>
     </View>
   );

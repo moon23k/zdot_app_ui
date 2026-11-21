@@ -1,5 +1,6 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/text/text';
+import { CheckDisc } from '../../internal/check-disc';
 import { CheckGlyph } from '../../internal/glyphs';
 import { haptic } from '../../internal/haptics';
 import { PressableBase } from '../../internal/pressable-base';
@@ -31,13 +32,14 @@ export type QuestionPagerProps = {
 
 const COLUMNS = 2;
 const LINE = 2;
+const MARK = 18;
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.space[3] },
   tabs: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: t.colors.border,
+    borderBottomColor: t.colors.line,
   },
   tab: {
     flex: 1,
@@ -52,9 +54,9 @@ const useStyles = makeStyles((t) => ({
     borderBottomColor: 'transparent',
   },
   tabActive: { borderBottomColor: t.colors.primary },
-  tabText: { flexShrink: 1 },
+  tabText: { flexShrink: 1, color: t.colors.faint },
   tabActiveText: { color: t.colors.title },
-  tabDoneText: { color: t.colors.selectForeground },
+  tabDoneText: { color: t.colors.mutedForeground },
   questions: { gap: t.space[3] },
   question: { gap: t.space[1] },
   grid: { gap: t.space[1] },
@@ -64,14 +66,19 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     minWidth: 0,
     height: t.controlSize.sm,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[2],
     paddingHorizontal: t.space[3],
     borderRadius: t.radius.lg,
-    backgroundColor: t.colors.surface,
+    backgroundColor: t.colors.recess,
   },
-  tilePicked: { backgroundColor: t.colors.primaryTint },
-  tileText: { color: t.colors.title },
-  tilePickedText: { color: t.colors.selectForeground },
+  tilePicked: {
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
+  },
+  tileText: { flex: 1, color: t.colors.mutedForeground },
+  tilePickedText: { flex: 1, color: t.colors.title },
 }));
 
 function answered(
@@ -141,10 +148,7 @@ export function QuestionPager({
               style={[s.tab, selected && s.tabActive]}
             >
               {done ? (
-                <CheckGlyph
-                  color={t.colors.selectForeground}
-                  size={t.iconSize.sm}
-                />
+                <CheckGlyph color={t.colors.primary} size={t.iconSize.sm} />
               ) : null}
               <Text
                 tone="muted"
@@ -194,6 +198,7 @@ export function QuestionPager({
                           >
                             {option.label}
                           </Text>
+                          {picked ? <CheckDisc size={MARK} /> : null}
                         </PressableBase>
                       );
                     })}

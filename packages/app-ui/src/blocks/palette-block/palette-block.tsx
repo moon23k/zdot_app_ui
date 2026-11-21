@@ -1,5 +1,6 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/text/text';
+import { CheckDisc } from '../../internal/check-disc';
 import { haptic } from '../../internal/haptics';
 import { PressableBase } from '../../internal/pressable-base';
 import { makeStyles } from '../../utils/styles';
@@ -42,8 +43,9 @@ const AREA = { main: 62, secondary: 26, accent: 12, upper: 78, lower: 22 };
 const DOT = 20;
 const LEGEND_DOT = 12;
 const THUMB = 64;
-const RING = 2;
-const RING_GAP = 3;
+const HALO = 4;
+const BADGE = 24;
+const BADGE_RING = 2.5;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -87,15 +89,20 @@ const useStyles = makeStyles((t) => ({
   },
   thumbs: { flexDirection: 'row', gap: t.space[3] },
   thumb: { flex: 1, minWidth: 0, gap: t.space[3] },
-  ring: {
+  halo: {
     position: 'absolute',
-    top: -(RING + RING_GAP),
-    left: -(RING + RING_GAP),
-    right: -(RING + RING_GAP),
-    bottom: -(RING + RING_GAP),
-    borderRadius: t.radius.lg + RING + RING_GAP,
-    borderWidth: RING,
-    borderColor: t.colors.primary,
+    top: -HALO,
+    left: -HALO,
+    right: -HALO,
+    bottom: -HALO,
+    borderRadius: t.radius.lg + HALO,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.lift,
+  },
+  badge: {
+    position: 'absolute',
+    right: -BADGE_RING - HALO,
+    bottom: -BADGE_RING - HALO,
   },
   thumbLabel: { textAlign: 'center' },
 }));
@@ -181,12 +188,15 @@ export function PaletteThumbs<T extends string = string>({
             style={s.thumb}
           >
             <View>
+              {selected ? <View pointerEvents="none" style={s.halo} /> : null}
               <PaletteBlock
                 colors={item.colors}
                 height={height}
                 label={item.label}
               />
-              {selected ? <View pointerEvents="none" style={s.ring} /> : null}
+              {selected ? (
+                <CheckDisc size={BADGE} ring={BADGE_RING} style={s.badge} />
+              ) : null}
             </View>
             <Text
               variant="label"

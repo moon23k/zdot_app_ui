@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Text } from '../../components/text/text';
+import { CheckDisc } from '../../internal/check-disc';
 import { SparklesGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -18,6 +19,10 @@ export type DraftStripProps = {
 
 const W = 64;
 const H = 100;
+const BADGE = 24;
+const BADGE_RING = 2.5;
+const BADGE_OUT = BADGE / 2 + BADGE_RING;
+const BADGE_AT = { right: 7, bottom: 10 };
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.space[2], paddingHorizontal: t.space[3] },
@@ -31,7 +36,13 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.border,
     backgroundColor: t.colors.surface,
   },
-  on: { borderWidth: 3, borderColor: t.colors.primary },
+  on: { borderWidth: 3, borderColor: t.colors.raised },
+  lifted: { borderRadius: t.radius.sm, boxShadow: t.shadow.lift },
+  badge: {
+    position: 'absolute',
+    right: BADGE_AT.right - BADGE_OUT,
+    bottom: BADGE_AT.bottom - BADGE_OUT,
+  },
   more: {
     width: W,
     height: H,
@@ -71,7 +82,12 @@ export function DraftStrip({
             onPress={() => onValueChange(item.key)}
             style={s.item}
           >
-            <View style={[s.frame, on && s.on]}>{item.thumb}</View>
+            <View style={on && s.lifted}>
+              <View style={[s.frame, on && s.on]}>{item.thumb}</View>
+              {on ? (
+                <CheckDisc size={BADGE} ring={BADGE_RING} style={s.badge} />
+              ) : null}
+            </View>
             <Text variant="caption" tone={on ? 'default' : 'muted'}>
               {item.label}
             </Text>

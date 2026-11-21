@@ -81,7 +81,7 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.lg,
   },
   primary: { backgroundColor: t.colors.primary },
-  tint: { backgroundColor: t.colors.primaryTint },
+  off: { backgroundColor: t.colors.disabledSurface },
   secondary: { backgroundColor: t.colors.muted },
   bare: { paddingHorizontal: 0 },
   ghost: { backgroundColor: 'transparent' },
@@ -122,14 +122,19 @@ export function Button({
   const s = useStyles();
   const busy = loading || done;
   const off = !!disabled && !busy;
-  const tint = variant === 'primary' && size === 'sm';
+  const flat = (variant === 'primary' || variant === 'danger') && !point;
+  const still = off && flat;
   const color = {
-    primary: tint ? t.colors.primary : t.colors.primaryForeground,
+    primary: t.colors.primaryForeground,
     secondary: t.colors.title,
     ghost: t.colors.title,
     danger: t.colors.dangerForeground,
   }[variant];
-  const ink = point ? t.colors.primary : color;
+  const ink = still
+    ? t.colors.disabledForeground
+    : point
+      ? t.colors.primary
+      : color;
   const icon = {
     color: ink,
     size: size === 'sm' ? t.iconSize.sm : t.iconSize.md,
@@ -175,6 +180,7 @@ export function Button({
       disabled={off || busy}
       onDisabledPress={off ? shake : undefined}
       live={live}
+      dim={!flat}
       nudge={nudge}
       touchHeight={t.controlSize[size]}
       accessibilityState={{ ...accessibilityState, busy: loading }}
@@ -183,7 +189,7 @@ export function Button({
         s.base,
         s[size],
         s[variant],
-        tint && s.tint,
+        still && s.off,
         point && s.bare,
         style,
       ]}

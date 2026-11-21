@@ -30,7 +30,11 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.border,
     backgroundColor: t.colors.muted,
   },
-  on: { borderWidth: 2, borderColor: t.colors.primary },
+  on: {
+    borderWidth: 2,
+    borderColor: t.colors.raised,
+    boxShadow: t.shadow.lift,
+  },
   part: { flex: 1, gap: t.space[1] },
 }));
 

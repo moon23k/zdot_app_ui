@@ -22,7 +22,13 @@ export type ThemeTokens = {
   typography: Record<TypographyKey, TypographyToken>;
   fontFamily: string | undefined;
   maxFontScale: number;
-  shadow: { sm: string; md: string; panel: string };
+  shadow: {
+    sm: string;
+    md: string;
+    panel: string;
+    lift: string;
+    liftSm: string;
+  };
   motion: {
     duration: Record<
       'short' | 'press' | 'base' | 'move' | 'long' | 'spring' | 'xlong',

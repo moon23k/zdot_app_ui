@@ -34,7 +34,11 @@ const useStyles = makeStyles((t) => ({
     padding: t.space[1],
     gap: t.space[1],
   },
-  on: { borderWidth: 2, borderColor: t.colors.primary },
+  on: {
+    borderWidth: 2,
+    borderColor: t.colors.raised,
+    boxShadow: t.shadow.lift,
+  },
   photo: {
     flex: 1,
     borderRadius: t.radius.sm,

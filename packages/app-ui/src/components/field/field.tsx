@@ -57,10 +57,15 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[2],
     height: t.controlSize.lg,
     paddingHorizontal: t.space[4],
-    borderRadius: t.radius.md,
+    borderRadius: t.radius.lg,
     borderWidth: 1,
-    borderColor: t.colors.input,
+    borderColor: t.colors.line,
     backgroundColor: t.colors.surface,
+  },
+  raised: {
+    borderColor: 'transparent',
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.lift,
   },
   multi: {
     height: 'auto',
@@ -70,7 +75,12 @@ const useStyles = makeStyles((t) => ({
   },
   multiInput: { textAlignVertical: 'top' },
   focused: {
-    borderColor: t.colors.primaryEdge,
+    borderColor: t.colors.primary,
+    boxShadow: `0px 0px 0px 4px ${t.colors.focusRing}`,
+  },
+  raisedFocused: {
+    borderColor: t.colors.primary,
+    boxShadow: `${t.shadow.lift}, 0px 0px 0px 4px ${t.colors.focusRing}`,
   },
   invalid: { borderColor: t.colors.danger },
   disabled: { opacity: t.opacity.disabled, backgroundColor: t.colors.muted },
@@ -117,7 +127,12 @@ const useStyles = makeStyles((t) => ({
 
 const RETRIES = 3;
 
-export function Field({
+export function Field(props: FieldProps) {
+  return <FieldBase {...props} />;
+}
+
+export function FieldBase({
+  raised = false,
   label,
   readOnly = false,
   error,
@@ -136,7 +151,7 @@ export function Field({
   ref,
   autoFocus,
   ...input
-}: FieldProps) {
+}: FieldProps & { raised?: boolean }) {
   const t = useTheme();
   const reduced = useReducedMotion();
   const s = useStyles();
@@ -144,7 +159,7 @@ export function Field({
   const icon = { color: t.colors.mutedForeground, size: t.iconSize.md };
   const warn = error ? undefined : warning;
   const note = error ?? warn ?? hint;
-  const thick = useSwitch(focused || !!error || !!warn, 'press');
+  const thick = useSwitch(!!error || !!warn, 'press');
   const shake = useShake(error);
   useEffect(() => {
     if (error) haptic('error');
@@ -208,7 +223,8 @@ export function Field({
         style={[
           s.frame,
           input.multiline && s.multi,
-          focused && s.focused,
+          raised && s.raised,
+          focused && (raised ? s.raisedFocused : s.focused),
           !!error && s.invalid,
           !!warn && s.warned,
           readOnly ? s.readOnly : !editable && s.disabled,
@@ -218,7 +234,8 @@ export function Field({
         {leading ? renderIcon(leading, icon) : null}
         <TextInput
           placeholderTextColor={t.colors.mutedForeground}
-          selectionColor={t.colors.ring}
+          selectionColor={t.colors.primary}
+          cursorColor={t.colors.primary}
           maxFontSizeMultiplier={t.maxFontScale}
           accessibilityLabel={label}
           accessibilityHint={note}
