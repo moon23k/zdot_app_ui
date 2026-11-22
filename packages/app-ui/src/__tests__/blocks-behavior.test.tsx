@@ -92,6 +92,26 @@ describe('QuestionAccordion', () => {
     await fireEvent.press(screen.getByLabelText('따뜻한'));
     expect(onValueChange).toHaveBeenLastCalledWith('mood', ['b']);
   });
+
+  it('sinks a picked cell into recess with ink text', async () => {
+    const { recess, title } = defaultThemes.light.colors;
+    await render(
+      <QuestionAccordion
+        sections={[section]}
+        openKey="mood"
+        onOpenChange={() => {}}
+        onValueChange={() => {}}
+      />
+    );
+    const cell = (name: string) =>
+      StyleSheet.flatten(screen.getByRole('checkbox', { name }).props.style);
+    expect(cell('따뜻한').backgroundColor).toBe(recess);
+    expect(cell('활기찬').backgroundColor).toBeUndefined();
+    expect(screen.getByText('따뜻한')).toHaveStyle({
+      color: title,
+      fontWeight: '600',
+    });
+  });
 });
 
 describe('SliderList', () => {

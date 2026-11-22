@@ -57,7 +57,7 @@ const useStyles = makeStyles((t) => ({
   twoLine: { minHeight: t.listRow.twoLine },
   threeLine: { minHeight: t.listRow.threeLine },
   flush: { paddingHorizontal: 0 },
-  highlighted: { backgroundColor: t.colors.primaryTint },
+  highlighted: { backgroundColor: t.colors.recess },
   top: { alignItems: 'flex-start' },
   image: { width: IMAGE },
   imageLg: { width: IMAGE_LG },

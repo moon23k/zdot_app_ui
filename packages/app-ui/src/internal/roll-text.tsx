@@ -44,7 +44,7 @@ export function RollText({
     }
     last.current = children;
   }, [children, flash, roll, glow, t]);
-  const tint = t.colors.primaryTint;
+  const tint = t.colors.recess;
   const move = useAnimatedStyle(() => ({
     opacity: 1 - roll.value,
     transform: [{ translateY: RISE * roll.value }],

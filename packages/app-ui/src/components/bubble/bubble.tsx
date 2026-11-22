@@ -19,12 +19,13 @@ const useStyles = makeStyles((t) => ({
   in: {
     alignSelf: 'flex-start',
     borderTopLeftRadius: t.space[1],
-    backgroundColor: t.colors.muted,
+    backgroundColor: t.colors.recess,
   },
   out: {
     alignSelf: 'stretch',
     borderTopRightRadius: t.space[1],
-    backgroundColor: t.colors.primaryTint,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
   label: {
     ...t.typography.body,

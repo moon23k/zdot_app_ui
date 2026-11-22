@@ -19,6 +19,7 @@ import {
   ListRow,
   ScanGlyph,
   Slider,
+  StatusBadge,
 } from '../index';
 
 describe('Button', () => {
@@ -313,6 +314,26 @@ describe('Calendar', () => {
     await fireEvent.press(screen.getByLabelText('11월 6일 금요일 12만'));
     expect(onValueChange).toHaveBeenLastCalledWith({});
   });
+
+  it('lifts the chosen day on a raised disc and drops the ring on today', async () => {
+    const { colors, shadow } = defaultThemes.light;
+    await render(
+      <Calendar
+        days={days}
+        value={{ start: '2026-11-06' }}
+        today="2026-11-07"
+        onValueChange={() => {}}
+      />
+    );
+    const day = (name: string) =>
+      StyleSheet.flatten(screen.getByLabelText(name).props.style);
+    expect(day('11월 6일 금요일 12만')).toMatchObject({
+      backgroundColor: colors.raised,
+      boxShadow: shadow.liftSm,
+    });
+    expect(day('11월 7일 토요일 12만').borderWidth).toBeUndefined();
+    expect(screen.getByText('6')).toHaveStyle({ color: colors.title });
+  });
 });
 
 describe('selection and trailing action', () => {
@@ -429,5 +450,21 @@ describe('Slider', () => {
     expect(fill.left).toBe(0);
     expect(fill.width).toBeCloseTo(164);
     expect(screen.queryByTestId('slider-origin')).toBeNull();
+  });
+});
+
+describe('StatusBadge', () => {
+  it('shows the point badge as a raised chip with ink text', async () => {
+    const { colors, shadow } = defaultThemes.light;
+    await render(<StatusBadge tone="point">신청 완료</StatusBadge>);
+    const root = screen.toJSON();
+    const face = StyleSheet.flatten(
+      root && !Array.isArray(root) ? root.props.style : undefined
+    );
+    expect(face).toMatchObject({
+      backgroundColor: colors.raised,
+      boxShadow: shadow.liftSm,
+    });
+    expect(screen.getByText('신청 완료')).toHaveStyle({ color: colors.title });
   });
 });

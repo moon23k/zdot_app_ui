@@ -1,0 +1,5 @@
+---
+'@zdot/app-ui': minor
+---
+
+포인트 컬러 절제를 나머지 부품으로 확대. StageBar — 바탕 recess, 고른 단계 raised + liftSm + title 숫자 · 600 글자(주황 글자 없음). StatusSteps — 끝난 구간 선 primary, 지금 단계 표시는 옅은 주황 대신 raised + liftSm(가운데 primary 점 그대로). InviteCard — 머리 글자 칸 recess, compact 카드 surface + 1px line, 화살표 mutedForeground. ListRow highlighted — recess. Pill · StatusBadge point — raised + liftSm + 지름 6 primary 점 + title 글자. Calendar — 고른 날 raised + liftSm + title 600, 기간 띠 recess, 오늘은 테 없이 primary 600 숫자, 표시 점 faint. FloatingTabBar — 고른 탭 바탕 recess(아이콘 primary 유지). Bubble — 받은 말 recess, 보낸 말 raised + liftSm. QuestionAccordion — 고른 칸 recess + title 600(primary 점 유지). DraftBox — 테두리 line. DetailComposer — 참고 사진 raised 테 + liftSm + 지름 16 체크 원, 빼기 버튼 raised + liftSm, 첨부 열림 raised + liftSm, 만들기 비활성 disabledSurface + disabledForeground. SendBar — 비활성 disabledSurface + disabledForeground(흐림 없음). SegmentedTabs — 지금 탭 글자 title, 밑줄 2px. SectionTabs — 밑줄 primary. SetupGuide — 진행 막대 primary. ResultMark — 검정 테 대신 recess 원, 완료 체크 primary. RollText 바뀜 강조 recess. props · 동작 · 접근성 변경 없음, 옅은 주황 토큰은 남김.

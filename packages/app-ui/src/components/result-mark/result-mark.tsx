@@ -10,15 +10,13 @@ export type ResultMarkProps = {
 };
 
 const SIZE = 48;
-const LINE = 2;
 
 const useStyles = makeStyles((t) => ({
   root: {
     width: SIZE,
     height: SIZE,
     borderRadius: t.radius.full,
-    borderWidth: LINE,
-    borderColor: t.colors.foreground,
+    backgroundColor: t.colors.recess,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -34,7 +32,7 @@ export function ResultMark({ kind, style }: ResultMarkProps) {
       style={[s.root, style]}
     >
       {kind === 'done' ? (
-        <CheckGlyph color={t.colors.foreground} size={t.iconSize.md} />
+        <CheckGlyph color={t.colors.primary} size={t.iconSize.md} />
       ) : (
         <Text variant="title" weight="semibold">
           !

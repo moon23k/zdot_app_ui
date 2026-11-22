@@ -40,7 +40,7 @@ const useStyles = makeStyles((t) => ({
     marginHorizontal: t.layout.screenX,
     padding: t.space[1] + t.space[1] / 2,
     borderRadius: t.radius.lg,
-    backgroundColor: t.colors.surface,
+    backgroundColor: t.colors.recess,
   },
   stage: {
     flex: 1,
@@ -54,7 +54,8 @@ const useStyles = makeStyles((t) => ({
     left: 0,
     top: 0,
     borderRadius: t.radius.md,
-    backgroundColor: t.colors.primaryTint,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
   count: {
     fontFamily: t.fontFamily,
@@ -70,7 +71,7 @@ const useStyles = makeStyles((t) => ({
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
-  strong: { fontWeight: '500' },
+  strong: { fontWeight: '600' },
   split: {
     width: 1,
     alignSelf: 'stretch',
@@ -97,12 +98,12 @@ function Stage({
   const pick = useSwitch(on, 'base');
   const rest = count > 0 ? t.colors.title : t.colors.input;
   const idle = t.colors.mutedForeground;
-  const point = t.colors.primary;
+  const ink = t.colors.title;
   const number = useAnimatedStyle(() => ({
-    color: interpolateColor(pick.value, [0, 1], [rest, point]),
+    color: interpolateColor(pick.value, [0, 1], [rest, ink]),
   }));
   const word = useAnimatedStyle(() => ({
-    color: interpolateColor(pick.value, [0, 1], [idle, point]),
+    color: interpolateColor(pick.value, [0, 1], [idle, ink]),
   }));
   return (
     <PressableBase

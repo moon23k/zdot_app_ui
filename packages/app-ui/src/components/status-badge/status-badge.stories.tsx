@@ -17,6 +17,7 @@ export const AllVariants: StoryObj<typeof meta> = {
       <StatusBadge tone="success">배송완료</StatusBadge>
       <StatusBadge tone="warning">입금대기</StatusBadge>
       <StatusBadge tone="danger">취소</StatusBadge>
+      <StatusBadge tone="point">신청 완료</StatusBadge>
     </Row>
   ),
 };

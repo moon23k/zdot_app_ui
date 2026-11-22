@@ -22,7 +22,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: t.space[3] + t.space[1] / 2,
     borderRadius: t.radius.lg,
     borderWidth: 1,
-    borderColor: t.colors.primaryContainer,
+    borderColor: t.colors.line,
     backgroundColor: t.colors.surface,
   },
   head: {

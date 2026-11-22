@@ -8,6 +8,7 @@ import {
   ScanGlyph,
   SparklesGlyph,
 } from '../../internal/glyphs';
+import { CheckDisc } from '../../internal/check-disc';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -48,6 +49,8 @@ const SOURCES: { key: ComposerSource; label: string; icon: IconSlot }[] = [
 
 const THUMB = 44;
 const BUTTON = 40;
+const MARK = 16;
+const MARK_RING = 2;
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.space[2], paddingHorizontal: t.space[3] },
@@ -61,7 +64,16 @@ const useStyles = makeStyles((t) => ({
   },
   attached: { gap: t.space[2], paddingHorizontal: t.space[1] },
   thumb: { width: THUMB, height: THUMB, borderRadius: t.radius.md },
-  reference: { borderWidth: 2, borderColor: t.colors.primary },
+  reference: {
+    borderWidth: 2,
+    borderColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
+  },
+  mark: {
+    position: 'absolute',
+    right: -MARK_RING * 2,
+    bottom: -MARK_RING * 2,
+  },
   link: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -80,7 +92,8 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: t.colors.foreground,
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
   },
   line: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   round: {
@@ -130,7 +143,7 @@ export function DetailComposer({
   const t = useTheme();
   const s = useStyles();
   const canSend = !disabled && !sending;
-  const plusColor = menuOpen ? t.colors.primaryForeground : t.colors.foreground;
+  const plusColor = menuOpen ? t.colors.title : t.colors.foreground;
   return (
     <View style={s.root}>
       {suggestions.length ? (
@@ -181,10 +194,15 @@ export function DetailComposer({
             {attachments.map((a) => (
               <View key={a.key}>
                 {a.kind === 'image' ? (
-                  <Image
-                    source={{ uri: a.uri }}
-                    style={[s.thumb, a.reference && s.reference]}
-                  />
+                  <>
+                    <Image
+                      source={{ uri: a.uri }}
+                      style={[s.thumb, a.reference && s.reference]}
+                    />
+                    {a.reference ? (
+                      <CheckDisc size={MARK} ring={MARK_RING} style={s.mark} />
+                    ) : null}
+                  </>
                 ) : (
                   <View style={s.link}>
                     {renderIcon(LinkGlyph, {
@@ -204,7 +222,7 @@ export function DetailComposer({
                     style={s.remove}
                   >
                     <CloseGlyph
-                      color={t.colors.surface}
+                      color={t.colors.title}
                       size={t.iconSize.sm - t.space[1]}
                     />
                   </PressableBase>
@@ -220,9 +238,12 @@ export function DetailComposer({
               accessibilityLabel="첨부"
               style={[
                 s.round,
-                {
-                  backgroundColor: menuOpen ? t.colors.primary : t.colors.muted,
-                },
+                menuOpen
+                  ? {
+                      backgroundColor: t.colors.raised,
+                      boxShadow: t.shadow.liftSm,
+                    }
+                  : { backgroundColor: t.colors.muted },
               ]}
             >
               <View style={[s.plusH, { backgroundColor: plusColor }]} />
@@ -241,16 +262,21 @@ export function DetailComposer({
           <PressableBase
             onPress={onSend}
             disabled={!canSend}
+            disabledStyle={{}}
             accessibilityLabel="만들기"
             style={[
               s.round,
               {
-                backgroundColor: canSend ? t.colors.primary : t.colors.input,
+                backgroundColor: canSend
+                  ? t.colors.primary
+                  : t.colors.disabledSurface,
               },
             ]}
           >
             {renderIcon(SparklesGlyph, {
-              color: t.colors.primaryForeground,
+              color: canSend
+                ? t.colors.primaryForeground
+                : t.colors.disabledForeground,
               size: t.iconSize.md,
             })}
           </PressableBase>

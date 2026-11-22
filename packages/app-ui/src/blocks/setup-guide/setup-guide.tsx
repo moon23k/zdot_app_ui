@@ -38,7 +38,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.border,
     overflow: 'hidden',
   },
-  fill: { height: TRACK, backgroundColor: t.colors.mutedForeground },
+  fill: { height: TRACK, backgroundColor: t.colors.primary },
   mark: {
     width: MARK,
     height: MARK,

@@ -117,7 +117,7 @@ const useStyles = makeStyles((t) => ({
     height: DOT,
     left: 0,
     right: 0,
-    backgroundColor: t.colors.primaryTint,
+    backgroundColor: t.colors.recess,
   },
   bandStart: { left: '50%' },
   bandEnd: { right: '50%' },
@@ -129,14 +129,14 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  today: { borderWidth: 1, borderColor: t.colors.primary },
-  edge: { backgroundColor: t.colors.primary },
+  edge: { backgroundColor: t.colors.raised, boxShadow: t.shadow.liftSm },
   number: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
     lineHeight: t.typography.body.lineHeight,
     fontVariant: ['tabular-nums'],
   },
+  strong: { fontWeight: '600' },
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
@@ -148,7 +148,7 @@ const useStyles = makeStyles((t) => ({
     height: 4,
     borderRadius: t.radius.full,
     marginTop: t.space[1] / 2,
-    backgroundColor: t.colors.foreground,
+    backgroundColor: t.colors.faint,
   },
 }));
 
@@ -220,7 +220,7 @@ export function Calendar({
           const isToday = iso === today && state !== 'edge';
           const color =
             state === 'edge'
-              ? t.colors.primaryForeground
+              ? t.colors.title
               : blocked
                 ? t.colors.input
                 : isToday
@@ -239,7 +239,7 @@ export function Calendar({
                 />
               ) : null}
               <PressableBase
-                style={[s.day, isToday && s.today, state === 'edge' && s.edge]}
+                style={[s.day, state === 'edge' && s.edge]}
                 accessibilityRole="button"
                 accessibilityLabel={[
                   `${m}월 ${d}일`,
@@ -256,7 +256,11 @@ export function Calendar({
                 onPress={() => day && pick(day)}
               >
                 <Text
-                  style={[s.number, { color }]}
+                  style={[
+                    s.number,
+                    (state === 'edge' || (isToday && !blocked)) && s.strong,
+                    { color },
+                  ]}
                   maxFontSizeMultiplier={t.maxFontScale}
                 >
                   {d}

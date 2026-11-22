@@ -1,5 +1,8 @@
 import { TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 import { SendGlyph } from '../../internal/glyphs';
 import { useSwitch } from '../../internal/motion';
 import { PressableBase } from '../../internal/pressable-base';
@@ -52,7 +55,6 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  face: { backgroundColor: t.colors.primary },
 }));
 
 export function SendBar({
@@ -69,9 +71,14 @@ export function SendBar({
   const s = useStyles();
   const off = disabled || !value.trim();
   const live = useSwitch(!off, 'spring', 'spring');
-  const dim = t.opacity.disabled;
+  const rest = t.colors.disabledSurface;
+  const fill = t.colors.primary;
   const ready = useAnimatedStyle(() => ({
-    opacity: dim + (1 - dim) * Math.min(1, live.value),
+    backgroundColor: interpolateColor(
+      Math.min(1, Math.max(0, live.value)),
+      [0, 1],
+      [rest, fill]
+    ),
     transform: [{ scale: SEND_FROM + (1 - SEND_FROM) * live.value }],
   }));
   return (
@@ -95,8 +102,13 @@ export function SendBar({
         onPress={onSend}
         style={s.send}
       >
-        <Animated.View style={[s.send, s.face, ready]}>
-          <SendGlyph color={t.colors.primaryForeground} size={t.iconSize.sm} />
+        <Animated.View style={[s.send, ready]}>
+          <SendGlyph
+            color={
+              off ? t.colors.disabledForeground : t.colors.primaryForeground
+            }
+            size={t.iconSize.sm}
+          />
         </Animated.View>
       </PressableBase>
     </View>

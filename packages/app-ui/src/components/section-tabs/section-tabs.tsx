@@ -63,7 +63,7 @@ const useStyles = makeStyles((t) => ({
     left: 0,
     bottom: 0,
     height: LINE,
-    backgroundColor: t.colors.foreground,
+    backgroundColor: t.colors.primary,
   },
   dot: {
     width: DOT,

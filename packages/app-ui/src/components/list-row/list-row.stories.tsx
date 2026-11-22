@@ -46,6 +46,12 @@ function Demo() {
         />
         <ListRow title="결제 금액" value="42,000원" strong />
         <ListRow
+          title="새 문의"
+          description="배송 언제 오나요?"
+          highlighted
+          onPress={() => {}}
+        />
+        <ListRow
           title="#20261023-0012"
           description={`${demoProducts.shirt} 외 1건 · 42,000원`}
           trailing={<StatusBadge tone="info">배송중</StatusBadge>}

@@ -31,7 +31,7 @@ export type SegmentedTabsProps<T extends string> = {
   style?: StyleProp<ViewStyle>;
 };
 
-const BAR = 3;
+const BAR = 2;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -92,9 +92,9 @@ function Tab({
   const s = useStyles();
   const on = useSwitch(selected, 'base');
   const idle = t.colors.mutedForeground;
-  const point = t.colors.primary;
+  const ink = t.colors.title;
   const tone = useAnimatedStyle(() => ({
-    color: interpolateColor(on.value, [0, 1], [idle, point]),
+    color: interpolateColor(on.value, [0, 1], [idle, ink]),
   }));
   return (
     <PressableBase

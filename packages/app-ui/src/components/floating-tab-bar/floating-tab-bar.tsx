@@ -69,7 +69,7 @@ const useStyles = makeStyles((t) => ({
     left: 0,
     top: 0,
     borderRadius: t.radius.full,
-    backgroundColor: t.colors.primaryTint,
+    backgroundColor: t.colors.recess,
   },
   icon: { width: ICON, height: ICON },
   dot: {

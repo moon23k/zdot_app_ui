@@ -28,7 +28,7 @@ const useStyles = makeStyles((t) => ({
     width: t.space[12] + t.space[2],
     height: t.space[12] + t.space[2],
     borderRadius: t.radius.lg,
-    backgroundColor: t.colors.primaryContainer,
+    backgroundColor: t.colors.recess,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -53,14 +53,14 @@ const useStyles = makeStyles((t) => ({
     padding: t.space[3],
     borderRadius: t.radius.lg,
     borderWidth: 1,
-    borderColor: t.colors.primaryContainer,
-    backgroundColor: t.colors.primaryTint,
+    borderColor: t.colors.line,
+    backgroundColor: t.colors.surface,
   },
   small: {
     width: t.space[10],
     height: t.space[10],
     borderRadius: t.radius.md,
-    backgroundColor: t.colors.primaryContainer,
+    backgroundColor: t.colors.recess,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -99,7 +99,7 @@ export function InviteCard({
           ) : null}
         </View>
         {onPress ? (
-          <ChevronGlyph color={t.colors.primary} size={t.iconSize.sm} />
+          <ChevronGlyph color={t.colors.mutedForeground} size={t.iconSize.sm} />
         ) : null}
       </>
     );

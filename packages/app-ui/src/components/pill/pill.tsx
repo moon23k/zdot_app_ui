@@ -11,6 +11,7 @@ export type PillProps = {
 };
 
 const HEIGHT = 20;
+const DOT = 6;
 
 const useStyles = makeStyles((t) => ({
   root: {
@@ -24,7 +25,17 @@ const useStyles = makeStyles((t) => ({
   },
   warning: { backgroundColor: t.colors.warningTint },
   success: { backgroundColor: t.colors.successTint },
-  point: { backgroundColor: t.colors.primaryTint },
+  point: {
+    gap: t.space[1],
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
+  },
+  dot: {
+    width: DOT,
+    height: DOT,
+    borderRadius: DOT / 2,
+    backgroundColor: t.colors.primary,
+  },
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
@@ -34,7 +45,7 @@ const useStyles = makeStyles((t) => ({
   },
   warningLabel: { color: t.colors.warningText },
   successLabel: { color: t.colors.success },
-  pointLabel: { color: t.colors.primary },
+  pointLabel: { color: t.colors.title },
 }));
 
 export function Pill({ children, tone = 'neutral', style }: PillProps) {
@@ -43,6 +54,7 @@ export function Pill({ children, tone = 'neutral', style }: PillProps) {
   const mark = tone === 'neutral' ? null : tone;
   return (
     <View style={[s.root, mark && s[mark], style]}>
+      {tone === 'point' ? <View style={s.dot} /> : null}
       <Text
         numberOfLines={1}
         maxFontSizeMultiplier={t.maxFontScale}

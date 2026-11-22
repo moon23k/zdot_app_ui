@@ -12,7 +12,7 @@ function Art({ width }: { width: number }) {
         width,
         height: (width * 3) / 4,
         borderRadius: t.radius.lg,
-        backgroundColor: t.colors.primaryTint,
+        backgroundColor: t.colors.recess,
       }}
     />
   );

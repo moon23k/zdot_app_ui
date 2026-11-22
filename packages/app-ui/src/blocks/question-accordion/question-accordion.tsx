@@ -97,9 +97,9 @@ const useStyles = makeStyles((t) => ({
     borderBottomColor: t.colors.border,
   },
   right: { borderLeftWidth: 1, borderLeftColor: t.colors.border },
-  picked: { backgroundColor: t.colors.selectSurface },
+  picked: { backgroundColor: t.colors.recess },
   cellText: { ...t.typography.body, color: t.colors.mutedForeground },
-  pickedText: { fontWeight: '500', color: t.colors.selectForeground },
+  pickedText: { fontWeight: '600', color: t.colors.title },
   otherText: { color: t.colors.ring },
   dot: {
     position: 'absolute',

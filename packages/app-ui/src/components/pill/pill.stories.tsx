@@ -15,6 +15,7 @@ export const Deadlines: StoryObj<typeof meta> = {
       <Pill tone="warning">오늘 18:00까지</Pill>
       <Pill>D-3 발송</Pill>
       <Pill>단순 변심</Pill>
+      <Pill tone="point">새 문의</Pill>
     </Row>
   ),
 };

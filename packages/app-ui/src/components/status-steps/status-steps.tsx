@@ -45,7 +45,7 @@ const useStyles = makeStyles((t) => ({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: t.colors.primaryContainer,
+    backgroundColor: t.colors.primary,
   },
   fromLeft: { transformOrigin: 'left' },
   fromTop: { transformOrigin: 'top' },
@@ -66,7 +66,10 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
   markDone: { backgroundColor: t.colors.primary },
-  markNow: { backgroundColor: t.colors.primaryTint },
+  markNow: {
+    backgroundColor: t.colors.raised,
+    boxShadow: t.shadow.liftSm,
+  },
   dot: {
     width: DOT,
     height: DOT,
@@ -85,8 +88,9 @@ const useStyles = makeStyles((t) => ({
     height: HDOT + HALO * 2,
     borderRadius: (HDOT + HALO * 2) / 2,
     borderWidth: HALO,
-    borderColor: t.colors.primaryTint,
+    borderColor: t.colors.raised,
     backgroundColor: t.colors.primary,
+    boxShadow: t.shadow.liftSm,
   },
   dotNow: {
     width: NOW,
