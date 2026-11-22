@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { ChipGroup } from '../../components/chip-group/chip-group';
-import { CircleGrid } from '../../components/circle-grid/circle-grid';
+import { FilterTabs } from '../../components/filter-tabs/filter-tabs';
 import { SearchField } from '../../components/search-field/search-field';
+import { TileGrid } from '../../components/tile-grid/tile-grid';
 import { StepScreen } from './step-screen';
 
 const industries = [
@@ -60,31 +61,39 @@ const filters = [
 type Filter = (typeof filters)[number]['value'];
 
 function Floating() {
-  const [filter, setFilter] = useState<Filter | null>('all');
+  const [filter, setFilter] = useState<Filter>('all');
   const [industry, setIndustry] = useState<Industry | null>(null);
+  const picked = industries.find((i) => i.value === industry);
   return (
     <View style={frame}>
       <StepScreen
-        total={4}
+        total={3}
         current={0}
         onBack={() => {}}
         title="어떤 업종인가요?"
+        compact
         floatingAction
+        chosen={picked ? { label: picked.label } : null}
         primaryAction={{
           label: '다음',
           onPress: () => {},
           disabled: !industry,
         }}
       >
-        <SearchField value="" onChangeText={() => {}} placeholder="업종 검색" />
-        <ChipGroup<Filter>
-          scroll
+        <SearchField
+          variant="recess"
+          value=""
+          onChangeText={() => {}}
+          placeholder="업종 검색"
+        />
+        <FilterTabs<Filter>
+          bleed
           items={filters}
           value={filter}
           onValueChange={setFilter}
         />
-        <CircleGrid<Industry>
-          items={industries.map((i) => ({ ...i, glyph: '🏪' }))}
+        <TileGrid<Industry>
+          items={industries.map((i) => ({ ...i, caption: '분류' }))}
           value={industry}
           onValueChange={setIndustry}
         />

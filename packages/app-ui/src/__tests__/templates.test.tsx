@@ -192,6 +192,39 @@ describe('SystemTemplate', () => {
 });
 
 describe('StepScreen', () => {
+  it('shows the step count in the header instead of a bar', async () => {
+    await render(<StepScreen title="어떤 업종인가요?" total={3} current={0} />);
+    const count = screen.getByRole('progressbar');
+    expect(count.props.accessibilityLabel).toBe('3단계 중 1단계');
+    expect(screen.getByText('1')).toBeTruthy();
+  });
+
+  it('docks the chosen item beside the action once something is chosen', async () => {
+    const onPress = jest.fn();
+    const action = { label: '다음', onPress };
+    const view = await render(
+      <StepScreen
+        title="어떤 업종인가요?"
+        floatingAction
+        chosen={null}
+        primaryAction={{ ...action, disabled: true }}
+      />
+    );
+    expect(screen.queryByText('베이커리')).toBeNull();
+    expect(screen.getAllByRole('button', { name: '다음' })).toHaveLength(1);
+    await view.rerender(
+      <StepScreen
+        title="어떤 업종인가요?"
+        floatingAction
+        chosen={{ label: '베이커리' }}
+        primaryAction={action}
+      />
+    );
+    expect(screen.getByText('베이커리')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: '다음' }));
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
   it('shows a notice above the action only when given', async () => {
     const view = await render(
       <StepScreen

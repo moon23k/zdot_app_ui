@@ -42,3 +42,12 @@ export function pickForeground(
     ? dark
     : light;
 }
+
+export function withAlpha(color: string, alpha: number): string {
+  try {
+    const [r, g, b] = toRgb(color);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  } catch {
+    return 'transparent';
+  }
+}

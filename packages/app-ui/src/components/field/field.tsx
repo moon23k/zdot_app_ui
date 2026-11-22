@@ -49,6 +49,8 @@ export type FieldProps = Omit<TextInputProps, 'style'> & {
   style?: StyleProp<ViewStyle>;
 };
 
+const RECESS_HEIGHT = 50;
+
 const useStyles = makeStyles((t) => ({
   root: { gap: t.space[2] },
   frame: {
@@ -81,6 +83,16 @@ const useStyles = makeStyles((t) => ({
   raisedFocused: {
     borderColor: t.colors.primary,
     boxShadow: `${t.shadow.lift}, 0px 0px 0px 4px ${t.colors.focusRing}`,
+  },
+  recess: {
+    height: RECESS_HEIGHT,
+    borderColor: 'transparent',
+    backgroundColor: t.colors.recess,
+  },
+  recessFocused: {
+    borderColor: t.colors.primary,
+    backgroundColor: t.colors.raised,
+    boxShadow: `0px 0px 0px 4px ${t.colors.focusRing}`,
   },
   invalid: { borderColor: t.colors.danger },
   disabled: { opacity: t.opacity.disabled, backgroundColor: t.colors.muted },
@@ -133,6 +145,7 @@ export function Field(props: FieldProps) {
 
 export function FieldBase({
   raised = false,
+  recess = false,
   label,
   readOnly = false,
   error,
@@ -151,7 +164,7 @@ export function FieldBase({
   ref,
   autoFocus,
   ...input
-}: FieldProps & { raised?: boolean }) {
+}: FieldProps & { raised?: boolean; recess?: boolean }) {
   const t = useTheme();
   const reduced = useReducedMotion();
   const s = useStyles();
@@ -224,7 +237,9 @@ export function FieldBase({
           s.frame,
           input.multiline && s.multi,
           raised && s.raised,
-          focused && (raised ? s.raisedFocused : s.focused),
+          recess && s.recess,
+          focused &&
+            (recess ? s.recessFocused : raised ? s.raisedFocused : s.focused),
           !!error && s.invalid,
           !!warn && s.warned,
           readOnly ? s.readOnly : !editable && s.disabled,
@@ -233,7 +248,9 @@ export function FieldBase({
       >
         {leading ? renderIcon(leading, icon) : null}
         <TextInput
-          placeholderTextColor={t.colors.mutedForeground}
+          placeholderTextColor={
+            recess ? t.colors.faint : t.colors.mutedForeground
+          }
           selectionColor={t.colors.primary}
           cursorColor={t.colors.primary}
           maxFontSizeMultiplier={t.maxFontScale}

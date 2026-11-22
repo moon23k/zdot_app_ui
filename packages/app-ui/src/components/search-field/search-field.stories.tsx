@@ -18,6 +18,12 @@ function Demo() {
         onChangeText={setFilled}
         placeholder="상품 검색"
       />
+      <SearchField
+        variant="recess"
+        value={empty}
+        onChangeText={setEmpty}
+        placeholder="업종 검색"
+      />
     </Column>
   );
 }

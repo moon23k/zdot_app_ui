@@ -10,18 +10,21 @@ export type SearchFieldProps = Omit<
   value: string;
   onChangeText: (text: string) => void;
   clearLabel?: string;
+  variant?: 'raised' | 'recess';
 };
 
 export function SearchField({
   value,
   onChangeText,
   clearLabel = '검색어 지우기',
+  variant = 'raised',
   ...rest
 }: SearchFieldProps) {
   const t = useTheme();
   return (
     <FieldBase
-      raised
+      raised={variant === 'raised'}
+      recess={variant === 'recess'}
       returnKeyType="search"
       accessibilityRole="search"
       autoCorrect={false}
