@@ -45,6 +45,7 @@ export type StepScreenProps = {
   floatingAction?: boolean;
   chosen?: StepChosen | null;
   compact?: boolean;
+  fill?: boolean;
   secondaryAction?: StepAction;
   actions?: ReactNode;
   notice?: TemplateNotice;
@@ -92,6 +93,12 @@ const useStyles = makeStyles((t) => ({
     paddingBottom: t.layout.footerBottom,
   },
   compact: { gap: t.space[4], paddingTop: t.space[3] },
+  fill: {
+    flex: 1,
+    paddingTop: t.space[2],
+    paddingHorizontal: t.layout.screenX,
+    paddingBottom: t.space[1],
+  },
   title: {
     fontFamily: t.fontFamily,
     fontSize: TITLE_SIZE,
@@ -216,6 +223,7 @@ export function StepScreen({
   floatingAction = false,
   chosen,
   compact = false,
+  fill = false,
   secondaryAction,
   actions,
   notice,
@@ -234,6 +242,17 @@ export function StepScreen({
   const veil = below + control + t.space[16];
   const solid = Math.round(((veil - below - control / 2) / veil) * 100);
   const bg = t.colors.background;
+  const content = (
+    <>
+      {top}
+      {title ? (
+        <Text accessibilityRole="header" style={s.title}>
+          {title}
+        </Text>
+      ) : null}
+      {children}
+    </>
+  );
   return (
     <KeyboardAvoidingView behavior="padding" style={s.root}>
       {onBack || total ? (
@@ -267,26 +286,24 @@ export function StepScreen({
         </View>
       ) : null}
       <View style={s.main}>
-        <ScrollView
-          contentContainerStyle={[
-            s.body,
-            compact && s.compact,
-            floatingAction && {
-              paddingBottom: dock
-                ? dockBottom + DOCK + t.space[3]
-                : footerBottom + t.layout.footerTop * 2 + t.controlSize.lg,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
-        >
-          {top}
-          {title ? (
-            <Text accessibilityRole="header" style={s.title}>
-              {title}
-            </Text>
-          ) : null}
-          {children}
-        </ScrollView>
+        {fill ? (
+          <View style={s.fill}>{content}</View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={[
+              s.body,
+              compact && s.compact,
+              floatingAction && {
+                paddingBottom: dock
+                  ? dockBottom + DOCK + t.space[3]
+                  : footerBottom + t.layout.footerTop * 2 + t.controlSize.lg,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            {content}
+          </ScrollView>
+        )}
         {notice ? <Notice notice={notice} /> : null}
         <View
           pointerEvents={floatingAction ? 'box-none' : 'auto'}

@@ -39,6 +39,28 @@ export type PaletteThumbsProps<T extends string = string> = {
   height?: number;
 };
 
+export type PaletteStripsProps<T extends string = string> = {
+  items: readonly PaletteThumb<T>[];
+  value: T;
+  onValueChange: (key: T) => void;
+  style?: StyleProp<ViewStyle>;
+};
+
+const STRIP_W = 98;
+const STRIP_H = 40;
+const STRIP_RADIUS = 14;
+const STRIP_RIM = 4;
+const STRIP_CHECK = 20;
+const STRIP_CHECK_RING = 2.5;
+const STRIP_CHECK_OUT = -5 - STRIP_CHECK_RING;
+const STRIP_SHARE = [
+  ['main', 34],
+  ['secondary', 20],
+  ['accent', 16],
+  ['background', 20],
+  ['text', 10],
+] as const;
+
 const AREA = { main: 62, secondary: 26, accent: 12, upper: 78, lower: 22 };
 const DOT = 20;
 const LEGEND_DOT = 12;
@@ -105,6 +127,30 @@ const useStyles = makeStyles((t) => ({
     bottom: -BADGE_RING - HALO,
   },
   thumbLabel: { textAlign: 'center' },
+  strips: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: t.space[2],
+  },
+  stripItem: {
+    width: STRIP_W + STRIP_RIM * 2,
+    flexShrink: 1,
+    padding: STRIP_RIM,
+    borderRadius: STRIP_RADIUS + STRIP_RIM,
+  },
+  stripOn: { backgroundColor: t.colors.raised, boxShadow: t.shadow.lift },
+  strip: {
+    height: STRIP_H,
+    flexDirection: 'row',
+    borderRadius: STRIP_RADIUS,
+    overflow: 'hidden',
+  },
+  stripCheck: {
+    position: 'absolute',
+    top: STRIP_CHECK_OUT,
+    right: STRIP_CHECK_OUT,
+  },
 }));
 
 export function PaletteBlock({
@@ -207,6 +253,53 @@ export function PaletteThumbs<T extends string = string>({
             >
               {item.label}
             </Text>
+          </PressableBase>
+        );
+      })}
+    </View>
+  );
+}
+
+export function PaletteStrips<T extends string = string>({
+  items,
+  value,
+  onValueChange,
+  style,
+}: PaletteStripsProps<T>) {
+  const s = useStyles();
+  return (
+    <View accessibilityRole="radiogroup" style={[s.strips, style]}>
+      {items.map((item) => {
+        const selected = item.key === value;
+        return (
+          <PressableBase
+            key={item.key}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: selected }}
+            accessibilityLabel={item.label}
+            feedback="small"
+            onPress={() => {
+              if (selected) return;
+              haptic('select');
+              onValueChange(item.key);
+            }}
+            style={[s.stripItem, selected && s.stripOn]}
+          >
+            <View pointerEvents="none" style={s.strip}>
+              {STRIP_SHARE.map(([role, share]) => (
+                <View
+                  key={role}
+                  style={{ flex: share, backgroundColor: item.colors[role] }}
+                />
+              ))}
+            </View>
+            {selected ? (
+              <CheckDisc
+                size={STRIP_CHECK}
+                ring={STRIP_CHECK_RING}
+                style={s.stripCheck}
+              />
+            ) : null}
           </PressableBase>
         );
       })}

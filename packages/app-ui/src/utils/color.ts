@@ -51,3 +51,16 @@ export function withAlpha(color: string, alpha: number): string {
     return 'transparent';
   }
 }
+
+export function mixHex(from: string, to: string, share: number): string {
+  const a = toRgb(from);
+  const b = toRgb(to);
+  const k = Math.min(1, Math.max(0, share));
+  return `#${a
+    .map((c, i) =>
+      Math.round(c + (b[i]! - c) * k)
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')}`;
+}

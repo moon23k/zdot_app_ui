@@ -11,6 +11,7 @@ export * from './color-family-tabs';
 export * from './color-hero';
 export * from './color-swatch-picker';
 export * from './palette-block';
+export * from './color-tune';
 export * from './tone-strip';
 export * from './detail-editor';
 export * from './generation-progress';

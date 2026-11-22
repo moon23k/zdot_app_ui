@@ -2,6 +2,7 @@ export {
   ColorDots,
   PaletteBlock,
   PaletteLegend,
+  PaletteStrips,
   PaletteThumbs,
   type ColorDotsProps,
   type PaletteBlockProps,
@@ -9,5 +10,6 @@ export {
   type PaletteLegendItem,
   type PaletteLegendProps,
   type PaletteThumb,
+  type PaletteStripsProps,
   type PaletteThumbsProps,
 } from './palette-block';
