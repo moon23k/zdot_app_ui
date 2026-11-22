@@ -193,9 +193,11 @@ const feel = StyleSheet.create({
 
 function DialDemo() {
   const [values, setValues] = useState<Record<string, number>>({
-    temperature: 1,
-    energy: -1,
-    era: 2,
+    temperature: 86,
+    energy: 68,
+    softness: 32,
+    era: 70,
+    intensity: 74,
   });
   return (
     <View style={dial.frame}>

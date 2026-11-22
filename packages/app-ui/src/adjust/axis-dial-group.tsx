@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
-import { sliderOrigin } from '../components/slider/slider';
 import { makeStyles } from '../utils/styles';
 import { AxisDial } from './axis-dial';
 import { DialStrip } from './dial-strip';
@@ -15,12 +14,12 @@ export type AxisDialGroupItem = {
 export type AxisDialGroupProps = {
   items: readonly AxisDialGroupItem[];
   values: Readonly<Record<string, number>>;
-  min?: number;
-  max?: number;
   onChange: (key: string, value: number) => void;
   centerLabel?: string;
   style?: StyleProp<ViewStyle>;
 };
+
+const ORIGIN = 50;
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.layout.sectionGap },
@@ -29,8 +28,6 @@ const useStyles = makeStyles((t) => ({
 export function AxisDialGroup({
   items,
   values,
-  min = -2,
-  max = 2,
   onChange,
   centerLabel = '중간',
   style,
@@ -39,35 +36,25 @@ export function AxisDialGroup({
   const [selected, setSelected] = useState(items[0]?.key ?? '');
   const item = items.find((i) => i.key === selected) ?? items[0];
   if (!item) return null;
-  const base = sliderOrigin(min, max);
-  const value = values[item.key] ?? base;
   return (
     <View style={[s.root, style]}>
       <DialStrip
         spread
+        percent
         items={items.map((i) => ({
           key: i.key,
           label: i.label,
-          value: values[i.key] ?? base,
-          max: Math.max(Math.abs(min), Math.abs(max)),
+          value: values[i.key] ?? ORIGIN,
         }))}
         selected={item.key}
         onSelect={setSelected}
       />
       <AxisDial
-        value={value}
-        min={min}
-        max={max}
+        value={values[item.key] ?? ORIGIN}
         onChange={(next) => onChange(item.key, next)}
-        valueLabel={
-          value > base
-            ? item.endLabel
-            : value < base
-              ? item.startLabel
-              : centerLabel
-        }
         startLabel={item.startLabel}
         endLabel={item.endLabel}
+        centerLabel={centerLabel}
         accessibilityLabel={item.label}
       />
     </View>

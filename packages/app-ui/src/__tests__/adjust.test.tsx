@@ -41,34 +41,69 @@ describe('DialStrip', () => {
   });
 });
 
+describe('DialStrip percent', () => {
+  it('shows 0 to 100 values without signs', async () => {
+    const onSelect = jest.fn();
+    await render(
+      <DialStrip
+        percent
+        items={[
+          { key: 'a', label: '색감', value: 86 },
+          { key: 'b', label: '모양', value: 32 },
+        ]}
+        selected="a"
+        onSelect={onSelect}
+      />
+    );
+    expect(screen.getByText('86')).toBeTruthy();
+    expect(screen.queryByText('+2')).toBeNull();
+    await fireEvent.press(screen.getByLabelText('모양 32'));
+    expect(onSelect).toHaveBeenCalledWith('b');
+  });
+});
+
 describe('AxisDial', () => {
-  it('steps by one inside range and marks the leaning end', async () => {
+  it('shows the number and word and steps by five inside 0 to 100', async () => {
     const onChange = jest.fn();
     await render(
       <AxisDial
-        value={2}
+        value={98}
         onChange={onChange}
-        valueLabel="따뜻한"
-        startLabel="시원한"
-        endLabel="따뜻한"
-        accessibilityLabel="색감"
+        startLabel="은은한"
+        endLabel="강한"
+        accessibilityLabel="존재감"
       />
     );
-    const dial = screen.getByLabelText('색감');
+    const dial = screen.getByLabelText('존재감');
     expect(dial.props.accessibilityValue).toEqual({
-      min: -2,
-      max: 2,
-      now: 2,
-      text: '따뜻한',
+      min: 0,
+      max: 100,
+      now: 98,
+      text: '98 강한',
     });
     await fireEvent(dial, 'accessibilityAction', {
       nativeEvent: { actionName: 'increment' },
     });
-    expect(onChange).toHaveBeenLastCalledWith(2);
+    expect(onChange).toHaveBeenLastCalledWith(100);
     await fireEvent(dial, 'accessibilityAction', {
       nativeEvent: { actionName: 'decrement' },
     });
-    expect(onChange).toHaveBeenLastCalledWith(1);
+    expect(onChange).toHaveBeenLastCalledWith(93);
+  });
+
+  it('names the middle with the center label', async () => {
+    await render(
+      <AxisDial
+        value={50}
+        onChange={jest.fn()}
+        startLabel="은은한"
+        endLabel="강한"
+        accessibilityLabel="존재감"
+      />
+    );
+    expect(screen.getByLabelText('존재감').props.accessibilityValue.text).toBe(
+      '50 중간'
+    );
   });
 });
 
@@ -86,20 +121,20 @@ describe('AxisDialGroup', () => {
             endLabel: '활기찬',
           },
         ]}
-        values={{ a: 1, b: -2 }}
+        values={{ a: 74, b: 20 }}
         onChange={onChange}
       />
     );
     expect(screen.getByLabelText('색감').props.accessibilityValue.text).toBe(
-      '따뜻한'
+      '74 따뜻한'
     );
-    await fireEvent.press(screen.getByLabelText('움직임 -2'));
+    await fireEvent.press(screen.getByLabelText('움직임 20'));
     const dial = screen.getByLabelText('움직임');
-    expect(dial.props.accessibilityValue.text).toBe('차분한');
+    expect(dial.props.accessibilityValue.text).toBe('20 차분한');
     await fireEvent(dial, 'accessibilityAction', {
       nativeEvent: { actionName: 'increment' },
     });
-    expect(onChange).toHaveBeenLastCalledWith('b', -1);
+    expect(onChange).toHaveBeenLastCalledWith('b', 25);
   });
 });
 

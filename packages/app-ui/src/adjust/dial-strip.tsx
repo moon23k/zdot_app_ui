@@ -19,6 +19,7 @@ export type DialStripProps = {
   selected: string;
   onSelect: (key: string) => void;
   spread?: boolean;
+  percent?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -42,11 +43,25 @@ const useStyles = makeStyles((t) => ({
   },
   lifted: { boxShadow: t.shadow.liftSm },
   value: { position: 'absolute' },
+  bold: { fontWeight: '700' },
 }));
+
+const ORIGIN = 50;
 
 const signed = (v: number) => (v > 0 ? `+${v}` : String(v));
 
-function Ring({ item, on }: { item: DialItem; on: boolean }) {
+const shownOf = (item: DialItem, percent: boolean) =>
+  percent ? String(Math.round(item.value ?? ORIGIN)) : signed(item.value ?? 0);
+
+function Ring({
+  item,
+  on,
+  percent = false,
+}: {
+  item: DialItem;
+  on: boolean;
+  percent?: boolean;
+}) {
   const t = useTheme();
   const s = useStyles();
   const r = (SIZE - STROKE) / 2;
@@ -67,8 +82,8 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
       </View>
     );
   }
-  const v = item.value ?? 0;
-  const frac = Math.min(1, Math.abs(v) / (item.max ?? 2));
+  const v = percent ? (item.value ?? ORIGIN) - ORIGIN : (item.value ?? 0);
+  const frac = Math.min(1, Math.abs(v) / (item.max ?? (percent ? ORIGIN : 2)));
   return (
     <View style={[s.ring, on && s.lifted]}>
       <Svg width={SIZE} height={SIZE}>
@@ -80,7 +95,7 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
           stroke={t.colors.line}
           strokeWidth={STROKE}
         />
-        {v ? (
+        {frac > 0 ? (
           <Circle
             cx={SIZE / 2}
             cy={SIZE / 2}
@@ -98,9 +113,9 @@ function Ring({ item, on }: { item: DialItem; on: boolean }) {
         variant="caption"
         weight={on ? 'semibold' : 'medium'}
         tone={on ? 'default' : 'muted'}
-        style={s.value}
+        style={[s.value, on && percent && s.bold]}
       >
-        {item.text ?? (v ? signed(v) : '0')}
+        {item.text ?? shownOf(item, percent)}
       </Text>
     </View>
   );
@@ -117,6 +132,7 @@ export function DialStrip({
   selected,
   onSelect,
   spread = false,
+  percent = false,
   style,
 }: DialStripProps) {
   const s = useStyles();
@@ -137,12 +153,12 @@ export function DialStrip({
             accessibilityLabel={
               item.color || item.text
                 ? item.label
-                : `${item.label} ${signed(item.value ?? 0)}`
+                : `${item.label} ${shownOf(item, percent)}`
             }
             accessibilityState={{ selected: on }}
             style={s.item}
           >
-            <Ring item={item} on={on} />
+            <Ring item={item} on={on} percent={percent} />
             <Text
               variant="caption"
               weight={on ? 'semibold' : 'regular'}
