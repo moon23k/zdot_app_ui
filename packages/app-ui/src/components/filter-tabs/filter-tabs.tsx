@@ -19,7 +19,7 @@ import { SteadyText } from '../../internal/steady-text';
 import { useSlide } from '../../internal/use-slide';
 import { useTheme } from '../../theme/theme-provider';
 import { withAlpha } from '../../utils/color';
-import { makeStyles } from '../../utils/styles';
+import { gradientStyle, makeStyles } from '../../utils/styles';
 
 export type FilterTabsItem<T extends string> = {
   value: T;
@@ -180,9 +180,9 @@ export function FilterTabs<T extends string>({
           pointerEvents="none"
           style={[
             s.fade,
-            {
-              experimental_backgroundImage: `linear-gradient(270deg, ${bg} ${(SOLID / FADE) * 100}%, ${withAlpha(bg, 0)})`,
-            },
+            gradientStyle(
+              `linear-gradient(270deg, ${bg} ${(SOLID / FADE) * 100}%, ${withAlpha(bg, 0)})`
+            ),
           ]}
         />
       ) : null}

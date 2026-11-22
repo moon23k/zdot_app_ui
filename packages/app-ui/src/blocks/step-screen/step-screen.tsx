@@ -14,7 +14,7 @@ import { ChevronGlyph } from '../../internal/glyphs';
 import { useReducedMotion } from '../../internal/use-reduced-motion';
 import { useTheme } from '../../theme/theme-provider';
 import { withAlpha } from '../../utils/color';
-import { makeStyles } from '../../utils/styles';
+import { gradientStyle, makeStyles } from '../../utils/styles';
 import {
   HeaderIconButton,
   Notice,
@@ -303,10 +303,10 @@ export function StepScreen({
               pointerEvents="none"
               style={[
                 s.veil,
-                {
-                  height: veil,
-                  experimental_backgroundImage: `linear-gradient(180deg, ${withAlpha(bg, 0)}, ${bg} ${solid}%)`,
-                },
+                { height: veil },
+                gradientStyle(
+                  `linear-gradient(180deg, ${withAlpha(bg, 0)}, ${bg} ${solid}%)`
+                ),
               ]}
             />
           ) : null}

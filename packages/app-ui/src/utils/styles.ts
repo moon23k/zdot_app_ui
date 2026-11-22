@@ -1,4 +1,5 @@
 import {
+  Platform,
   StyleSheet,
   type ImageStyle,
   type TextStyle,
@@ -22,4 +23,12 @@ export function makeStyles<T extends NamedStyles<T>>(
     }
     return styles;
   };
+}
+
+export function gradientStyle(image: string): ViewStyle {
+  return (
+    Platform.OS === 'web'
+      ? { backgroundImage: image }
+      : { experimental_backgroundImage: image }
+  ) as ViewStyle;
 }
