@@ -58,7 +58,6 @@ const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', gap: t.space[2] },
   slot: { flex: 1 },
   tile: {
-    flex: 1,
     height: TILE,
     borderRadius: t.radius.xl,
     backgroundColor: t.colors.recess,
