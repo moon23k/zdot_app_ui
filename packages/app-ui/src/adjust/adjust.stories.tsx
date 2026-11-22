@@ -5,6 +5,7 @@ import { Phone } from '../__stories__/phone';
 import { useTheme } from '../theme/theme-provider';
 import { StepScreen } from '../blocks/step-screen/step-screen';
 import { AdjustTemplate } from './adjust-template';
+import { AxisDial } from './axis-dial';
 import { AxisDialGroup } from './axis-dial-group';
 import { BrandFeelArt } from './brand-feel-art';
 import { ColorAdjustNote } from './color-adjust-note';
@@ -225,6 +226,23 @@ function DialDemo() {
 
 export const Dial: StoryObj = {
   render: () => <DialDemo />,
+};
+
+function DialSingleDemo() {
+  const [value, setValue] = useState(74);
+  return (
+    <AxisDial
+      value={value}
+      onChange={setValue}
+      startLabel="은은한"
+      endLabel="강한"
+      accessibilityLabel="존재감"
+    />
+  );
+}
+
+export const DialSingle: StoryObj = {
+  render: () => <DialSingleDemo />,
 };
 
 const dial = StyleSheet.create({
