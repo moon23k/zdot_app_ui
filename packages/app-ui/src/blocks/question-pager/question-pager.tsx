@@ -1,4 +1,9 @@
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Text as RNText,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { Text } from '../../components/text/text';
 import { CheckDisc } from '../../internal/check-disc';
 import { CheckGlyph } from '../../internal/glyphs';
@@ -33,39 +38,58 @@ export type QuestionPagerProps = {
 const COLUMNS = 2;
 const LINE = 2;
 const MARK = 18;
+const HAIR = 0.5;
+const HAIR_ALPHA = 0.6;
 
 const useStyles = makeStyles((t) => ({
-  root: { gap: t.space[3] },
+  root: { gap: t.space[5] },
   tabs: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: t.colors.line,
+    gap: t.space[6],
+    marginHorizontal: -t.layout.screenX,
+    paddingHorizontal: t.layout.screenX,
+  },
+  hair: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: HAIR,
+    opacity: HAIR_ALPHA,
+    backgroundColor: t.colors.input,
   },
   tab: {
-    flex: 1,
-    minWidth: 0,
     height: t.controlSize.sm,
-    marginBottom: -1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     gap: t.space[1],
-    borderBottomWidth: LINE,
-    borderBottomColor: 'transparent',
   },
-  tabActive: { borderBottomColor: t.colors.primary },
-  tabText: { flexShrink: 1, color: t.colors.faint },
-  tabActiveText: { color: t.colors.title },
+  tabLine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: LINE,
+    backgroundColor: t.colors.primary,
+  },
+  tabText: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.label.fontSize,
+    lineHeight: t.typography.label.lineHeight,
+    fontWeight: '500',
+    color: t.colors.faint,
+  },
+  tabActiveText: { fontWeight: '700', color: t.colors.title },
   tabDoneText: { color: t.colors.mutedForeground },
-  questions: { gap: t.space[3] },
-  question: { gap: t.space[1] },
-  grid: { gap: t.space[1] },
+  questions: { gap: t.space[5] },
+  question: { gap: t.space[2] },
+  grid: { gap: t.space[2] },
   row: { flexDirection: 'row', gap: t.space[2] },
   cell: { flex: 1, minWidth: 0 },
   tile: {
     flex: 1,
     minWidth: 0,
-    height: t.controlSize.sm,
+    height: t.controlSize.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.space[2],
@@ -130,6 +154,7 @@ export function QuestionPager({
   return (
     <View style={[s.root, style]}>
       <View accessibilityRole="tablist" style={s.tabs}>
+        <View pointerEvents="none" style={s.hair} />
         {groups.map((g) => {
           const selected = g.key === group?.key;
           const done = !selected && answered(g, value);
@@ -145,15 +170,11 @@ export function QuestionPager({
                 haptic('select');
                 onActiveGroupChange(g.key);
               }}
-              style={[s.tab, selected && s.tabActive]}
+              style={s.tab}
             >
-              {done ? (
-                <CheckGlyph color={t.colors.primary} size={t.iconSize.sm} />
-              ) : null}
-              <Text
-                tone="muted"
-                weight={selected ? 'semibold' : undefined}
+              <RNText
                 numberOfLines={1}
+                maxFontSizeMultiplier={t.maxFontScale}
                 style={[
                   s.tabText,
                   selected && s.tabActiveText,
@@ -161,7 +182,13 @@ export function QuestionPager({
                 ]}
               >
                 {g.label}
-              </Text>
+              </RNText>
+              {done ? (
+                <CheckGlyph color={t.colors.primary} size={t.iconSize.sm} />
+              ) : null}
+              {selected ? (
+                <View pointerEvents="none" style={s.tabLine} />
+              ) : null}
             </PressableBase>
           );
         })}
