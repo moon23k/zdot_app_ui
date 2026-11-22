@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { StyleSheet } from 'react-native';
 import {
   defaultThemes,
@@ -262,12 +262,11 @@ describe('QuestionPager', () => {
     return { view, onValueChange, onActiveGroupChange };
   }
 
-  it('shows only the active group as one-of radios', async () => {
+  it('shows every group in one flow as one-of radios', async () => {
     const { view } = setup('g1', { q1: 'b' });
     await view;
-    expect(screen.getAllByRole('radio')).toHaveLength(8);
-    expect(screen.getByText('q2 질문')).toBeTruthy();
-    expect(screen.queryByLabelText('q3-a')).toBeNull();
+    expect(screen.getAllByRole('radio')).toHaveLength(16);
+    expect(screen.getByText('q3 질문')).toBeTruthy();
     expect(
       screen.getByRole('radio', { name: 'q1-b' }).props.accessibilityState
     ).toMatchObject({ checked: true });
@@ -293,42 +292,63 @@ describe('QuestionPager', () => {
     await view;
     await fireEvent.press(screen.getByRole('tab', { name: '구매' }));
     expect(onActiveGroupChange).toHaveBeenLastCalledWith('g2');
+    expect(
+      screen.getByRole('tab', { name: '구매' }).props.accessibilityState
+    ).toMatchObject({ selected: true });
   });
 
-  it('advances when the pick just completes the group', async () => {
-    const { view, onValueChange, onActiveGroupChange } = setup('g1', {
-      q1: 'a',
-    });
-    await view;
-    await fireEvent.press(screen.getByRole('radio', { name: 'q2-d' }));
-    expect(onValueChange).toHaveBeenLastCalledWith('q2', 'd');
-    expect(onActiveGroupChange).toHaveBeenLastCalledWith('g2');
-    expect(onValueChange.mock.invocationCallOrder[0]).toBeLessThan(
-      onActiveGroupChange.mock.invocationCallOrder[0]!
-    );
-  });
+  describe('after the last open question', () => {
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
 
-  it('stays when changing an answer in a finished group', async () => {
-    const { view, onValueChange, onActiveGroupChange } = setup('g1', {
-      q1: 'a',
-      q2: 'b',
+    it('advances after a short hold when the pick completes the group', async () => {
+      const { view, onValueChange, onActiveGroupChange } = setup('g1', {
+        q1: 'a',
+      });
+      await view;
+      await fireEvent.press(screen.getByRole('radio', { name: 'q2-d' }));
+      expect(onValueChange).toHaveBeenLastCalledWith('q2', 'd');
+      expect(onActiveGroupChange).not.toHaveBeenCalled();
+      await act(() => jest.advanceTimersByTime(300));
+      expect(onActiveGroupChange).toHaveBeenLastCalledWith('g2');
     });
-    await view;
-    await fireEvent.press(screen.getByRole('radio', { name: 'q2-c' }));
-    expect(onValueChange).toHaveBeenLastCalledWith('q2', 'c');
-    expect(onActiveGroupChange).not.toHaveBeenCalled();
-  });
 
-  it('stays on the last group when it is completed', async () => {
-    const { view, onValueChange, onActiveGroupChange } = setup('g2', {
-      q1: 'a',
-      q2: 'b',
-      q3: 'a',
+    it('cancels the advance when touched during the hold', async () => {
+      const { view, onActiveGroupChange } = setup('g1', { q1: 'a' });
+      await view;
+      await fireEvent.press(screen.getByRole('radio', { name: 'q2-d' }));
+      await fireEvent(
+        screen.getByRole('radio', { name: 'q3-a' }),
+        'touchStart'
+      );
+      await act(() => jest.advanceTimersByTime(300));
+      expect(onActiveGroupChange).not.toHaveBeenCalled();
     });
-    await view;
-    await fireEvent.press(screen.getByRole('radio', { name: 'q4-a' }));
-    expect(onValueChange).toHaveBeenLastCalledWith('q4', 'a');
-    expect(onActiveGroupChange).not.toHaveBeenCalled();
+
+    it('stays when changing an answer in a finished group', async () => {
+      const { view, onValueChange, onActiveGroupChange } = setup('g1', {
+        q1: 'a',
+        q2: 'b',
+      });
+      await view;
+      await fireEvent.press(screen.getByRole('radio', { name: 'q2-c' }));
+      expect(onValueChange).toHaveBeenLastCalledWith('q2', 'c');
+      await act(() => jest.advanceTimersByTime(300));
+      expect(onActiveGroupChange).not.toHaveBeenCalled();
+    });
+
+    it('stays on the last group when it is completed', async () => {
+      const { view, onValueChange, onActiveGroupChange } = setup('g2', {
+        q1: 'a',
+        q2: 'b',
+        q3: 'a',
+      });
+      await view;
+      await fireEvent.press(screen.getByRole('radio', { name: 'q4-a' }));
+      expect(onValueChange).toHaveBeenLastCalledWith('q4', 'a');
+      await act(() => jest.advanceTimersByTime(300));
+      expect(onActiveGroupChange).not.toHaveBeenCalled();
+    });
   });
 
   it('marks a finished group that is not active', async () => {

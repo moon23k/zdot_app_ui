@@ -115,6 +115,7 @@ function Demo({ start, initial }: { start: string; initial: Answers }) {
         title="스토어를 소개해 주세요"
         total={total}
         current={count - 1}
+        fill
         onBack={() => {}}
         primaryAction={{
           label: '사이트 만들기',

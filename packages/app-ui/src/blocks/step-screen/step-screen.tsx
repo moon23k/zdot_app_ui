@@ -99,6 +99,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.layout.screenX,
     paddingBottom: t.space[1],
   },
+  fillTitled: { gap: t.layout.titleGap, paddingTop: t.layout.screenTop },
   title: {
     fontFamily: t.fontFamily,
     fontSize: TITLE_SIZE,
@@ -288,7 +289,7 @@ export function StepScreen({
       ) : null}
       <View style={s.main}>
         {fill ? (
-          <View style={s.fill}>{content}</View>
+          <View style={[s.fill, title ? s.fillTitled : null]}>{content}</View>
         ) : (
           <ScrollView
             contentContainerStyle={[
