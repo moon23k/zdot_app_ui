@@ -113,6 +113,7 @@ const useStyles = makeStyles((t) => ({
     paddingTop: t.layout.footerTop,
     backgroundColor: t.colors.background,
   },
+  clear: { backgroundColor: 'transparent' },
   floating: {
     position: 'absolute',
     left: 0,
@@ -309,6 +310,7 @@ export function StepScreen({
           pointerEvents={floatingAction ? 'box-none' : 'auto'}
           style={[
             s.footer,
+            fill && s.clear,
             floatingAction && s.floating,
             docked && s.wide,
             dock && s.docked,

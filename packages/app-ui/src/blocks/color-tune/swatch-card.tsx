@@ -1,7 +1,7 @@
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { haptic } from '../../internal/haptics';
 import { PressableBase } from '../../internal/pressable-base';
-import { RetryGlyph } from '../../internal/retry-glyph';
+import { UndoGlyph } from '../../internal/undo-glyph';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -69,7 +69,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.recess,
   },
-  flip: { transform: [{ scaleX: -1 }] },
 }));
 
 export function SwatchCard({
@@ -117,9 +116,7 @@ export function SwatchCard({
               }}
               style={s.reset}
             >
-              <View style={s.flip}>
-                <RetryGlyph color={t.colors.title} size={RESET_ICON} />
-              </View>
+              <UndoGlyph color={t.colors.title} size={RESET_ICON} />
             </PressableBase>
           ) : null}
         </View>
