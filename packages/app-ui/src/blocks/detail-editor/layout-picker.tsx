@@ -28,6 +28,8 @@ const LABELS: Record<DetailLayout, string> = {
 const DIAGRAM_ROWS = [0, 1, 2];
 const SOFT_TITLE = 6;
 const SOFT_LINE = 4;
+const SOFT_LABEL = 11;
+const SOFT_LABEL_LINE = 1.35;
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.space[2], paddingHorizontal: t.space[3] },
@@ -109,7 +111,12 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.md,
     backgroundColor: t.colors.background,
   },
-  softLabel: { textAlign: 'center', color: t.colors.title },
+  softLabel: {
+    textAlign: 'center',
+    color: t.colors.title,
+    fontSize: SOFT_LABEL,
+    lineHeight: SOFT_LABEL * SOFT_LABEL_LINE,
+  },
   softTitle: {
     width: '56%',
     height: SOFT_TITLE,

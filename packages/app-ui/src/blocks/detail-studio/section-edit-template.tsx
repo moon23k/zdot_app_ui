@@ -82,6 +82,19 @@ export function sheetEdge(
   return best;
 }
 
+export function typingOffset(
+  box: { top: number; bottom: number },
+  viewport: number,
+  gap: number,
+  margin: number
+): number {
+  const next =
+    box.bottom - box.top + gap + margin > viewport
+      ? box.top - margin
+      : box.bottom + gap - viewport;
+  return Math.max(0, next);
+}
+
 function useKeyboardShown() {
   const [shown, setShown] = useState(false);
   useEffect(() => {
@@ -111,6 +124,8 @@ export function SectionEditTemplate({
   const pageTop = useRef(0);
   const [content, setContent] = useState(0);
   const [height, setHeight] = useState(0);
+  const [pageHeight, setPageHeight] = useState(0);
+  const fresh = useRef(true);
   const [parts, setParts] = useState<DetailPart[]>([]);
   const listen = useRef((list: DetailPart[]) => setParts(list)).current;
   const [sheetHeight, setSheetHeight] = useState(0);
@@ -124,13 +139,27 @@ export function SectionEditTemplate({
     )
   ).current;
   const margin = t.space[4];
+  const gap = t.space[1];
   const viewport = height - sheetHeight;
+  const pinned = keyboard || !!panel;
 
   useEffect(() => {
     if (!focus || viewport <= 0) return;
-    const top = pageTop.current + focus.y - margin;
-    const end = pageTop.current + focus.y + focus.height + margin;
     const now = offset.current;
+    const box = {
+      top: pageTop.current + focus.y,
+      bottom: pageTop.current + focus.y + focus.height,
+    };
+    if (pinned) {
+      const most = Math.max(0, content - height);
+      const next = Math.min(most, typingOffset(box, viewport, gap, margin));
+      if (Math.abs(next - now) > EPS) {
+        scroller.current?.scrollTo({ y: next, animated: true });
+      }
+      return;
+    }
+    const top = box.top - margin;
+    const end = box.bottom + margin;
     const next =
       end - top > viewport || top < now
         ? top
@@ -140,16 +169,23 @@ export function SectionEditTemplate({
     if (next !== now) {
       scroller.current?.scrollTo({ y: Math.max(0, next), animated: true });
     }
-  }, [focus, viewport, margin]);
+  }, [focus, viewport, margin, gap, pinned, content, height]);
 
   useEffect(() => {
-    if (focus || keyboard || sheetHeight <= 0 || viewport <= 0) return;
+    if (sheetHeight <= 0) {
+      fresh.current = true;
+      return;
+    }
+    if (focus || keyboard || viewport <= 0) return;
     if (!parts.length) return;
     const now = offset.current;
     const page = pageTop.current;
     const most = Math.max(0, content - height);
+    const bottom = page + pageHeight;
+    const base = fresh.current && bottom > viewport ? bottom - viewport : now;
+    fresh.current = false;
     const edge =
-      sheetEdge(now + viewport - page, parts, margin / 2, {
+      sheetEdge(base + viewport - page, parts, margin / 2, {
         min: viewport - page,
         max: most + viewport - page,
       }) + page;
@@ -157,7 +193,17 @@ export function SectionEditTemplate({
     if (Math.abs(next - now) > EPS) {
       scroller.current?.scrollTo({ y: next, animated: true });
     }
-  }, [focus, keyboard, sheetHeight, viewport, parts, margin, height, content]);
+  }, [
+    focus,
+    keyboard,
+    sheetHeight,
+    viewport,
+    parts,
+    margin,
+    height,
+    content,
+    pageHeight,
+  ]);
 
   const docked = !!accessory || !!panel;
   const below = !panel && !keyboard ? bottomInset : 0;
@@ -184,6 +230,7 @@ export function SectionEditTemplate({
             <View
               onLayout={(e) => {
                 pageTop.current = e.nativeEvent.layout.y;
+                setPageHeight(e.nativeEvent.layout.height);
               }}
             >
               {children}

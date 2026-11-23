@@ -13,7 +13,10 @@ import {
 } from '../index';
 import { keepWords } from '../blocks/detail-editor/keep-words';
 import { sectionThumbFrame } from '../blocks/detail-studio/section-thumb';
-import { sheetEdge } from '../blocks/detail-studio/section-edit-template';
+import {
+  sheetEdge,
+  typingOffset,
+} from '../blocks/detail-studio/section-edit-template';
 import { fadeLayers } from '../blocks/detail-studio/edge-fade';
 import { draftPreviewFit } from '../blocks/detail-editor/draft-preview';
 import { detailIsTitle } from '../blocks/detail-editor/detail-types';
@@ -162,6 +165,17 @@ describe('sheetEdge', () => {
     expect(
       sheetEdge(104, [part('text', 100, 40, 20)], 8, { min: 104, max: 400 })
     ).toBe(120);
+  });
+});
+
+describe('typingOffset', () => {
+  it('rests the box bottom a gap above the bar', () => {
+    expect(typingOffset({ top: 500, bottom: 560 }, 400, 12, 16)).toBe(172);
+    expect(typingOffset({ top: 40, bottom: 100 }, 400, 12, 16)).toBe(0);
+  });
+
+  it('shows the top of a box taller than the view', () => {
+    expect(typingOffset({ top: 500, bottom: 900 }, 400, 12, 16)).toBe(484);
   });
 });
 

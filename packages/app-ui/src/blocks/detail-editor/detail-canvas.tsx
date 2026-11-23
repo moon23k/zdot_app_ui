@@ -1012,13 +1012,19 @@ export function DetailCanvas({
     );
   };
 
-  const texts = (block: DetailBlock, shown: DetailLayer[]) => {
+  const texts = (block: DetailBlock, shown: DetailLayer[], under = false) => {
     const list = shown.filter(
       (l) => l.type === 'text' && (l.text || onSelect || focused(block, l))
     );
     if (!list.length) return null;
     return (
-      <View style={[s.texts, { padding: pad }]}>
+      <View
+        style={[
+          s.texts,
+          { padding: pad },
+          under && { paddingTop: pad + t.space[2] * scale },
+        ]}
+      >
         {list.map((l) => {
           const style = tx(l);
           if (focused(block, l)) return focusText(block, l, style);
@@ -1094,7 +1100,7 @@ export function DetailCanvas({
         return (
           <>
             {images.map((l) => image(block, l, false, 4 / 5))}
-            {texts(block, shown)}
+            {texts(block, shown, images.length > 0)}
           </>
         );
     }
