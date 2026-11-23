@@ -73,6 +73,7 @@ export function SectionSettings({
       <View style={s.body}>
         {tab === 'layout' ? (
           <LayoutPicker
+            variant="soft"
             value={layout}
             items={layouts}
             onValueChange={onLayoutChange}
@@ -88,6 +89,7 @@ export function SectionSettings({
         ) : (
           <View style={s.space}>
             <Slider
+              size="sm"
               value={space.top}
               min={0}
               max={10}
@@ -98,6 +100,7 @@ export function SectionSettings({
               accessibilityLabel="위 여백"
             />
             <Slider
+              size="sm"
               value={space.bottom}
               min={0}
               max={10}

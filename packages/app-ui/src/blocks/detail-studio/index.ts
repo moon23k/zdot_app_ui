@@ -65,3 +65,9 @@ export {
   type AssetGridProps,
 } from './asset-grid';
 export { ImagePrompt, type ImagePromptProps } from './image-prompt';
+export {
+  StudioToggle,
+  StudioToggleList,
+  type StudioToggleListProps,
+  type StudioToggleProps,
+} from './studio-toggle';

@@ -1,10 +1,10 @@
 import { View } from 'react-native';
-import { ChipGroup } from '../../components/chip-group/chip-group';
 import { CreditCost } from '../../components/credit/credit';
 import { KeyboardGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { ActionChips } from './action-chips';
 
 export type RewriteTrayProps<T extends string> = {
   items: readonly { value: T; label: string }[];
@@ -40,7 +40,7 @@ const useStyles = makeStyles((t) => ({
   },
   cost: { marginRight: t.space[2] },
   chips: { flex: 1, overflow: 'hidden' },
-  track: { marginLeft: -t.layout.screenX, marginRight: 0 },
+  track: { paddingRight: t.space[4] },
 }));
 
 export function RewriteTray<T extends string>({
@@ -60,7 +60,7 @@ export function RewriteTray<T extends string>({
         accessibilityLabel={keyboardLabel}
         style={s.key}
       >
-        <KeyboardGlyph color={t.colors.title} size={t.iconSize.md} />
+        <KeyboardGlyph color={t.colors.title} size={t.space[6]} />
       </PressableBase>
       <View style={s.sep} />
       {cost != null ? (
@@ -69,15 +69,11 @@ export function RewriteTray<T extends string>({
         </View>
       ) : null}
       <View style={s.chips}>
-        <ChipGroup
-          scroll
-          size="md"
-          value={null}
-          onValueChange={(v) => {
-            if (v) onPick(v);
-          }}
-          items={items.map((item) => ({ ...item, disabled }))}
-          style={s.track}
+        <ActionChips
+          items={items}
+          onPick={onPick}
+          disabled={disabled}
+          inset={s.track}
         />
       </View>
     </View>

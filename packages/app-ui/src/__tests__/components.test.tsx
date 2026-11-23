@@ -65,6 +65,23 @@ describe('Button', () => {
     expect(screen.getByText('완료')).toHaveStyle({ color: primaryForeground });
   });
 
+  it('keeps its rounded corners unless asked for a pill', async () => {
+    const { radius } = defaultThemes.light;
+    await render(
+      <>
+        <Button onPress={jest.fn()}>기본</Button>
+        <Button pill onPress={jest.fn()}>
+          알약
+        </Button>
+      </>
+    );
+    const [plain, pill] = screen
+      .getAllByRole('button')
+      .map((b) => StyleSheet.flatten(b.props.style));
+    expect(plain!.borderRadius).toBe(radius.md);
+    expect(pill!.borderRadius).toBe(radius.full);
+  });
+
   it('keeps the disabled state for assistive tech while it can be nudged', async () => {
     await render(
       <Button onPress={jest.fn()} disabled>

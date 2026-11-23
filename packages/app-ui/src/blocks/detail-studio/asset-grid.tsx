@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { FlatList, Image, View, type ViewStyle } from 'react-native';
 import { Skeleton } from '../../components/skeleton/skeleton';
 import { CheckGlyph, PlusGlyph, SparklesGlyph } from '../../internal/glyphs';
@@ -6,6 +6,7 @@ import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { withAlpha } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
+import { EdgeFade, hasMore } from './edge-fade';
 
 export type AssetGridItem = {
   key: string;
@@ -112,6 +113,10 @@ export function AssetGrid({
   const t = useTheme();
   const s = useStyles();
   const picking = !!onValueChange;
+  const [view, setView] = useState(0);
+  const [content, setContent] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const more = hasMore(offset, view, content);
 
   const cells: Cell[] = [
     ...(onAdd ? [{ kind: 'add', key: '__add' } as const] : []),
@@ -220,19 +225,28 @@ export function AssetGrid({
   ) : undefined;
 
   return (
-    <FlatList
-      data={cells}
-      keyExtractor={(cell) => cell.key}
-      numColumns={COLUMNS}
-      renderItem={({ item }) => render(item)}
-      accessibilityRole={picking ? 'radiogroup' : undefined}
-      style={s.root}
-      contentContainerStyle={s.list}
-      columnWrapperStyle={s.line}
-      showsVerticalScrollIndicator={false}
-      onEndReached={onEndReached}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={footer}
-    />
+    <View style={s.root}>
+      <FlatList
+        data={cells}
+        keyExtractor={(cell) => cell.key}
+        numColumns={COLUMNS}
+        renderItem={({ item }) => render(item)}
+        accessibilityRole={picking ? 'radiogroup' : undefined}
+        style={s.root}
+        contentContainerStyle={s.list}
+        columnWrapperStyle={s.line}
+        showsVerticalScrollIndicator={false}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={footer}
+        scrollEventThrottle={16}
+        onLayout={(e) => setView(e.nativeEvent.layout.height)}
+        onContentSizeChange={(_, h) => setContent(h)}
+        onScroll={(e) => setOffset(e.nativeEvent.contentOffset.y)}
+      />
+      {more ? (
+        <EdgeFade side="bottom" size={t.space[12]} color={t.colors.surface} />
+      ) : null}
+    </View>
   );
 }

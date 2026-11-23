@@ -41,7 +41,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[2],
     paddingVertical: t.space[1],
     paddingHorizontal: t.space[3],
-    borderRadius: t.radius.lg,
+    borderRadius: t.radius.md * 2,
     backgroundColor: t.colors.surface,
     boxShadow: t.shadow.lift,
   },
@@ -76,7 +76,7 @@ export function StudioDock({ items, bottomInset }: StudioDockProps) {
           >
             {renderIcon(item.icon, {
               color: t.colors.title,
-              size: t.iconSize.md,
+              size: t.space[6],
             })}
             <Text variant="caption" numberOfLines={1} style={s.label}>
               {item.label}

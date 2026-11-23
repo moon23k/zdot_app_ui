@@ -38,6 +38,7 @@ export type ButtonProps = Omit<
   leftIcon?: IconSlot;
   rightIcon?: IconSlot;
   point?: boolean;
+  pill?: boolean;
   cost?: number | null;
   children: ReactNode;
 };
@@ -89,6 +90,7 @@ const useStyles = makeStyles((t) => ({
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: t.colors.danger },
   success: { backgroundColor: t.colors.success },
+  pill: { borderRadius: t.radius.full },
   label: { fontFamily: t.fontFamily, fontWeight: '600' },
   quiet: { fontWeight: '500' },
   smLabel: {
@@ -115,6 +117,7 @@ export function Button({
   leftIcon,
   rightIcon,
   point = false,
+  pill = false,
   cost,
   children,
   style,
@@ -142,7 +145,7 @@ export function Button({
     color: ink,
     size: size === 'sm' ? t.iconSize.sm : t.iconSize.md,
   };
-  const radius = s[size].borderRadius;
+  const radius = pill ? t.radius.full : s[size].borderRadius;
 
   const [spin, setSpin] = useState(false);
   useEffect(() => {
@@ -194,6 +197,7 @@ export function Button({
         s[variant],
         still && s.off,
         point && s.bare,
+        pill && s.pill,
         style,
       ]}
     >

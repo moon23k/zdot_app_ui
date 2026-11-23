@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Button } from '../../components/button/button';
 import { CreditCost } from '../../components/credit/credit';
@@ -6,6 +7,7 @@ import { renderIcon, type IconSlot } from '../../internal/icon';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { EdgeFade, hasMore } from './edge-fade';
 
 export type PhotoToolItem = {
   key: string;
@@ -32,8 +34,8 @@ const useStyles = makeStyles((t) => ({
     borderTopColor: t.colors.border,
     backgroundColor: t.colors.surface,
   },
-  tools: { flex: 1 },
-  row: { alignItems: 'center', gap: t.space[1] },
+  tools: { flex: 1, alignSelf: 'stretch', justifyContent: 'center' },
+  row: { alignItems: 'center' },
   item: {
     width: t.space[16],
     height: t.space[16],
@@ -49,50 +51,63 @@ const useStyles = makeStyles((t) => ({
 export function PhotoToolBar({ items, action }: PhotoToolBarProps) {
   const t = useTheme();
   const s = useStyles();
+  const [view, setView] = useState(0);
+  const [content, setContent] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const more = hasMore(offset, view, content);
   return (
     <View accessibilityRole="toolbar" style={s.bar}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={s.tools}
-        contentContainerStyle={s.row}
-      >
-        {items.map((item) => {
-          const color = item.disabled
-            ? t.colors.disabledForeground
-            : t.colors.title;
-          return (
-            <PressableBase
-              key={item.key}
-              onPress={item.onPress}
-              disabled={item.disabled}
-              disabledStyle={{}}
-              feedback="small"
-              accessibilityLabel={item.label}
-              accessibilityState={
-                item.active === undefined
-                  ? undefined
-                  : { selected: item.active }
-              }
-              style={[s.item, item.active && s.on]}
-            >
-              {renderIcon(item.icon, { color, size: t.iconSize.md })}
-              <Text variant="caption" numberOfLines={1} style={{ color }}>
-                {item.label}
-              </Text>
-              {item.cost != null ? (
-                <View pointerEvents="none" style={s.cost}>
-                  <CreditCost
-                    value={item.cost}
-                    tone={item.disabled ? 'disabled' : 'muted'}
-                  />
-                </View>
-              ) : null}
-            </PressableBase>
-          );
-        })}
-      </ScrollView>
-      <Button variant="ghost" size="sm" onPress={action.onPress}>
+      <View style={s.tools}>
+        <ScrollView
+          testID="photo-tools"
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.row}
+          scrollEventThrottle={16}
+          onLayout={(e) => setView(e.nativeEvent.layout.width)}
+          onContentSizeChange={(w) => setContent(w)}
+          onScroll={(e) => setOffset(e.nativeEvent.contentOffset.x)}
+        >
+          {items.map((item) => {
+            const color = item.disabled
+              ? t.colors.disabledForeground
+              : t.colors.title;
+            return (
+              <PressableBase
+                key={item.key}
+                onPress={item.onPress}
+                disabled={item.disabled}
+                disabledStyle={{}}
+                feedback="small"
+                accessibilityLabel={item.label}
+                accessibilityState={
+                  item.active === undefined
+                    ? undefined
+                    : { selected: item.active }
+                }
+                style={[s.item, item.active && s.on]}
+              >
+                {renderIcon(item.icon, { color, size: t.space[6] })}
+                <Text variant="caption" numberOfLines={1} style={{ color }}>
+                  {item.label}
+                </Text>
+                {item.cost != null ? (
+                  <View pointerEvents="none" style={s.cost}>
+                    <CreditCost
+                      value={item.cost}
+                      tone={item.disabled ? 'disabled' : 'muted'}
+                    />
+                  </View>
+                ) : null}
+              </PressableBase>
+            );
+          })}
+        </ScrollView>
+        {more ? (
+          <EdgeFade side="right" size={t.space[12]} color={t.colors.surface} />
+        ) : null}
+      </View>
+      <Button variant="ghost" size="md" onPress={action.onPress}>
         {action.label}
       </Button>
     </View>

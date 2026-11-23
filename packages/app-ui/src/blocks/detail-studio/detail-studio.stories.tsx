@@ -4,10 +4,8 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Button } from '../../components/button/button';
 import { CreditPill } from '../../components/credit/credit';
-import { ListRow } from '../../components/list-row/list-row';
 import { SegmentedControl } from '../../components/segmented-control/segmented-control';
 import { Sheet } from '../../components/sheet/sheet';
-import { Switch } from '../../components/switch/switch';
 import { Text } from '../../components/text/text';
 import {
   BucketGlyph,
@@ -50,6 +48,7 @@ import { RewriteTray } from './rewrite-tray';
 import { SectionEditTemplate } from './section-edit-template';
 import { SectionSettings, type SectionSettingsTab } from './section-settings';
 import { StudioSheet } from './studio-sheet';
+import { StudioToggle, StudioToggleList } from './studio-toggle';
 import { TextFormatPanel, type TextFormatTab } from './text-format-panel';
 import { SectionKindGrid } from './section-kind-grid';
 import { SectionThumb } from './section-thumb';
@@ -502,7 +501,7 @@ function LibraryScreen() {
           onValueChange={setPick}
           onAdd={() => {}}
         />
-        <Button disabled={!pick} onPress={() => {}}>
+        <Button pill disabled={!pick} onPress={() => {}}>
           넣기
         </Button>
       </Sheet>
@@ -610,32 +609,28 @@ function PolishScreen() {
         end={<CreditPill balance={125} />}
         onOpenChange={() => {}}
       >
-        {polishRows.map((row) => (
-          <View key={row.key}>
-            <ListRow
-              title={row.label}
-              chevron={false}
-              trailing={
-                <Switch
-                  accessibilityLabel={row.label}
-                  value={!!flags[row.key]}
-                  onValueChange={(on) =>
-                    setFlags((now) => ({ ...now, [row.key]: on }))
-                  }
-                />
+        <StudioToggleList>
+          {polishRows.map((row) => (
+            <StudioToggle
+              key={row.key}
+              label={row.label}
+              value={!!flags[row.key]}
+              onValueChange={(on) =>
+                setFlags((now) => ({ ...now, [row.key]: on }))
               }
-            />
-            {row.key === 'unify' && flags.unify ? (
-              <ColorSwatchPicker
-                variant="row"
-                colors={DETAIL_COLORS}
-                value={color}
-                onValueChange={setColor}
-              />
-            ) : null}
-          </View>
-        ))}
-        <Button cost={1} onPress={() => {}}>
+            >
+              {row.key === 'unify' && flags.unify ? (
+                <ColorSwatchPicker
+                  variant="row"
+                  colors={DETAIL_COLORS}
+                  value={color}
+                  onValueChange={setColor}
+                />
+              ) : null}
+            </StudioToggle>
+          ))}
+        </StudioToggleList>
+        <Button pill cost={1} onPress={() => {}}>
           적용
         </Button>
       </Sheet>

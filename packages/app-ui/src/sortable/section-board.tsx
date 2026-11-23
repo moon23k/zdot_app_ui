@@ -52,7 +52,7 @@ const useStyles = makeStyles((t) => ({
   scroll: { flex: 1 },
   card: {
     marginHorizontal: t.space[4],
-    borderRadius: t.radius.lg,
+    borderRadius: t.radius.md * 2,
     backgroundColor: t.colors.surface,
   },
   row: {
@@ -63,15 +63,15 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surface,
   },
   first: {
-    borderTopLeftRadius: t.radius.lg,
-    borderTopRightRadius: t.radius.lg,
+    borderTopLeftRadius: t.radius.md * 2,
+    borderTopRightRadius: t.radius.md * 2,
   },
   last: {
-    borderBottomLeftRadius: t.radius.lg,
-    borderBottomRightRadius: t.radius.lg,
+    borderBottomLeftRadius: t.radius.md * 2,
+    borderBottomRightRadius: t.radius.md * 2,
   },
   pressed: { backgroundColor: t.colors.background },
-  lifted: { borderRadius: t.radius.lg, boxShadow: t.shadow.lift },
+  lifted: { borderRadius: t.radius.md * 2, boxShadow: t.shadow.lift },
   line: {
     position: 'absolute',
     top: 0,

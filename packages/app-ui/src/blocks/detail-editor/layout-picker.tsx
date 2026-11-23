@@ -10,6 +10,7 @@ export type LayoutPickerProps = {
   onValueChange: (layout: DetailLayout) => void;
   labels?: Partial<Record<DetailLayout, string>>;
   items?: readonly DetailLayout[];
+  variant?: 'default' | 'soft';
 };
 
 const LABELS: Record<DetailLayout, string> = {
@@ -25,6 +26,8 @@ const LABELS: Record<DetailLayout, string> = {
 };
 
 const DIAGRAM_ROWS = [0, 1, 2];
+const SOFT_TITLE = 6;
+const SOFT_LINE = 4;
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.space[2], paddingHorizontal: t.space[3] },
@@ -93,7 +96,173 @@ const useStyles = makeStyles((t) => ({
     padding: t.space[1],
     gap: t.space[1],
   },
+  softRow: { gap: t.space[2], paddingHorizontal: t.space[4] },
+  softItem: { width: t.space[16] + t.space[6], gap: t.space[2] },
+  softFrame: {
+    height: t.space[12] * 2,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: t.space[1],
+    paddingVertical: t.space[2],
+    paddingHorizontal: t.space[3],
+    borderRadius: t.radius.md,
+    backgroundColor: t.colors.background,
+  },
+  softLabel: { textAlign: 'center', color: t.colors.title },
+  softTitle: {
+    width: '56%',
+    height: SOFT_TITLE,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.input,
+  },
+  softLine: {
+    width: '70%',
+    height: SOFT_LINE,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.border,
+  },
+  softPhoto: {
+    alignSelf: 'stretch',
+    flex: 1,
+    borderRadius: t.radius.sm,
+    backgroundColor: t.colors.border,
+  },
+  softFull: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: t.colors.border,
+  },
+  softSplit: {
+    alignSelf: 'stretch',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+  },
+  softSide: { width: '44%', alignSelf: 'stretch' },
+  softSideText: { flex: 1, gap: t.space[1] },
+  softWide: { width: '100%' },
+  softCard: {
+    alignSelf: 'stretch',
+    flex: 1,
+    alignItems: 'center',
+    gap: t.space[1],
+    padding: t.space[1],
+    borderRadius: t.radius.sm,
+    backgroundColor: t.colors.surface,
+  },
+  softTableRow: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    gap: t.space[1],
+    paddingVertical: t.space[1],
+    borderTopWidth: 1,
+    borderColor: t.colors.border,
+  },
+  softDot: {
+    width: t.space[2],
+    height: t.space[2],
+    borderRadius: t.radius.full,
+    borderWidth: 1,
+    borderColor: t.colors.input,
+  },
 }));
+
+function SoftDiagram({ layout }: { layout: DetailLayout }) {
+  const s = useStyles();
+  const title = <View style={s.softTitle} />;
+  const line = <View style={s.softLine} />;
+  const photo = <View style={s.softPhoto} />;
+  switch (layout) {
+    case 'image_top':
+      return (
+        <>
+          {photo}
+          {title}
+          {line}
+        </>
+      );
+    case 'text_top':
+      return (
+        <>
+          {title}
+          {line}
+          {photo}
+        </>
+      );
+    case 'side':
+      return (
+        <View style={s.softSplit}>
+          <View style={[s.softPhoto, s.softSide]} />
+          <View style={s.softSideText}>
+            <View style={[s.softTitle, s.softWide]} />
+            <View style={[s.softLine, s.softWide]} />
+            {line}
+          </View>
+        </View>
+      );
+    case 'image':
+      return <View style={s.softFull} />;
+    case 'two_images':
+      return (
+        <>
+          {title}
+          <View style={s.softSplit}>
+            {photo}
+            {photo}
+          </View>
+        </>
+      );
+    case 'card':
+      return (
+        <View style={s.softCard}>
+          {photo}
+          {title}
+          {line}
+        </View>
+      );
+    case 'text':
+      return (
+        <>
+          {title}
+          {line}
+          {line}
+          {line}
+        </>
+      );
+    case 'table':
+      return (
+        <>
+          {title}
+          {DIAGRAM_ROWS.map((row) => (
+            <View key={row} style={s.softTableRow}>
+              <View style={[s.softLine, s.cellShort]} />
+              <View style={[s.softLine, s.cellLong]} />
+            </View>
+          ))}
+        </>
+      );
+    case 'steps':
+      return (
+        <>
+          {title}
+          <View style={s.steps}>
+            {DIAGRAM_ROWS.map((row) => (
+              <View key={row} style={s.step}>
+                <View style={s.softDot} />
+              </View>
+            ))}
+          </View>
+        </>
+      );
+    default:
+      return photo;
+  }
+}
 
 export function Diagram({ layout }: { layout: DetailLayout }) {
   const t = useTheme();
@@ -206,13 +375,15 @@ export function LayoutPicker({
   onValueChange,
   labels,
   items = DETAIL_LAYOUTS,
+  variant = 'default',
 }: LayoutPickerProps) {
   const s = useStyles();
+  const soft = variant === 'soft';
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.row}
+      contentContainerStyle={soft ? s.softRow : s.row}
       accessibilityRole="radiogroup"
     >
       {items.map((layout) => {
@@ -225,11 +396,15 @@ export function LayoutPicker({
             accessibilityState={{ selected: on }}
             accessibilityLabel={label}
             onPress={() => onValueChange(layout)}
-            style={s.item}
+            style={soft ? s.softItem : s.item}
           >
             <View>
-              <View style={s.frame}>
-                <Diagram layout={layout} />
+              <View style={soft ? s.softFrame : s.frame}>
+                {soft ? (
+                  <SoftDiagram layout={layout} />
+                ) : (
+                  <Diagram layout={layout} />
+                )}
               </View>
               {on ? <View pointerEvents="none" style={s.on} /> : null}
             </View>
@@ -238,7 +413,7 @@ export function LayoutPicker({
               tone="muted"
               weight={on ? 'semibold' : undefined}
               numberOfLines={1}
-              style={on && s.onLabel}
+              style={[soft && s.softLabel, on && s.onLabel]}
             >
               {label}
             </Text>

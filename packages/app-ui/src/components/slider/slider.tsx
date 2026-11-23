@@ -20,11 +20,14 @@ export type SliderProps = {
   start?: ReactNode;
   end?: ReactNode;
   accessibilityLabel: string;
+  size?: 'md' | 'sm';
   style?: StyleProp<ViewStyle>;
 };
 
 const TRACK = 6;
 const THUMB = 28;
+const TRACK_SM = 4;
+const THUMB_SM = 24;
 const TICK_WIDTH = 2;
 const TICK_HEIGHT = 16;
 const NUDGE = 10;
@@ -74,6 +77,25 @@ const useStyles = makeStyles((t) => ({
       t.scheme === 'dark' ? t.colors.foreground : t.colors.surface,
     boxShadow: t.shadow.md,
   },
+  rootSm: { gap: t.space[3] },
+  trackSm: {
+    top: (t.minTouchSize - TRACK_SM) / 2,
+    height: TRACK_SM,
+    backgroundColor: t.colors.border,
+  },
+  fillSm: { top: (t.minTouchSize - TRACK_SM) / 2, height: TRACK_SM },
+  thumbSm: {
+    top: (t.minTouchSize - THUMB_SM) / 2,
+    width: THUMB_SM,
+    height: THUMB_SM,
+  },
+  slotSm: { width: 'auto' },
+  labelSm: { width: t.space[8] },
+  valueSm: {
+    width: t.space[8],
+    textAlign: 'right',
+    color: t.colors.title,
+  },
 }));
 
 export function Slider({
@@ -87,13 +109,32 @@ export function Slider({
   start,
   end,
   accessibilityLabel,
+  size = 'md',
   style,
 }: SliderProps) {
   const s = useStyles();
+  const sm = size === 'sm';
+  const thumb = sm ? THUMB_SM : THUMB;
   const [width, setWidth] = useState(0);
   const span = max - min;
-  const latest = useRef({ value, onChange, onSlidingStart, min, span, width });
-  latest.current = { value, onChange, onSlidingStart, min, span, width };
+  const latest = useRef({
+    value,
+    onChange,
+    onSlidingStart,
+    min,
+    span,
+    width,
+    thumb,
+  });
+  latest.current = {
+    value,
+    onChange,
+    onSlidingStart,
+    min,
+    span,
+    width,
+    thumb,
+  };
   const origin = useRef(0);
   const pick = (x: number) => {
     const {
@@ -102,10 +143,11 @@ export function Slider({
       span: n,
       value: now,
       onChange: change,
+      thumb: knob,
     } = latest.current;
     if (w <= 0 || n <= 0) return;
-    const room = w - THUMB;
-    const at = Math.max(0, Math.min(room, x - THUMB / 2));
+    const room = w - knob;
+    const at = Math.max(0, Math.min(room, x - knob / 2));
     const next = lo + (at / room) * n;
     if (next !== now) change(next);
   };
@@ -128,16 +170,21 @@ export function Slider({
     span > 0 ? (Math.min(max, Math.max(min, value)) - min) / span : 0;
   const base = sliderOrigin(min, max);
   const baseRatio = span > 0 ? (base - min) / span : 0;
-  const room = Math.max(0, width - THUMB);
+  const room = Math.max(0, width - thumb);
   const left = ratio * room;
-  const center = left + THUMB / 2;
-  const baseCenter = base === min ? 0 : baseRatio * room + THUMB / 2;
+  const center = left + thumb / 2;
+  const baseCenter = base === min ? 0 : baseRatio * room + thumb / 2;
   return (
-    <View style={[s.root, style]}>
+    <View style={[s.root, sm && s.rootSm, style]}>
       {start ? (
-        <View style={s.slotStart}>{start}</View>
+        <View style={[s.slotStart, sm && s.slotSm]}>{start}</View>
       ) : startLabel ? (
-        <Text variant="caption" tone="muted" numberOfLines={1} style={s.end}>
+        <Text
+          variant="caption"
+          tone="muted"
+          numberOfLines={1}
+          style={[s.end, sm && s.labelSm]}
+        >
           {startLabel}
         </Text>
       ) : null}
@@ -160,13 +207,14 @@ export function Slider({
         }
         style={s.area}
       >
-        <View style={s.track} pointerEvents="none" />
+        <View style={[s.track, sm && s.trackSm]} pointerEvents="none" />
         {width > 0 ? (
           <>
             <View
               testID="slider-fill"
               style={[
                 s.fill,
+                sm && s.fillSm,
                 {
                   left: Math.min(baseCenter, center),
                   width: Math.abs(center - baseCenter),
@@ -181,18 +229,22 @@ export function Slider({
                 pointerEvents="none"
               />
             ) : null}
-            <View style={[s.thumb, { left }]} pointerEvents="none" />
+            <View
+              style={[s.thumb, sm && s.thumbSm, { left }]}
+              pointerEvents="none"
+            />
           </>
         ) : null}
       </View>
       {end ? (
-        <View style={s.slotEnd}>{end}</View>
+        <View style={[s.slotEnd, sm && s.slotSm]}>{end}</View>
       ) : endLabel ? (
         <Text
           variant="caption"
           tone="muted"
+          weight={sm ? 'semibold' : undefined}
           numberOfLines={1}
-          style={s.endRight}
+          style={[s.endRight, sm && s.valueSm]}
         >
           {endLabel}
         </Text>

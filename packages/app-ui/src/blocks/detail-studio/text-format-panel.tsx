@@ -72,8 +72,8 @@ const useStyles = makeStyles((t) => ({
   },
   swatches: { paddingTop: t.space[4], paddingHorizontal: t.space[1] },
   large: {
-    fontSize: t.typography.display.fontSize,
-    lineHeight: t.typography.display.lineHeight,
+    fontSize: t.typography.screenTitle.fontSize,
+    lineHeight: t.typography.screenTitle.lineHeight,
     color: t.colors.title,
   },
 }));
@@ -111,6 +111,7 @@ export function TextFormatPanel({
         return (
           <>
             <Slider
+              size="sm"
               value={size}
               min={1}
               max={10}
@@ -139,6 +140,7 @@ export function TextFormatPanel({
         return (
           <>
             <Slider
+              size="sm"
               value={line}
               min={1}
               max={10}
@@ -149,6 +151,7 @@ export function TextFormatPanel({
               accessibilityLabel="줄 간격"
             />
             <Slider
+              size="sm"
               value={tracking}
               min={-5}
               max={10}

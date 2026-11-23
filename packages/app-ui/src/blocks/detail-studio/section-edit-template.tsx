@@ -25,7 +25,7 @@ export type SectionEditTemplateProps = {
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, backgroundColor: t.colors.surface },
   scroll: { flex: 1 },
-  accessory: { backgroundColor: t.colors.background },
+  accessory: { backgroundColor: t.colors.surface },
   sheet: { position: 'absolute', left: 0, right: 0, bottom: 0 },
 }));
 

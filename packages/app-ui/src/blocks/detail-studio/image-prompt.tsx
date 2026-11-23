@@ -1,9 +1,9 @@
 import { Image, Text, TextInput, View } from 'react-native';
-import { ChipGroup } from '../../components/chip-group/chip-group';
 import { PencilGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { ActionChips } from './action-chips';
 
 export type ImagePromptProps = {
   source: string | null;
@@ -61,7 +61,8 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     borderRadius: t.radius.full,
   },
-  chips: { paddingTop: t.space[1], paddingHorizontal: t.space[5] },
+  chips: { paddingTop: t.space[1] },
+  track: { paddingHorizontal: t.space[5] },
 }));
 
 export function ImagePrompt({
@@ -133,14 +134,10 @@ export function ImagePrompt({
       </View>
       {suggestions?.length ? (
         <View style={s.chips}>
-          <ChipGroup
-            scroll
-            size="md"
-            value={null}
-            onValueChange={(word) => {
-              if (word) onChangeText(word);
-            }}
+          <ActionChips
             items={suggestions.map((word) => ({ value: word, label: word }))}
+            onPick={onChangeText}
+            inset={s.track}
           />
         </View>
       ) : null}

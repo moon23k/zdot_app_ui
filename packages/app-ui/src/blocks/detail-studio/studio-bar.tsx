@@ -71,6 +71,7 @@ const useStyles = makeStyles((t) => ({
     flexShrink: 1,
   },
   end: { marginLeft: 'auto', paddingRight: t.space[2] },
+  done: { height: t.space[8] + t.space[1] },
   narrow: {
     left: t.space[16] * 2 + t.space[3],
     right: t.space[16] * 2 + t.space[3],
@@ -159,7 +160,9 @@ export function StudioBar({
       ) : action ? (
         <View style={s.end}>
           <Button
-            size="sm"
+            size="md"
+            pill
+            style={s.done}
             onPress={action.onPress}
             disabled={action.disabled}
             loading={action.loading}

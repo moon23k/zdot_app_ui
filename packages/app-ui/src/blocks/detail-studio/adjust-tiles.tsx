@@ -31,7 +31,7 @@ const useStyles = makeStyles((t) => ({
     height: t.space[16] + t.space[2],
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: t.radius.lg,
+    borderRadius: t.radius.md * 2,
     backgroundColor: t.colors.background,
   },
   cost: { position: 'absolute', top: t.space[2], right: t.space[2] },
@@ -39,7 +39,7 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
     lineHeight: t.typography.eyebrow.lineHeight,
-    fontWeight: t.typography.eyebrow.fontWeight,
+    fontWeight: t.typography.body.fontWeight,
     color: t.colors.title,
   },
 }));
@@ -66,7 +66,7 @@ export function AdjustTiles<T extends string>({
           <View style={s.box}>
             {renderIcon(item.icon, {
               color: t.colors.title,
-              size: t.iconSize.md,
+              size: t.space[6],
             })}
             {cost != null ? (
               <View pointerEvents="none" style={s.cost}>

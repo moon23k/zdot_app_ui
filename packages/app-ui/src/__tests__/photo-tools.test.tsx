@@ -4,6 +4,7 @@ import {
   AssetGrid,
   DetailCanvas,
   PhotoToolBar,
+  StudioToggle,
   type DetailDocValue,
 } from '../index';
 
@@ -174,4 +175,44 @@ it('adjust tiles show the cost and the tool bar reports presses', async () => {
   });
   await fireEvent.press(screen.getByText('완료'));
   expect(onDone).toHaveBeenCalled();
+});
+
+it('PhotoToolBar fades its right edge only while more tools are hidden', async () => {
+  await render(
+    <PhotoToolBar
+      items={['a', 'b', 'c'].map((key) => ({
+        key,
+        icon: null,
+        label: key,
+        onPress: () => {},
+      }))}
+      action={{ label: '완료', onPress: () => {} }}
+    />
+  );
+  const scroller = screen.getByTestId('photo-tools');
+  expect(screen.queryByTestId('edge-fade')).toBeNull();
+  await fireEvent(scroller, 'layout', {
+    nativeEvent: { layout: { width: 120, height: 64 } },
+  });
+  await fireEvent(scroller, 'contentSizeChange', 192, 64);
+  expect(screen.getByTestId('edge-fade')).toBeTruthy();
+  await fireEvent.scroll(scroller, {
+    nativeEvent: { contentOffset: { x: 72, y: 0 } },
+  });
+  expect(screen.queryByTestId('edge-fade')).toBeNull();
+});
+
+it('StudioToggle flips its value from the whole row', async () => {
+  const onValueChange = jest.fn();
+  await render(
+    <StudioToggle
+      label="가격 크게"
+      value={false}
+      onValueChange={onValueChange}
+    />
+  );
+  const row = screen.getByRole('switch');
+  expect(row.props.accessibilityState).toMatchObject({ checked: false });
+  await fireEvent.press(row);
+  expect(onValueChange).toHaveBeenCalledWith(true);
 });

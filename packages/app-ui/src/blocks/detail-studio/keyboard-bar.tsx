@@ -59,12 +59,12 @@ export function KeyboardBar({ items, action }: KeyboardBarProps) {
         >
           {renderIcon(item.icon, {
             color: item.disabled ? t.colors.input : t.colors.title,
-            size: t.iconSize.md,
+            size: t.space[6],
           })}
         </PressableBase>
       ))}
       <View style={s.end}>
-        <Button variant="ghost" size="sm" onPress={action.onPress}>
+        <Button variant="ghost" size="md" onPress={action.onPress}>
           {action.label}
         </Button>
       </View>

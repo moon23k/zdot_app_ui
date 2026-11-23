@@ -16,13 +16,17 @@ export type StudioSheetProps = {
   children: ReactNode;
 };
 
+const OFFSET = /(^|,\s*)(-?[\d.]+px)\s+([\d.]+px)/g;
+
+const raise = (shadow: string) => shadow.replace(OFFSET, '$1$2 -$3');
+
 const useStyles = makeStyles((t) => ({
   sheet: {
     paddingTop: t.space[2],
-    borderTopLeftRadius: t.radius.lg,
-    borderTopRightRadius: t.radius.lg,
+    borderTopLeftRadius: t.radius.md * 2,
+    borderTopRightRadius: t.radius.md * 2,
     backgroundColor: t.colors.surface,
-    boxShadow: t.shadow.lift,
+    boxShadow: raise(t.shadow.lift),
   },
 }));
 

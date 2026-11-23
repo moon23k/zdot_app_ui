@@ -19,9 +19,11 @@ const useStyles = makeStyles((t) => ({
   row: {
     flexDirection: 'row',
     gap: t.space[2],
+    paddingTop: t.space[5],
     paddingHorizontal: t.space[4],
   },
   item: { flex: 1 },
+  off: { backgroundColor: t.colors.muted },
 }));
 
 export function ConfirmRow({ secondary, primary }: ConfirmRowProps) {
@@ -30,11 +32,15 @@ export function ConfirmRow({ secondary, primary }: ConfirmRowProps) {
     <Button
       variant={variant}
       size="md"
+      pill
       cost={action.cost}
       disabled={action.disabled}
       loading={action.loading}
       onPress={action.onPress}
-      style={s.item}
+      style={[
+        s.item,
+        variant === 'primary' && action.disabled && !action.loading && s.off,
+      ]}
     >
       {action.label}
     </Button>
