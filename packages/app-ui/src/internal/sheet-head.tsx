@@ -3,13 +3,21 @@ import { Text, View } from 'react-native';
 import { useTheme } from '../theme/theme-provider';
 import { makeStyles } from '../utils/styles';
 import { CloseGlyph, SparklesGlyph } from './glyphs';
+import { renderIcon, type IconSlot } from './icon';
 import { PressableBase } from './pressable-base';
+
+export type SheetHeadAction = {
+  icon: IconSlot;
+  label: string;
+  onPress: () => void;
+};
 
 export type SheetHeadProps = {
   title: string;
   onClose: () => void;
   ai?: boolean;
   end?: ReactNode;
+  action?: SheetHeadAction;
   closeLabel?: string;
 };
 
@@ -51,6 +59,7 @@ export function SheetHead({
   onClose,
   ai,
   end,
+  action,
   closeLabel = '닫기',
 }: SheetHeadProps) {
   const t = useTheme();
@@ -72,6 +81,18 @@ export function SheetHead({
         </Text>
         <View style={s.end}>
           {end}
+          {action ? (
+            <PressableBase
+              onPress={action.onPress}
+              accessibilityLabel={action.label}
+              style={s.close}
+            >
+              {renderIcon(action.icon, {
+                color: t.colors.title,
+                size: t.iconSize.md,
+              })}
+            </PressableBase>
+          ) : null}
           <PressableBase
             onPress={onClose}
             accessibilityLabel={closeLabel}

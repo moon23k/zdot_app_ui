@@ -64,3 +64,4 @@ export {
   type AssetGridItem,
   type AssetGridProps,
 } from './asset-grid';
+export { ImagePrompt, type ImagePromptProps } from './image-prompt';

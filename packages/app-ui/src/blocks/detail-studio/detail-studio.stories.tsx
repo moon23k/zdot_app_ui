@@ -4,8 +4,10 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Button } from '../../components/button/button';
 import { CreditPill } from '../../components/credit/credit';
+import { ListRow } from '../../components/list-row/list-row';
 import { SegmentedControl } from '../../components/segmented-control/segmented-control';
 import { Sheet } from '../../components/sheet/sheet';
+import { Switch } from '../../components/switch/switch';
 import { Text } from '../../components/text/text';
 import {
   BucketGlyph,
@@ -28,11 +30,13 @@ import { demoPhotoList, sample } from '../../__stories__/helpers';
 import { SectionBoard } from '../../sortable/section-board';
 import { useTheme } from '../../theme/theme-provider';
 import {
+  DETAIL_COLORS,
   DETAIL_LAYOUTS,
   type DetailFont,
   type DetailLayout,
 } from '../detail-editor/detail-types';
 import { makeStyles } from '../../utils/styles';
+import { ColorSwatchPicker } from '../color-swatch-picker/color-swatch-picker';
 import { DetailCanvas } from '../detail-editor/detail-canvas';
 import type { DetailCanvasFocus } from '../detail-editor/detail-canvas';
 import { AdjustTiles } from './adjust-tiles';
@@ -40,6 +44,7 @@ import { AssetGrid } from './asset-grid';
 import { ConfirmRow } from './confirm-row';
 import { PhotoToolBar } from './photo-tool-bar';
 import { DetailStudioTemplate } from './detail-studio-template';
+import { ImagePrompt } from './image-prompt';
 import { KeyboardBar } from './keyboard-bar';
 import { RewriteTray } from './rewrite-tray';
 import { SectionEditTemplate } from './section-edit-template';
@@ -478,7 +483,14 @@ function LibraryScreen() {
   return (
     <>
       <EditScreen title={scene.name} doc={scene.doc} />
-      <Sheet open compact tall title="보관함" onOpenChange={() => {}}>
+      <Sheet
+        open
+        compact
+        tall
+        title="보관함"
+        action={{ icon: SparklesGlyph, label: 'AI 이미지', onPress: () => {} }}
+        onOpenChange={() => {}}
+      >
         <SegmentedControl
           items={libraryTabs}
           value={tab}
@@ -492,6 +504,139 @@ function LibraryScreen() {
         />
         <Button disabled={!pick} onPress={() => {}}>
           넣기
+        </Button>
+      </Sheet>
+    </>
+  );
+}
+
+const scenes = ['나무 식탁', '리넨 천', '창가 햇빛', '흰 배경'];
+const sceneAsk = '나무 식탁 위, 아침 햇빛';
+const madeItems = demoPhotoList.slice(0, 4).map((id) => ({
+  key: `gen-${id}`,
+  uri: sample(id, 240, 320).uri,
+}));
+
+function AiImageScreen() {
+  const [ask, setAsk] = useState(sceneAsk);
+  return (
+    <EditScreen
+      title={scene.name}
+      doc={scene.doc}
+      focus={sceneFocus}
+      sheet={
+        <StudioSheet
+          open
+          ai
+          title="AI 이미지"
+          onClose={() => {}}
+          end={<CreditPill balance={126} />}
+        >
+          <ImagePrompt
+            source={scenePhoto.url ?? null}
+            value={ask}
+            onChangeText={setAsk}
+            suggestions={scenes}
+          />
+          <ConfirmRow
+            primary={{ label: '만들기', cost: 1, onPress: () => {} }}
+          />
+        </StudioSheet>
+      }
+    />
+  );
+}
+
+function AiImagePickScreen() {
+  const [pick, setPick] = useState<string | null>(madeItems[2]!.key);
+  const preview = madeItems.find((item) => item.key === pick)?.uri ?? null;
+  return (
+    <EditScreen
+      title={scene.name}
+      doc={scene.doc}
+      focus={{ ...sceneFocus, preview }}
+      sheet={
+        <StudioSheet
+          open
+          ai
+          title="AI 이미지"
+          onClose={() => {}}
+          end={<CreditPill balance={125} />}
+        >
+          <ImagePrompt
+            source={scenePhoto.url ?? null}
+            value={sceneAsk}
+            onEdit={() => {}}
+          />
+          <AssetGrid
+            variant="row"
+            items={madeItems}
+            value={pick}
+            onValueChange={setPick}
+          />
+          <ConfirmRow
+            secondary={{ label: '다시 만들기', cost: 1, onPress: () => {} }}
+            primary={{ label: '넣기', disabled: !pick, onPress: () => {} }}
+          />
+        </StudioSheet>
+      }
+    />
+  );
+}
+
+const polishRows = [
+  { key: 'enhance', label: '모든 사진 밝고 선명하게' },
+  { key: 'unify', label: '사진 배경 하나로 맞추기' },
+  { key: 'shorten', label: '글 짧고 읽기 쉽게' },
+  { key: 'price', label: '가격 크게' },
+] as const;
+
+function PolishScreen() {
+  const [flags, setFlags] = useState<Record<string, boolean>>({
+    enhance: true,
+    unify: true,
+    shorten: false,
+    price: true,
+  });
+  const [color, setColor] = useState(DETAIL_COLORS[1]!.value);
+  return (
+    <>
+      <ListScreen />
+      <Sheet
+        open
+        compact
+        ai
+        title="한 번에 다듬기"
+        end={<CreditPill balance={125} />}
+        onOpenChange={() => {}}
+      >
+        {polishRows.map((row) => (
+          <View key={row.key}>
+            <ListRow
+              title={row.label}
+              chevron={false}
+              trailing={
+                <Switch
+                  accessibilityLabel={row.label}
+                  value={!!flags[row.key]}
+                  onValueChange={(on) =>
+                    setFlags((now) => ({ ...now, [row.key]: on }))
+                  }
+                />
+              }
+            />
+            {row.key === 'unify' && flags.unify ? (
+              <ColorSwatchPicker
+                variant="row"
+                colors={DETAIL_COLORS}
+                value={color}
+                onValueChange={setColor}
+              />
+            ) : null}
+          </View>
+        ))}
+        <Button cost={1} onPress={() => {}}>
+          적용
         </Button>
       </Sheet>
     </>
@@ -534,4 +679,13 @@ export const Compare: StoryObj<typeof meta> = {
 };
 export const Library: StoryObj<typeof meta> = {
   render: () => <LibraryScreen />,
+};
+export const AiImage: StoryObj<typeof meta> = {
+  render: () => <AiImageScreen />,
+};
+export const AiImagePick: StoryObj<typeof meta> = {
+  render: () => <AiImagePickScreen />,
+};
+export const Polish: StoryObj<typeof meta> = {
+  render: () => <PolishScreen />,
 };

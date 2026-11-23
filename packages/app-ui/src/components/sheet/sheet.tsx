@@ -18,11 +18,13 @@ import {
   OverlayShown,
   useOverlayTransition,
 } from '../../internal/overlay';
-import { SheetHead } from '../../internal/sheet-head';
+import { SheetHead, type SheetHeadAction } from '../../internal/sheet-head';
 import { ListRow } from '../list-row/list-row';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { ToastHost } from '../toast/toast';
+
+export type { SheetHeadAction };
 
 export type SheetProps = {
   open: boolean;
@@ -33,6 +35,9 @@ export type SheetProps = {
   closeLabel?: string;
   compact?: boolean;
   tall?: boolean;
+  ai?: boolean;
+  end?: ReactNode;
+  action?: SheetHeadAction;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 };
@@ -80,6 +85,9 @@ export function Sheet({
   closeLabel = '닫기',
   compact = false,
   tall = false,
+  ai,
+  end,
+  action,
   children,
   style,
 }: SheetProps) {
@@ -175,6 +183,9 @@ export function Sheet({
               <View style={s.compact}>
                 <SheetHead
                   title={title}
+                  ai={ai}
+                  end={end}
+                  action={action}
                   closeLabel={closeLabel}
                   onClose={() => onOpenChange(false)}
                 />

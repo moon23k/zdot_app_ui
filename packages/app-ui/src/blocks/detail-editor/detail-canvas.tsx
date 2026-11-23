@@ -74,6 +74,7 @@ export type DetailCanvasFocus = {
   input?: DetailCanvasInput | null;
   result?: DetailCanvasResult | null;
   compare?: DetailCanvasCompare | null;
+  preview?: string | null;
 };
 
 export type DetailCanvasProps = {
@@ -237,6 +238,13 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.radius.md,
     boxShadow: `0px 0px 0px ${RING}px ${withAlpha(t.colors.surface, HALO)}`,
   },
+  photoBare: {
+    position: 'absolute',
+    top: t.space[1],
+    bottom: t.space[1],
+    left: t.space[1],
+    right: t.space[1],
+  },
   faded: { opacity: t.opacity.disabled },
   handle: {
     position: 'absolute',
@@ -282,7 +290,7 @@ function Handles() {
   );
 }
 
-function PhotoRing() {
+function PhotoRing({ bare }: { bare?: boolean }) {
   const s = useStyles();
   const target = useContext(FocusTargetContext);
   const ring = useRef<ComponentRef<typeof View>>(null);
@@ -299,10 +307,10 @@ function PhotoRing() {
   return (
     <View
       ref={ring}
-      testID="detail-photo-ring"
+      testID={bare ? undefined : 'detail-photo-ring'}
       onLayout={measure}
       pointerEvents="none"
-      style={s.photoRing}
+      style={bare ? s.photoBare : s.photoRing}
     />
   );
 }
@@ -637,6 +645,8 @@ export function DetailCanvas({
       );
     }
     const dim = !!faded?.has(`${block.id}/${layer.id}`) && s.faded;
+    const preview = on ? focus?.preview : null;
+    const url = preview || layer.url;
     return (
       <Tap
         key={layer.id}
@@ -644,9 +654,9 @@ export function DetailCanvas({
         label={'사진'}
         style={flex ? s.half : undefined}
       >
-        {layer.url ? (
+        {url ? (
           <Image
-            source={{ uri: layer.url }}
+            source={{ uri: url }}
             resizeMode="cover"
             style={[s.full, { aspectRatio: ratio }, dim]}
           />
@@ -660,7 +670,7 @@ export function DetailCanvas({
           />
         )}
         {picked(block, layer) ? <Handles /> : null}
-        {on ? <PhotoRing /> : null}
+        {on ? <PhotoRing bare={!!preview} /> : null}
       </Tap>
     );
   };

@@ -1,4 +1,5 @@
-import { FlatList, Image, View } from 'react-native';
+import { Fragment } from 'react';
+import { FlatList, Image, View, type ViewStyle } from 'react-native';
 import { Skeleton } from '../../components/skeleton/skeleton';
 import { CheckGlyph, PlusGlyph, SparklesGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
@@ -22,11 +23,13 @@ export type AssetGridProps = {
   addLabel?: string;
   onEndReached?: () => void;
   loadingMore?: boolean;
+  variant?: 'grid' | 'row';
 };
 
 const COLUMNS = 3;
 const PICK = 3;
 const MADE = 0.45;
+const ROW_RATIO = 3 / 4;
 
 type Cell =
   | { kind: 'add'; key: string }
@@ -86,6 +89,13 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: withAlpha(t.colors.title, MADE),
   },
   more: { flexDirection: 'row', gap: t.space[1] },
+  row: {
+    flexDirection: 'row',
+    gap: t.space[2],
+    paddingHorizontal: t.space[4],
+    paddingTop: t.space[1],
+  },
+  slot: { flex: 1, aspectRatio: ROW_RATIO },
 }));
 
 export function AssetGrid({
@@ -97,6 +107,7 @@ export function AssetGrid({
   addLabel = '사진 올리기',
   onEndReached,
   loadingMore,
+  variant = 'grid',
 }: AssetGridProps) {
   const t = useTheme();
   const s = useStyles();
@@ -110,7 +121,7 @@ export function AssetGrid({
     cells.push({ kind: 'blank', key: `__blank${i}` });
   }
 
-  const render = (cell: Cell) => {
+  const render = (cell: Cell, slot?: ViewStyle) => {
     if (cell.kind === 'blank') return <View style={s.blank} />;
     if (cell.kind === 'add') {
       return (
@@ -127,7 +138,7 @@ export function AssetGrid({
     const { item } = cell;
     if (item.pending) {
       return (
-        <View style={s.cell}>
+        <View style={[s.cell, slot]}>
           <Skeleton width="100%" height="100%" radius={t.radius.md} />
         </View>
       );
@@ -163,7 +174,9 @@ export function AssetGrid({
         ) : null}
       </>
     );
-    if (!picking && !onLongPress) return <View style={s.cell}>{face}</View>;
+    if (!picking && !onLongPress) {
+      return <View style={[s.cell, slot]}>{face}</View>;
+    }
     return (
       <PressableBase
         onPress={
@@ -174,12 +187,27 @@ export function AssetGrid({
         accessibilityLabel={item.made ? '만든 이미지' : '사진'}
         accessibilityRole={picking ? 'radio' : 'button'}
         accessibilityState={picking ? { checked: selected } : undefined}
-        style={s.cell}
+        style={[s.cell, slot]}
       >
         {face}
       </PressableBase>
     );
   };
+
+  if (variant === 'row') {
+    return (
+      <View
+        accessibilityRole={picking ? 'radiogroup' : undefined}
+        style={s.row}
+      >
+        {items.map((item) => (
+          <Fragment key={item.key}>
+            {render({ kind: 'item', key: item.key, item }, s.slot)}
+          </Fragment>
+        ))}
+      </View>
+    );
+  }
 
   const footer = loadingMore ? (
     <View style={s.more}>

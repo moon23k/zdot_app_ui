@@ -8,17 +8,6 @@ export {
   type DetailCanvasResult,
 } from './detail-canvas';
 export {
-  DetailComposer,
-  type ComposerAttachment,
-  type ComposerSource,
-  type DetailComposerProps,
-} from './detail-composer';
-export {
-  DetailEditorTemplate,
-  EditorPanel,
-  type DetailEditorTemplateProps,
-} from './detail-editor-template';
-export {
   DETAIL_COLORS,
   DETAIL_FONT_FAMILY,
   DETAIL_LAYOUTS,
@@ -38,17 +27,9 @@ export {
   type DetailTextStyle,
   type DetailWeight,
 } from './detail-types';
-export {
-  DRAFT_THUMB_WIDTH,
-  DraftStrip,
-  type DraftStripItem,
-  type DraftStripProps,
-} from './draft-strip';
-export { EditorBar, type EditorBarProps } from './editor-bar';
 export { EffectPicker, type EffectPickerProps } from './effect-picker';
 export { FontPicker, type FontPickerProps } from './font-picker';
 export { LayoutPicker, type LayoutPickerProps } from './layout-picker';
-export { ToolRow, type ToolRowItem } from './tool-row';
 export { CompareSlider, type CompareSliderProps } from './compare-slider';
 export {
   StructurePicker,
