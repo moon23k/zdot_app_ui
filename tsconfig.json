@@ -2,16 +2,16 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "@zdot/app-ui": [
+      "@ezpg/app-ui": [
         "./packages/app-ui/src/index"
       ],
-      "@zdot/app-ui/charts": [
+      "@ezpg/app-ui/charts": [
         "./packages/app-ui/src/charts"
       ],
-      "@zdot/app-ui/adjust": [
+      "@ezpg/app-ui/adjust": [
         "./packages/app-ui/src/adjust"
       ],
-      "@zdot/app-ui/sortable": [
+      "@ezpg/app-ui/sortable": [
         "./packages/app-ui/src/sortable"
       ]
     },

@@ -2121,6 +2121,59 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ezpg/app-ui-example@workspace:example":
+  version: 0.0.0-use.local
+  resolution: "@ezpg/app-ui-example@workspace:example"
+  dependencies:
+    "@babel/core": "npm:^7.25.2"
+    "@babel/preset-env": "npm:^7.25.3"
+    "@babel/runtime": "npm:^7.25.0"
+    "@ezpg/app-ui": "workspace:^"
+    "@react-native-community/cli": "npm:20.1.0"
+    "@react-native-community/cli-platform-android": "npm:20.1.0"
+    "@react-native-community/cli-platform-ios": "npm:20.1.0"
+    "@react-native/babel-preset": "npm:0.86.2"
+    "@react-native/jest-preset": "npm:0.86.2"
+    "@react-native/metro-config": "npm:0.86.2"
+    "@react-native/typescript-config": "npm:0.86.2"
+    "@types/react": "npm:^19.2.0"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.2"
+    react-native-builder-bob: "npm:^0.43.2"
+    react-native-gesture-handler: "npm:3.4.0"
+    react-native-monorepo-config: "npm:^0.4.0"
+    react-native-reanimated: "npm:4.7.1"
+    react-native-sortables: "npm:^1.10.1"
+    react-native-svg: "npm:15.16.0"
+    react-native-worklets: "npm:0.13.0"
+  languageName: unknown
+  linkType: soft
+
+"@ezpg/app-ui@workspace:^, @ezpg/app-ui@workspace:packages/app-ui":
+  version: 0.0.0-use.local
+  resolution: "@ezpg/app-ui@workspace:packages/app-ui"
+  dependencies:
+    react-native-builder-bob: "npm:^0.43.2"
+    react-native-sortables: "npm:^1.10.1"
+    typescript: "npm:^6.0.3"
+  peerDependencies:
+    react: ">=19.0.0"
+    react-native: ">=0.82.0"
+    react-native-gesture-handler: ">=2.28.0"
+    react-native-reanimated: ">=4.5.5"
+    react-native-sortables: ">=1.10.0"
+    react-native-svg: ">=15.0.0"
+    react-native-worklets: ">=0.10.0"
+  peerDependenciesMeta:
+    react-native-gesture-handler:
+      optional: true
+    react-native-sortables:
+      optional: true
+    react-native-svg:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -4718,59 +4771,6 @@ __metadata:
   checksum: 10c0/bc64114ffa7ee92f4985cc2bdd5e27f6f31d892b9aa5cde68eaf93df02d13ee6edf13faeebdd701464183b6f8f9c47c14975958cdd6fc20e7356ad32f6ee39e7
   languageName: node
   linkType: hard
-
-"@zdot/app-ui-example@workspace:example":
-  version: 0.0.0-use.local
-  resolution: "@zdot/app-ui-example@workspace:example"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@babel/preset-env": "npm:^7.25.3"
-    "@babel/runtime": "npm:^7.25.0"
-    "@react-native-community/cli": "npm:20.1.0"
-    "@react-native-community/cli-platform-android": "npm:20.1.0"
-    "@react-native-community/cli-platform-ios": "npm:20.1.0"
-    "@react-native/babel-preset": "npm:0.86.2"
-    "@react-native/jest-preset": "npm:0.86.2"
-    "@react-native/metro-config": "npm:0.86.2"
-    "@react-native/typescript-config": "npm:0.86.2"
-    "@types/react": "npm:^19.2.0"
-    "@zdot/app-ui": "workspace:^"
-    react: "npm:19.2.3"
-    react-native: "npm:0.86.2"
-    react-native-builder-bob: "npm:^0.43.2"
-    react-native-gesture-handler: "npm:3.4.0"
-    react-native-monorepo-config: "npm:^0.4.0"
-    react-native-reanimated: "npm:4.7.1"
-    react-native-sortables: "npm:^1.10.1"
-    react-native-svg: "npm:15.16.0"
-    react-native-worklets: "npm:0.13.0"
-  languageName: unknown
-  linkType: soft
-
-"@zdot/app-ui@workspace:^, @zdot/app-ui@workspace:packages/app-ui":
-  version: 0.0.0-use.local
-  resolution: "@zdot/app-ui@workspace:packages/app-ui"
-  dependencies:
-    react-native-builder-bob: "npm:^0.43.2"
-    react-native-sortables: "npm:^1.10.1"
-    typescript: "npm:^6.0.3"
-  peerDependencies:
-    react: ">=19.0.0"
-    react-native: ">=0.82.0"
-    react-native-gesture-handler: ">=2.28.0"
-    react-native-reanimated: ">=4.5.5"
-    react-native-sortables: ">=1.10.0"
-    react-native-svg: ">=15.0.0"
-    react-native-worklets: ">=0.10.0"
-  peerDependenciesMeta:
-    react-native-gesture-handler:
-      optional: true
-    react-native-sortables:
-      optional: true
-    react-native-svg:
-      optional: true
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^5.0.0":
   version: 5.0.0

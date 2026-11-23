@@ -13,8 +13,8 @@ module.exports = {
     '^react-native-reanimated$': 'react-native-reanimated/mock',
     '^react-native-worklets$': 'react-native-worklets/src/mock',
     '^react-native-sortables$': '<rootDir>/jest/react-native-sortables.js',
-    '^@zdot/app-ui$': '<rootDir>/packages/app-ui/src/index',
-    '^@zdot/app-ui/(adjust|charts|sortable)$':
+    '^@ezpg/app-ui$': '<rootDir>/packages/app-ui/src/index',
+    '^@ezpg/app-ui/(adjust|charts|sortable)$':
       '<rootDir>/packages/app-ui/src/$1',
   },
 };

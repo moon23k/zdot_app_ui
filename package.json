@@ -6,8 +6,8 @@
     "example"
   ],
   "scripts": {
-    "example": "yarn workspace @zdot/app-ui-example",
-    "build": "yarn workspaces foreach -A --topological-dev --exclude @zdot/app-ui-example run prepare",
+    "example": "yarn workspace @ezpg/app-ui-example",
+    "build": "yarn workspaces foreach -A --topological-dev --exclude @ezpg/app-ui-example run prepare",
     "clean": "del-cli example/android/build example/android/app/build example/ios/build \"packages/*/lib\"",
     "typecheck": "tsc",
     "lint": "node scripts/check-no-comments.mjs && eslint \"**/*.{js,ts,tsx}\"",
