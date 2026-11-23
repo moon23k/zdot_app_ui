@@ -634,3 +634,98 @@ export function OverlayGlyph({ color, size }: IconRenderProps) {
     </View>
   );
 }
+
+export function MailGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const width = size * 0.8;
+  const height = size * 0.6;
+  const flap = width * 0.58;
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width,
+          height,
+          alignItems: 'center',
+          overflow: 'hidden',
+          borderWidth: stroke,
+          borderRadius: size * 0.08,
+          borderColor: color,
+        }}
+      >
+        <View
+          style={{
+            width: flap,
+            height: flap,
+            marginTop: -flap * 0.62,
+            borderRightWidth: stroke,
+            borderBottomWidth: stroke,
+            borderColor: color,
+            transform: [{ rotate: '45deg' }],
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+export function TicketGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const height = size * 0.6;
+  const dash = {
+    width: stroke,
+    height: height * 0.16,
+    borderRadius: stroke,
+    backgroundColor: color,
+  };
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width: size * 0.82,
+          height,
+          justifyContent: 'center',
+          paddingLeft: size * 0.24,
+          borderWidth: stroke,
+          borderRadius: size * 0.1,
+          borderColor: color,
+        }}
+      >
+        <View style={{ gap: height * 0.1 }}>
+          <View style={dash} />
+          <View style={dash} />
+          <View style={dash} />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+export function ButtonGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={[
+          styles.center,
+          {
+            width: size * 0.84,
+            height: size * 0.46,
+            borderWidth: stroke,
+            borderRadius: size,
+            borderColor: color,
+          },
+        ]}
+      >
+        <View
+          style={{
+            width: size * 0.4,
+            height: stroke,
+            borderRadius: stroke,
+            backgroundColor: color,
+          }}
+        />
+      </View>
+    </View>
+  );
+}

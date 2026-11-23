@@ -1,9 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
-import { useState } from 'react';
+import { useState, type ReactElement } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Phone } from '../__stories__/phone';
 import {
+  ButtonArt,
+  ChoiceChips,
   ColumnsArt,
+  FieldArt,
+  FoldArt,
+  FormThumb,
   LevelsArt,
   RatioArt,
   SampleArt,
@@ -28,6 +33,10 @@ import {
   OverlayGlyph,
   PositionGlyph,
   ResizeGlyph,
+  ButtonGlyph,
+  MailGlyph,
+  MessageGlyph,
+  TicketGlyph,
 } from '../internal/glyphs';
 import { useTheme } from '../theme/theme-provider';
 import {
@@ -201,16 +210,116 @@ function PopupScreen() {
   );
 }
 
+const orderTools = [
+  { key: 'email', label: '이메일', icon: MailGlyph },
+  { key: 'request', label: '요청 사항', icon: MessageGlyph },
+  { key: 'coupon', label: '쿠폰', icon: TicketGlyph },
+  { key: 'button', label: '주문 버튼', icon: ButtonGlyph },
+] as const;
+
+const requests = [
+  { key: 'door', label: '문 앞에 놓아 주세요' },
+  { key: 'guard', label: '경비실에 맡겨 주세요' },
+  { key: 'call', label: '배송 전 연락 주세요' },
+  { key: 'box', label: '택배함에 넣어 주세요' },
+  { key: 'custom', label: '직접 입력' },
+] as const;
+
+function OrderScreen({ start }: { start: string }) {
+  const [device, setDevice] = useState<PreviewDevice>('web');
+  const [tool, setTool] = useState<string>(start);
+  const [email, setEmail] = useState(true);
+  const [picked, setPicked] = useState<string[]>([
+    'door',
+    'guard',
+    'call',
+    'custom',
+  ]);
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState(true);
+  const pair = (
+    labels: readonly [string, string],
+    value: boolean,
+    set: (next: boolean) => void,
+    art: (on: boolean, color: string) => ReactElement
+  ): PreviewEditChoice[] =>
+    [true, false].map((on, i) => ({
+      key: String(on),
+      label: labels[i] ?? '',
+      art: ({ color }) => art(on, color),
+      selected: value === on,
+      onPress: () => set(on),
+    }));
+  const choices =
+    tool === 'email'
+      ? pair(['보이기', '숨기기'], email, setEmail, (on, color) => (
+          <FieldArt shown={on} color={color} />
+        ))
+      : tool === 'coupon'
+        ? pair(['펼쳐 두기', '접어 두기'], open, setOpen, (on, color) => (
+            <FoldArt open={on} color={color} />
+          ))
+        : pair(
+            ['54,000원 주문하기', '주문하기'],
+            amount,
+            setAmount,
+            (on, color) => <ButtonArt text={on ? 0.7 : 0.34} color={color} />
+          );
+  return (
+    <Phone>
+      <PreviewEditTemplate
+        title="주문서"
+        saveAction={{ label: '저장', onPress: () => {} }}
+        onBack={() => {}}
+        device={device}
+        onDeviceChange={setDevice}
+        onCompareChange={() => {}}
+        choices={tool === 'request' ? undefined : choices}
+        tray={
+          tool === 'request' ? (
+            <ChoiceChips
+              items={requests.map((item) => ({
+                key: item.key,
+                label: item.label,
+                selected: picked.includes(item.key),
+                onPress: () =>
+                  setPicked((now) =>
+                    now.includes(item.key)
+                      ? now.filter((k) => k !== item.key)
+                      : [...now, item.key]
+                  ),
+              }))}
+            />
+          ) : undefined
+        }
+        tools={orderTools}
+        tool={tool}
+        onToolChange={setTool}
+      >
+        <ListRow
+          title="주문서"
+          leading={<FormThumb />}
+          chevron
+          onPress={() => {}}
+        />
+      </PreviewEditTemplate>
+    </Phone>
+  );
+}
+
 function Screen({
   start = 'columns',
   chips,
   popup,
+  order,
 }: {
   start?: Tool;
   chips?: boolean;
   popup?: boolean;
+  order?: string;
 }) {
   if (popup) return <PopupScreen />;
+  if (order) return <OrderScreen start={order} />;
   return <ShelfScreen start={start} chips={chips} />;
 }
 
@@ -327,3 +436,7 @@ export const Tray: StoryObj<typeof meta> = {
 };
 
 export const Popup: StoryObj<typeof meta> = { args: { popup: true } };
+
+export const Order: StoryObj<typeof meta> = { args: { order: 'request' } };
+
+export const OrderButton: StoryObj<typeof meta> = { args: { order: 'button' } };

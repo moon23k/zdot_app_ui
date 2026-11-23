@@ -1,5 +1,7 @@
 import { Text as RNText, View, type ViewStyle } from 'react-native';
-import { CloseGlyph } from '../../internal/glyphs';
+import { CheckGlyph, ChevronGlyph, CloseGlyph } from '../../internal/glyphs';
+import { haptic } from '../../internal/haptics';
+import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -29,6 +31,22 @@ export type PlacementThumbProps = {
 export type FooterArtProps = { text: boolean; color: string };
 
 export type SampleArtProps = { text: string; color: string; strike?: boolean };
+
+export type FieldArtProps = { shown: boolean; color: string };
+
+export type FoldArtProps = { open: boolean; color: string };
+
+export type ButtonArtProps = { text: number; color: string };
+
+export type ChoiceChip = {
+  key: string;
+  label: string;
+  selected: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+};
+
+export type ChoiceChipsProps = { items: readonly ChoiceChip[] };
 
 const useStyles = makeStyles((t) => ({
   box: {
@@ -125,6 +143,97 @@ const useStyles = makeStyles((t) => ({
     height: 1.5,
     transform: [{ rotate: '-45deg' }],
   },
+  form: {
+    width: t.space[12],
+    height: t.space[8],
+    gap: t.space[1],
+  },
+  field: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: t.space[1],
+    borderWidth: 1.5,
+    borderRadius: t.space[1] / 2,
+  },
+  fieldGone: { borderStyle: 'dashed', opacity: 0.45 },
+  ink: { width: '50%', height: t.space[1] / 2, borderRadius: t.space[1] },
+  fold: {
+    width: t.space[12],
+    height: t.space[8],
+    gap: t.space[1],
+  },
+  foldHead: {
+    height: t.space[3] + t.space[1] / 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+    paddingHorizontal: t.space[1],
+    borderWidth: 1.5,
+    borderRadius: t.space[1] / 2,
+  },
+  foldBody: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: t.space[1] / 2,
+    paddingHorizontal: t.space[1],
+    borderRadius: t.space[1] / 2,
+  },
+  foldEdge: { borderWidth: 1.5 },
+  grow: { flex: 1 },
+  button: {
+    width: t.space[12] + t.space[2],
+    height: t.space[5],
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderRadius: t.radius.full,
+  },
+  buttonText: { height: t.space[1] / 2, borderRadius: t.space[1] },
+  paper: {
+    width: t.space[6] + t.space[1],
+    height: t.space[10],
+    justifyContent: 'flex-end',
+    gap: t.space[1] / 2,
+    padding: t.space[1],
+    borderRadius: t.space[1] / 2,
+    backgroundColor: t.colors.surface,
+  },
+  paperLine: {
+    height: t.space[1],
+    borderRadius: t.space[1],
+    backgroundColor: t.colors.border,
+  },
+  paperShort: { width: '60%' },
+  paperButton: {
+    height: t.space[1],
+    marginTop: t.space[1],
+    borderRadius: t.space[1],
+    backgroundColor: t.colors.faint,
+  },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.space[2] },
+  chip: {
+    height: t.space[8] + t.space[1],
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+    paddingHorizontal: t.space[3],
+    borderRadius: t.radius.full,
+    borderWidth: 1.5,
+    borderColor: t.colors.line,
+    backgroundColor: t.colors.surface,
+  },
+  chipOn: {
+    borderColor: t.colors.primaryEdge,
+    backgroundColor: t.colors.selectSurface,
+  },
+  chipLabel: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+    fontWeight: '400',
+    color: t.colors.title,
+  },
+  chipLabelOn: { fontWeight: '600', color: t.colors.selectForeground },
 }));
 
 export function ColumnsArt({ count, color }: ColumnsArtProps) {
@@ -288,6 +397,104 @@ export function PlacementThumb({
         dim={dim}
         style={s.thumbPhone}
       />
+    </View>
+  );
+}
+
+export function FieldArt({ shown, color }: FieldArtProps) {
+  const s = useStyles();
+  return (
+    <View style={s.form}>
+      <View style={[s.field, { borderColor: color }]}>
+        <View style={[s.ink, { backgroundColor: color }]} />
+      </View>
+      <View style={[s.field, !shown && s.fieldGone, { borderColor: color }]}>
+        {shown ? <View style={[s.ink, { backgroundColor: color }]} /> : null}
+      </View>
+    </View>
+  );
+}
+
+export function FoldArt({ open, color }: FoldArtProps) {
+  const t = useTheme();
+  const s = useStyles();
+  return (
+    <View style={s.fold}>
+      <View style={[s.foldHead, { borderColor: color }]}>
+        <View style={[s.grow, s.ink, { backgroundColor: color }]} />
+        <View style={{ transform: [{ rotate: open ? '-90deg' : '90deg' }] }}>
+          <ChevronGlyph color={color} size={t.space[2]} />
+        </View>
+      </View>
+      {open ? (
+        <View style={[s.foldBody, s.foldEdge, { borderColor: color }]}>
+          <View style={[s.ink, { backgroundColor: color }]} />
+          <View style={[s.ink, { width: '30%', backgroundColor: color }]} />
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+export function ButtonArt({ text, color }: ButtonArtProps) {
+  const s = useStyles();
+  const width = `${Math.round(Math.min(1, Math.max(0, text)) * 100)}%` as const;
+  return (
+    <View style={[s.button, { borderColor: color }]}>
+      <View style={[s.buttonText, { width, backgroundColor: color }]} />
+    </View>
+  );
+}
+
+export function FormThumb() {
+  const s = useStyles();
+  return (
+    <View style={s.thumb}>
+      <View style={s.paper}>
+        <View style={s.paperLine} />
+        <View style={s.paperLine} />
+        <View style={s.paperLine} />
+        <View style={[s.paperLine, s.paperShort]} />
+        <View style={s.paperButton} />
+      </View>
+    </View>
+  );
+}
+
+export function ChoiceChips({ items }: ChoiceChipsProps) {
+  const t = useTheme();
+  const s = useStyles();
+  return (
+    <View style={s.chips}>
+      {items.map((item) => (
+        <PressableBase
+          key={item.key}
+          accessibilityRole="checkbox"
+          accessibilityLabel={item.label}
+          accessibilityState={{
+            checked: item.selected,
+            disabled: item.disabled,
+          }}
+          feedback="small"
+          disabled={item.disabled}
+          onPress={() => {
+            haptic('select');
+            item.onPress();
+          }}
+          style={[s.chip, item.selected && s.chipOn]}
+        >
+          {item.selected ? (
+            <CheckGlyph color={t.colors.primaryEdge} size={t.iconSize.sm} />
+          ) : null}
+          <RNText
+            numberOfLines={1}
+            maxFontSizeMultiplier={t.maxFontScale}
+            style={[s.chipLabel, item.selected && s.chipLabelOn]}
+          >
+            {item.label}
+          </RNText>
+        </PressableBase>
+      ))}
     </View>
   );
 }

@@ -1,6 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Button as RNButton, StyleSheet, Text } from 'react-native';
 import {
+  ButtonArt,
+  ButtonGlyph,
+  ChoiceChips,
+  FieldArt,
+  FoldArt,
+  FormThumb,
+  MailGlyph,
+  TicketGlyph,
   CloseGlyph,
   FooterArt,
   OverlayGlyph,
@@ -207,9 +215,66 @@ describe('choice art and framed header action', () => {
         <OverlayGlyph color="red" size={20} />
         <TagGlyph color="red" size={20} />
         <TwoColumnsGlyph color="red" size={20} />
+        <FieldArt shown color="red" />
+        <FieldArt shown={false} color="red" />
+        <FoldArt open color="red" />
+        <FoldArt open={false} color="red" />
+        <ButtonArt text={0.7} color="red" />
+        <ButtonArt text={2} color="red" />
+        <FormThumb />
+        <MailGlyph color="red" size={20} />
+        <TicketGlyph color="red" size={20} />
+        <ButtonGlyph color="red" size={20} />
       </>
     );
     expect(screen.getByText('20%')).toBeTruthy();
+  });
+
+  it('toggles choice chips and marks the selected ones', async () => {
+    const door = jest.fn();
+    const box = jest.fn();
+    await render(
+      <ChoiceChips
+        items={[
+          {
+            key: 'door',
+            label: '문 앞에 놓아 주세요',
+            selected: true,
+            onPress: door,
+          },
+          {
+            key: 'box',
+            label: '택배함에 넣어 주세요',
+            selected: false,
+            onPress: box,
+          },
+          {
+            key: 'off',
+            label: '직접 입력',
+            selected: false,
+            disabled: true,
+            onPress: box,
+          },
+        ]}
+      />
+    );
+    expect(
+      screen.getByRole('checkbox', { name: '문 앞에 놓아 주세요' }).props
+        .accessibilityState
+    ).toMatchObject({ checked: true });
+    expect(
+      screen.getByRole('checkbox', { name: '택배함에 넣어 주세요' }).props
+        .accessibilityState
+    ).toMatchObject({ checked: false });
+    await fireEvent.press(
+      screen.getByRole('checkbox', { name: '택배함에 넣어 주세요' })
+    );
+    await fireEvent.press(
+      screen.getByRole('checkbox', { name: '문 앞에 놓아 주세요' })
+    );
+    await fireEvent.press(screen.getByRole('checkbox', { name: '직접 입력' }));
+    expect(box).toHaveBeenCalledTimes(1);
+    expect(door).toHaveBeenCalledTimes(1);
   });
 
   it('shows the framed action with its label and presses it', async () => {

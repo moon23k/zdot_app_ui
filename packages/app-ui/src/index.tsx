@@ -81,6 +81,9 @@ export {
   PositionGlyph,
   ResizeGlyph,
   OverlayGlyph,
+  MailGlyph,
+  TicketGlyph,
+  ButtonGlyph,
 } from './internal/glyphs';
 export { contrastRatio, pickForeground } from './utils/color';
 
