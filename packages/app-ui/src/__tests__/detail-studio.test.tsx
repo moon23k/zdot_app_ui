@@ -65,19 +65,18 @@ describe('SectionBoard', () => {
     expect(p.onPress).toHaveBeenCalledWith('b');
   });
 
-  it('anchors the more menu over the text column of the row', async () => {
+  it('anchors the more menu to the row from the card and the row index', async () => {
     const p = props();
     const measure = jest
       .spyOn(View.prototype as unknown as Measurable, 'measureInWindow')
-      .mockImplementation((cb) => cb(16, 120, 379, 96));
+      .mockImplementation((cb) => cb(16, 120, 358, 288));
     await render(<SectionBoard {...p} />);
     await fireEvent.press(screen.getAllByLabelText('더보기')[2]!);
     expect(p.onMore).toHaveBeenCalledWith('c', {
-      x: 164,
-      y: 120,
-      width: 231,
+      x: 16,
+      y: 312,
+      width: 358,
       height: 96,
-      fill: true,
       pitch: 96,
     });
     measure.mockRestore();

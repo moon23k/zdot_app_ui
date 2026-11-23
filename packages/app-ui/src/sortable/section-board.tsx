@@ -138,7 +138,7 @@ type RowProps = {
   active: boolean;
   lifted: boolean;
   onPress: (key: string) => void;
-  onMore: (key: string, anchor: SectionAnchor) => void;
+  onMore: (key: string, index: number) => void;
   onMove: (from: number, to: number) => void;
   hiddenLabel: string;
   moreLabel: string;
@@ -160,7 +160,6 @@ const Row = memo(function SectionRow({
 }: RowProps) {
   const t = useTheme();
   const s = useStyles();
-  const box = useRef<ComponentRef<typeof View>>(null);
   const hidden = !!item.hidden;
   if (item.pending) {
     return (
@@ -196,25 +195,8 @@ const Row = memo(function SectionRow({
       </View>
     );
   }
-  const openMore = () => {
-    const row = box.current;
-    if (!row) return;
-    const lead = textLead(t) - t.space[1];
-    row.measureInWindow((x, y, width, height) =>
-      onMore(item.key, {
-        x: x + lead,
-        y,
-        width: width - lead,
-        height,
-        fill: true,
-        pitch: height,
-      })
-    );
-  };
   return (
     <View
-      ref={box}
-      collapsable={false}
       style={[
         s.row,
         index === 0 && s.first,
@@ -283,7 +265,7 @@ const Row = memo(function SectionRow({
         </View>
       ) : null}
       <PressableBase
-        onPress={openMore}
+        onPress={() => onMore(item.key, index)}
         accessibilityLabel={moreLabel}
         feedback="small"
         style={s.icon}
@@ -311,6 +293,7 @@ export function SectionBoard({
   const t = useTheme();
   const s = useStyles();
   const scroller = useAnimatedRef<Animated.ScrollView>();
+  const card = useRef<ComponentRef<typeof View>>(null);
   const [lifted, setLifted] = useState<string | null>(null);
   const live = useRef({ items, onPress, onMore, onReorder, bottomSpace });
   live.current = { items, onPress, onMore, onReorder, bottomSpace };
@@ -322,8 +305,17 @@ export function SectionBoard({
 
   const press = useCallback((key: string) => live.current.onPress(key), []);
   const openMore = useCallback(
-    (key: string, anchor: SectionAnchor) => live.current.onMore(key, anchor),
-    []
+    (key: string, index: number) =>
+      card.current?.measureInWindow((x, y, width) =>
+        live.current.onMore(key, {
+          x,
+          y: y + index * row,
+          width,
+          height: row,
+          pitch: row,
+        })
+      ),
+    [row]
   );
   const move = useCallback((from: number, to: number) => {
     const list = live.current.items;
@@ -374,7 +366,7 @@ export function SectionBoard({
       }}
     >
       {items.length ? (
-        <View style={s.card}>
+        <View ref={card} collapsable={false} style={s.card}>
           <Sortable.Grid
             data={[...items]}
             keyExtractor={(item) => item.key}

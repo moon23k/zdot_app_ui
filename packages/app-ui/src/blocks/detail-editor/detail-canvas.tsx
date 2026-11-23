@@ -312,7 +312,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: t.space[2],
-    marginTop: t.space[3],
+    marginTop: t.space[5],
   },
   dotMark: { width: DOT, height: DOT, borderRadius: DOT / 2 },
   field: {
@@ -532,7 +532,11 @@ function FocusText({
   const ready = () => {
     if (laid.current) return;
     laid.current = true;
-    if (wanted.current) field.current?.focus();
+    const node = field.current;
+    if (!wanted.current || !node) return;
+    node.focus();
+    const end = input?.value.length ?? 0;
+    node.setSelection?.(end, end);
   };
 
   const pan = useMemo(
@@ -554,15 +558,22 @@ function FocusText({
     [slop, swipe]
   );
 
-  const measure = () => {
+  const below = shown && shown.count >= 2 ? t.space[5] + DOT : 0;
+  const reach = useRef(below);
+  reach.current = below;
+  const measure = useCallback(() => {
     const root = target?.root.current;
     if (!target || !root || !ring.current) return;
     ring.current.measureLayout(
       root,
-      (_x, y, _w, height) => target.report({ y, height }),
+      (_x, y, _w, height) =>
+        target.report({ y, height: height + reach.current }),
       () => undefined
     );
-  };
+  }, [target]);
+  useEffect(() => {
+    measure();
+  }, [below, measure]);
 
   const line = text.lineHeight ?? 0;
   const fieldStyle: TextStyle = { ...text, alignSelf: undefined };

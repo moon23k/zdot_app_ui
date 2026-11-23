@@ -137,11 +137,13 @@ describe('fadeLayers', () => {
 });
 
 describe('detailIsTitle', () => {
-  it('treats step 7 and bold step 6 as titles', () => {
+  it('treats step 7 and bold step 5 or more as titles', () => {
     expect(detailIsTitle({ size: 7 })).toBe(true);
-    expect(detailIsTitle({ size: 6, weight: 'bold' })).toBe(true);
+    expect(detailIsTitle({ size: 5, weight: 'bold' })).toBe(true);
     expect(detailIsTitle({ size: 6 })).toBe(false);
+    expect(detailIsTitle({ size: 4, weight: 'bold' })).toBe(false);
     expect(detailIsTitle({ size: 3, weight: 'bold' })).toBe(false);
+    expect(detailIsTitle({ size: 2, weight: 'bold' })).toBe(false);
   });
 });
 
@@ -187,6 +189,34 @@ it('fills the anchor width and rests both menu edges between rows', async () => 
   );
   expect(style?.width).toBe(231);
   expect(style?.top).toBe(200 + 96 + (192 - 161) / 2);
+});
+
+it('opens the row menu right below the row and ends it between rows', async () => {
+  await render(
+    <DropdownMenu
+      open
+      anchor={{ x: 16, y: 200, width: 358, height: 96, pitch: 96 }}
+      onOpenChange={jest.fn()}
+      items={[
+        { key: 'hide', icon: EyeOffGlyph, label: '숨기기', onPress: jest.fn() },
+        { key: 'copy', icon: CopyGlyph, label: '복제', onPress: jest.fn() },
+        {
+          key: 'remove',
+          icon: TrashGlyph,
+          label: '삭제',
+          separated: true,
+          onPress: jest.fn(),
+        },
+      ]}
+    />
+  );
+  const style = StyleSheet.flatten(
+    findMenu(screen.toJSON())?.props.style as ViewStyle
+  );
+  const top = 200 + 96 + (192 - 161) / 2;
+  expect(style?.width).toBe(200);
+  expect(style?.top).toBe(top);
+  expect(top + 161 + (192 - 161) / 2).toBe(200 + 96 * 3);
 });
 
 it('a steady disabled button keeps its size and turns soft grey', async () => {

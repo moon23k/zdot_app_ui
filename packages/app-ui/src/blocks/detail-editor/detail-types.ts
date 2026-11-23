@@ -172,7 +172,7 @@ export const DETAIL_COLORS: readonly { value: string; label: string }[] = [
 ];
 
 export const DETAIL_HEAD_SIZE = 7;
-export const DETAIL_TITLE_SIZE = 6;
+export const DETAIL_TITLE_SIZE = 5;
 
 export function detailIsTitle(style?: DetailTextStyle | null): boolean {
   const size = style?.size ?? 5;
