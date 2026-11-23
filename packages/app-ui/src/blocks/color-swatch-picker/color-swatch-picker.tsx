@@ -20,7 +20,7 @@ const DOT = 40;
 const GRID = 44;
 const MARK = 18;
 const RING = 2;
-const RING_GAP = 3;
+const RING_GAP = 4;
 
 const useStyles = makeStyles((t) => ({
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: t.space[3] },

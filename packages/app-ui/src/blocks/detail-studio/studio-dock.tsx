@@ -20,6 +20,8 @@ export type StudioDockProps = {
 };
 
 const TOOL = { width: 72, height: 56 } as const;
+const LABEL = 11;
+const LABEL_LINE = 15;
 
 function dockBottom(t: Theme, bottomInset = 0) {
   return Math.max(bottomInset, t.space[4]);
@@ -53,7 +55,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[1],
     borderRadius: t.radius.md,
   },
-  label: { color: t.colors.title },
+  label: { color: t.colors.title, fontSize: LABEL, lineHeight: LABEL_LINE },
 }));
 
 export function StudioDock({ items, bottomInset }: StudioDockProps) {

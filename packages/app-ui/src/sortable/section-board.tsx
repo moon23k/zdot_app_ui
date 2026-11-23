@@ -351,7 +351,6 @@ export function SectionBoard({
     <Animated.ScrollView
       ref={scroller}
       style={s.scroll}
-      contentContainerStyle={{ paddingBottom: bottomSpace }}
       scrollEventThrottle={16}
       onScroll={(e) => {
         offset.current = e.nativeEvent.contentOffset.y;
@@ -366,7 +365,11 @@ export function SectionBoard({
       }}
     >
       {items.length ? (
-        <View ref={card} collapsable={false} style={s.card}>
+        <View
+          ref={card}
+          collapsable={false}
+          style={[s.card, { paddingBottom: bottomSpace }]}
+        >
           <Sortable.Grid
             data={[...items]}
             keyExtractor={(item) => item.key}

@@ -22,8 +22,11 @@ export type StudioToggleListProps = {
   children: ReactNode;
 };
 
+const TRACK = 26;
+const KNOB = 22;
+
 const useStyles = makeStyles((t) => {
-  const inset = (t.space[6] - t.iconSize.md) / 2;
+  const inset = (TRACK - KNOB) / 2;
   return {
     list: { marginHorizontal: -t.space[4] },
     row: {
@@ -41,15 +44,15 @@ const useStyles = makeStyles((t) => {
     },
     track: {
       width: t.controlSize.sm,
-      height: t.space[6],
+      height: TRACK,
       borderRadius: t.radius.full,
     },
     thumb: {
       position: 'absolute',
       top: inset,
       left: inset,
-      width: t.iconSize.md,
-      height: t.iconSize.md,
+      width: KNOB,
+      height: KNOB,
       borderRadius: t.radius.full,
       backgroundColor: t.colors.raised,
       boxShadow: t.shadow.sm,
@@ -66,7 +69,7 @@ const useStyles = makeStyles((t) => {
 function Knob({ on }: { on: boolean }) {
   const t = useTheme();
   const s = useStyles();
-  const travel = t.controlSize.sm - t.space[6];
+  const travel = t.controlSize.sm - TRACK;
   const off = t.colors.border;
   const lit = t.colors.primary;
   const progress = useSwitch(on, 'base');
