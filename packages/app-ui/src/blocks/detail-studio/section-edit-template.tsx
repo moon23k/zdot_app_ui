@@ -182,7 +182,9 @@ export function SectionEditTemplate({
     const page = pageTop.current;
     const most = Math.max(0, content - height);
     const bottom = page + pageHeight;
-    const base = fresh.current && bottom > viewport ? bottom - viewport : now;
+    const rest = bottom - viewport;
+    if (fresh.current && rest > 0 && most < rest - EPS) return;
+    const base = fresh.current && rest > 0 ? rest : now;
     fresh.current = false;
     const edge =
       sheetEdge(base + viewport - page, parts, margin / 2, {

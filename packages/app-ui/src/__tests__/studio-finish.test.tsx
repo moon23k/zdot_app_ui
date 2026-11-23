@@ -55,7 +55,7 @@ describe('keepWords', () => {
     expect(out).toContain(`7.5cm${NBSP}·`);
     expect(out.replace(new RegExp(WJ, 'g'), '')).toContain(`약${NBSP}420g`);
     expect(out.replace(new RegExp(`[${WJ}]`, 'g'), '')).toBe(
-      `지름 17cm${NBSP}· 높이 7.5cm${NBSP}· 용량 750ml${NBSP}· 무게 약${NBSP}420g`
+      `지름${NBSP}17cm${NBSP}· 높이${NBSP}7.5cm${NBSP}· 용량${NBSP}750ml${NBSP}· 무게 약${NBSP}420g`
     );
   });
 

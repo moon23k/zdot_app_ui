@@ -4,7 +4,7 @@ const HANGUL =
   /[\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7AF\uD7B0-\uD7FF]/;
 const SPACE = /\s/;
 const DOT_BEFORE = / (?=[\u00B7\u2022\u318D](?:\s|$))/g;
-const ONE_BEFORE_NUMBER = /(^|\s)([\uAC00-\uD7A3]) (?=[0-9])/g;
+const WORD_BEFORE_NUMBER = /([\uAC00-\uD7A3]) (?=[0-9])/g;
 
 function joinWord(word: string): string {
   const chars = Array.from(word);
@@ -21,7 +21,7 @@ export function keepWords(text: string): string {
   if (!HANGUL.test(text)) return text;
   const glued = text
     .replace(DOT_BEFORE, STICK)
-    .replace(ONE_BEFORE_NUMBER, `$1$2${STICK}`);
+    .replace(WORD_BEFORE_NUMBER, `$1${STICK}`);
   let out = '';
   let word = '';
   for (const ch of glued) {
