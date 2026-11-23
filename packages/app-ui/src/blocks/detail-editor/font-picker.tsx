@@ -1,6 +1,7 @@
 import { Text as RNText, View } from 'react-native';
 import { Text } from '../../components/text/text';
 import { PressableBase } from '../../internal/pressable-base';
+import { SampleTiles, useSampleStyle } from '../../internal/sample-tiles';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 import { DETAIL_FONT_FAMILY, type DetailFont } from './detail-types';
@@ -9,6 +10,7 @@ export type FontPickerProps = {
   value: DetailFont;
   onValueChange: (font: DetailFont) => void;
   sample: string;
+  variant?: 'list' | 'tiles';
 };
 
 const NAMES: Record<DetailFont, string> = {
@@ -34,9 +36,47 @@ const useStyles = makeStyles((t) => ({
   sample: { flexShrink: 1 },
 }));
 
-export function FontPicker({ value, onValueChange, sample }: FontPickerProps) {
+function FontTiles({
+  value,
+  onValueChange,
+  sample,
+}: Omit<FontPickerProps, 'variant'>) {
+  const t = useTheme();
+  const look = useSampleStyle();
+  return (
+    <SampleTiles
+      value={value}
+      onValueChange={onValueChange}
+      items={ORDER.map((font) => ({
+        value: font,
+        name: NAMES[font],
+        sample: (
+          <RNText
+            numberOfLines={1}
+            maxFontSizeMultiplier={t.maxFontScale}
+            style={[look, { fontFamily: DETAIL_FONT_FAMILY[font].regular }]}
+          >
+            {sample}
+          </RNText>
+        ),
+      }))}
+    />
+  );
+}
+
+export function FontPicker({
+  value,
+  onValueChange,
+  sample,
+  variant = 'list',
+}: FontPickerProps) {
   const t = useTheme();
   const s = useStyles();
+  if (variant === 'tiles') {
+    return (
+      <FontTiles value={value} onValueChange={onValueChange} sample={sample} />
+    );
+  }
   return (
     <View style={s.list} accessibilityRole="radiogroup">
       {ORDER.map((font) => {

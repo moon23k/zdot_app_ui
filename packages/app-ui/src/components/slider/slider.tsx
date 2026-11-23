@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   PanResponder,
   View,
@@ -17,6 +17,8 @@ export type SliderProps = {
   onSlidingStart?: () => void;
   startLabel?: string;
   endLabel?: string;
+  start?: ReactNode;
+  end?: ReactNode;
   accessibilityLabel: string;
   style?: StyleProp<ViewStyle>;
 };
@@ -35,6 +37,8 @@ const useStyles = makeStyles((t) => ({
   root: { flexDirection: 'row', alignItems: 'center', gap: t.space[2] },
   end: { width: t.space[12] },
   endRight: { width: t.space[12], textAlign: 'right' },
+  slotStart: { width: t.space[12], alignItems: 'flex-start' },
+  slotEnd: { width: t.space[12], alignItems: 'flex-end' },
   area: { flex: 1, height: t.minTouchSize },
   track: {
     position: 'absolute',
@@ -80,6 +84,8 @@ export function Slider({
   onSlidingStart,
   startLabel,
   endLabel,
+  start,
+  end,
   accessibilityLabel,
   style,
 }: SliderProps) {
@@ -128,7 +134,9 @@ export function Slider({
   const baseCenter = base === min ? 0 : baseRatio * room + THUMB / 2;
   return (
     <View style={[s.root, style]}>
-      {startLabel ? (
+      {start ? (
+        <View style={s.slotStart}>{start}</View>
+      ) : startLabel ? (
         <Text variant="caption" tone="muted" numberOfLines={1} style={s.end}>
           {startLabel}
         </Text>
@@ -177,7 +185,9 @@ export function Slider({
           </>
         ) : null}
       </View>
-      {endLabel ? (
+      {end ? (
+        <View style={s.slotEnd}>{end}</View>
+      ) : endLabel ? (
         <Text
           variant="caption"
           tone="muted"

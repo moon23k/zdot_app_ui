@@ -4,20 +4,26 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ComponentRef,
   type ReactNode,
   type RefObject,
 } from 'react';
 import {
   Image,
+  PanResponder,
+  Platform,
   Text as RNText,
+  TextInput,
   View,
   type StyleProp,
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
+import { SparklesGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
+import { withAlpha } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
 import { DetailFocusContext, type DetailFocusRect } from './focus-context';
 import {
@@ -38,6 +44,30 @@ import {
   type DetailSelection,
 } from './detail-types';
 
+export type DetailCanvasInput = {
+  value: string;
+  onChangeText: (text: string) => void;
+  active: boolean;
+  onFocus?: () => void;
+  maxLength?: number;
+  label?: string;
+};
+
+export type DetailCanvasResult = {
+  text: string;
+  label?: string | null;
+  index: number;
+  count: number;
+  onIndexChange: (index: number) => void;
+};
+
+export type DetailCanvasFocus = {
+  block: string;
+  layer: string;
+  input?: DetailCanvasInput | null;
+  result?: DetailCanvasResult | null;
+};
+
 export type DetailCanvasProps = {
   doc: DetailDocValue;
   selection?: DetailSelection;
@@ -45,10 +75,15 @@ export type DetailCanvasProps = {
   scale?: number;
   ink?: string;
   paper?: string;
+  mode?: 'select' | 'edit';
+  focus?: DetailCanvasFocus | null;
 };
 
 const HANDLE = 10;
 const BLANK_TITLE = 7;
+const DOT = 6;
+const MAX_TEXT = 2000;
+const RING = 2;
 
 type TapProps = {
   onPress?: () => void;
@@ -124,6 +159,63 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.primary,
+  },
+  focus: { position: 'relative' },
+  focusResult: { paddingVertical: t.space[3] },
+  focusRing: {
+    position: 'absolute',
+    top: -t.space[2],
+    bottom: -t.space[2],
+    left: -t.space[3],
+    right: -t.space[3],
+    borderWidth: RING,
+    borderColor: t.colors.primary,
+    borderRadius: t.radius.md,
+  },
+  focusFace: {
+    position: 'absolute',
+    top: -t.space[2],
+    bottom: -t.space[2],
+    left: -t.space[3],
+    right: -t.space[3],
+    borderRadius: t.radius.md,
+    backgroundColor: t.colors.selectSurface,
+  },
+  focusTag: {
+    position: 'absolute',
+    top: -t.space[5],
+    left: -t.space[1],
+    height: t.space[6] + t.space[1],
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+    paddingLeft: t.space[2],
+    paddingRight: t.space[3],
+    borderRadius: t.radius.full,
+    borderWidth: 1,
+    borderColor: t.colors.border,
+    backgroundColor: t.colors.surface,
+    boxShadow: t.shadow.sm,
+  },
+  focusTagText: {
+    fontFamily: t.fontFamily,
+    fontSize: t.typography.eyebrow.fontSize,
+    lineHeight: t.typography.eyebrow.lineHeight,
+    fontWeight: '600',
+    color: t.colors.title,
+  },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: t.space[2],
+    marginTop: t.space[3],
+  },
+  dotMark: { width: DOT, height: DOT, borderRadius: DOT / 2 },
+  field: {
+    padding: 0,
+    margin: 0,
+    includeFontPadding: false,
+    textAlignVertical: 'top',
   },
   handle: {
     position: 'absolute',
@@ -223,6 +315,192 @@ function alignSelfOf(align?: 'left' | 'center' | 'right') {
       : 'flex-start';
 }
 
+function reveal(block: DetailBlock): DetailBlock {
+  const empty = (l: DetailLayer) =>
+    !!l.hidden && l.type === 'text' && !l.text?.trim();
+  if (!block.layers.some(empty)) return block;
+  return {
+    ...block,
+    layers: block.layers.map((l) => (empty(l) ? { ...l, hidden: false } : l)),
+  };
+}
+
+type FocusTextProps = {
+  layer: DetailLayer;
+  text: TextStyle;
+  input?: DetailCanvasInput | null;
+  result?: DetailCanvasResult | null;
+  blank: ReactNode;
+  style?: StyleProp<ViewStyle>;
+};
+
+function FocusText({
+  layer,
+  text,
+  input,
+  result,
+  blank,
+  style,
+}: FocusTextProps) {
+  const t = useTheme();
+  const s = useStyles();
+  const target = useContext(FocusTargetContext);
+  const ring = useRef<ComponentRef<typeof View>>(null);
+  const field = useRef<ComponentRef<typeof TextInput>>(null);
+  const [content, setContent] = useState(0);
+  const editing = !!input;
+  const active = !!input?.active;
+  const shown = !input && result ? result : null;
+  const latest = useRef(shown);
+  latest.current = shown;
+  const slop = t.space[2];
+  const swipe = t.space[8];
+
+  useEffect(() => () => target?.report(null), [target]);
+
+  const laid = useRef(false);
+  const wanted = useRef(active);
+  wanted.current = active;
+
+  useEffect(() => {
+    if (!editing) {
+      laid.current = false;
+      return;
+    }
+    if (!laid.current) return;
+    if (active) field.current?.focus();
+    else field.current?.blur();
+  }, [active, editing]);
+
+  const ready = () => {
+    if (laid.current) return;
+    laid.current = true;
+    if (wanted.current) field.current?.focus();
+  };
+
+  const pan = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, g) =>
+          !!latest.current &&
+          latest.current.count > 1 &&
+          Math.abs(g.dx) > slop &&
+          Math.abs(g.dx) > Math.abs(g.dy),
+        onPanResponderRelease: (_, g) => {
+          const now = latest.current;
+          if (!now || Math.abs(g.dx) <= swipe) return;
+          if (Math.abs(g.dx) <= Math.abs(g.dy)) return;
+          const next = now.index + (g.dx < 0 ? 1 : -1);
+          if (next >= 0 && next < now.count) now.onIndexChange(next);
+        },
+      }),
+    [slop, swipe]
+  );
+
+  const measure = () => {
+    const root = target?.root.current;
+    if (!target || !root || !ring.current) return;
+    ring.current.measureLayout(
+      root,
+      (_x, y, _w, height) => target.report({ y, height }),
+      () => undefined
+    );
+  };
+
+  const line = text.lineHeight ?? 0;
+  const fieldStyle: TextStyle = { ...text, alignSelf: undefined };
+
+  const body = input ? (
+    <TextInput
+      ref={field}
+      multiline
+      scrollEnabled={false}
+      value={input.value}
+      onChangeText={input.onChangeText}
+      onFocus={input.onFocus}
+      maxLength={input.maxLength ?? MAX_TEXT}
+      underlineColorAndroid="transparent"
+      selectionColor={
+        Platform.OS === 'android'
+          ? withAlpha(t.colors.primary, 0.3)
+          : t.colors.primary
+      }
+      selectionHandleColor={t.colors.primary}
+      cursorColor={t.colors.primary}
+      accessibilityLabel={input.label ?? '글'}
+      onContentSizeChange={(e) => setContent(e.nativeEvent.contentSize.height)}
+      onLayout={ready}
+      style={[
+        fieldStyle,
+        s.field,
+        {
+          minHeight: line,
+          height: content > 0 ? Math.max(line, content) : undefined,
+        },
+      ]}
+    />
+  ) : shown ? (
+    <RNText style={text}>{shown.text}</RNText>
+  ) : layer.text?.trim() ? (
+    <RNText style={text}>{layer.text}</RNText>
+  ) : (
+    blank
+  );
+
+  return (
+    <View style={style}>
+      <View
+        testID="detail-focus-text"
+        style={[s.focus, shown && s.focusResult]}
+        {...(shown ? pan.panHandlers : null)}
+      >
+        {shown ? <View pointerEvents="none" style={s.focusFace} /> : null}
+        {body}
+        <View
+          ref={ring}
+          onLayout={measure}
+          pointerEvents="none"
+          style={s.focusRing}
+        />
+        {shown?.label ? (
+          <View pointerEvents="none" style={s.focusTag}>
+            <SparklesGlyph color={t.colors.title} size={t.iconSize.sm} />
+            <RNText numberOfLines={1} style={s.focusTagText}>
+              {shown.label}
+            </RNText>
+          </View>
+        ) : null}
+      </View>
+      {shown && shown.count >= 2 ? (
+        <View style={s.dots}>
+          {Array.from({ length: shown.count }, (_, i) => (
+            <PressableBase
+              key={i}
+              feedback="none"
+              accessibilityLabel={`${i + 1}/${shown.count}`}
+              accessibilityState={{ selected: i === shown.index }}
+              hitSlop={{
+                top: t.space[5],
+                bottom: t.space[5],
+                left: t.space[1],
+                right: t.space[1],
+              }}
+              onPress={() => shown.onIndexChange(i)}
+              style={[
+                s.dotMark,
+                {
+                  backgroundColor:
+                    i === shown.index ? t.colors.title : t.colors.input,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
 export function DetailCanvas({
   doc,
   selection,
@@ -230,6 +508,8 @@ export function DetailCanvas({
   scale = 1,
   ink,
   paper,
+  mode = 'select',
+  focus,
 }: DetailCanvasProps) {
   const t = useTheme();
   const s = useStyles();
@@ -239,10 +519,25 @@ export function DetailCanvas({
   const pad = t.space[5] * scale;
   const fg = ink ?? t.colors.foreground;
   const bandText = paper ?? t.colors.surface;
+  const edit = mode === 'edit';
+
+  const tx = (l: DetailLayer): TextStyle => {
+    const style = textStyleOf(l, scale, fg, bandText);
+    return edit ? { ...style, includeFontPadding: false } : style;
+  };
 
   const picked = (block: DetailBlock, layer?: DetailLayer) =>
+    !edit &&
     selection?.block === block.id &&
     (layer ? selection.layer === layer.id : !selection.layer);
+
+  const focused = (block: DetailBlock, l: DetailLayer) =>
+    edit &&
+    !!focus &&
+    focus.block === block.id &&
+    focus.layer === l.id &&
+    l.type === 'text' &&
+    !l.hidden;
 
   const press = (next: DetailSelection) =>
     onSelect ? () => onSelect(next) : undefined;
@@ -288,13 +583,30 @@ export function DetailCanvas({
     />
   );
 
+  const focusText = (
+    l: DetailLayer,
+    style: TextStyle,
+    wrap?: StyleProp<ViewStyle>
+  ) => (
+    <FocusText
+      key={l.id}
+      layer={l}
+      text={style}
+      input={focus?.input}
+      result={focus?.result}
+      blank={blankBar(l, style)}
+      style={wrap}
+    />
+  );
+
   const cell = (
     block: DetailBlock,
     l: DetailLayer | null,
     style?: StyleProp<ViewStyle>
   ) => {
     if (!l || l.hidden) return <View style={style} />;
-    const text = textStyleOf(l, scale, fg, bandText);
+    const text = tx(l);
+    if (focused(block, l)) return focusText(l, text, style);
     const blank = !l.text?.trim();
     if (blank && !onSelect) return <View style={style} />;
     return (
@@ -351,7 +663,7 @@ export function DetailCanvas({
           <View key={r} style={[s.stepRow, { gap }]}>
             {line.map((l, c) => {
               if (!l) return <View key={`empty-${c}`} style={s.step} />;
-              const text = textStyleOf(l, scale, fg, bandText);
+              const text = tx(l);
               const size = text.fontSize ?? 0;
               const blank = !l.text?.trim();
               const number = textStyleOf(
@@ -367,6 +679,30 @@ export function DetailCanvas({
                 scale,
                 fg
               );
+              const dot = (
+                <View
+                  style={[
+                    s.dot,
+                    {
+                      width: size * DETAIL_STEP_DOT,
+                      height: size * DETAIL_STEP_DOT,
+                      borderColor: detailLineColor(l.style?.color),
+                    },
+                  ]}
+                >
+                  <RNText style={[number, { lineHeight: size }]}>
+                    {String(r * columns + c + 1)}
+                  </RNText>
+                </View>
+              );
+              if (focused(block, l)) {
+                return (
+                  <View key={l.id} style={[s.step, { gap }]}>
+                    {dot}
+                    {focusText(l, text, s.stretch)}
+                  </View>
+                );
+              }
               return (
                 <Tap
                   key={l.id}
@@ -374,20 +710,7 @@ export function DetailCanvas({
                   label={blank ? '글' : (l.text ?? '')}
                   style={[s.step, { gap }]}
                 >
-                  <View
-                    style={[
-                      s.dot,
-                      {
-                        width: size * DETAIL_STEP_DOT,
-                        height: size * DETAIL_STEP_DOT,
-                        borderColor: detailLineColor(l.style?.color),
-                      },
-                    ]}
-                  >
-                    <RNText style={[number, { lineHeight: size }]}>
-                      {String(r * columns + c + 1)}
-                    </RNText>
-                  </View>
+                  {dot}
                   {blank ? (
                     blankBar(l, text)
                   ) : (
@@ -404,12 +727,15 @@ export function DetailCanvas({
   };
 
   const texts = (block: DetailBlock, shown: DetailLayer[]) => {
-    const list = shown.filter((l) => l.type === 'text' && (l.text || onSelect));
+    const list = shown.filter(
+      (l) => l.type === 'text' && (l.text || onSelect || focused(block, l))
+    );
     if (!list.length) return null;
     return (
       <View style={[s.texts, { padding: pad }]}>
         {list.map((l) => {
-          const style = textStyleOf(l, scale, fg, bandText);
+          const style = tx(l);
+          if (focused(block, l)) return focusText(l, style);
           const blank = !!onSelect && !l.text?.trim();
           return (
             <Tap
@@ -430,7 +756,8 @@ export function DetailCanvas({
     );
   };
 
-  const body = (block: DetailBlock): ReactNode => {
+  const body = (raw: DetailBlock): ReactNode => {
+    const block = onSelect ? reveal(raw) : raw;
     const shown = block.layers.filter((l) => !l.hidden);
     const images = shown.filter((l) => l.type === 'image');
     switch (block.layout) {
@@ -509,7 +836,7 @@ export function DetailCanvas({
                 style={s.fill}
               />
             ) : null}
-            {onSelect ? (
+            {onSelect && !edit ? (
               <PressableBase
                 onPress={() => onSelect({ block: block.id })}
                 accessibilityLabel="블록"
@@ -519,7 +846,7 @@ export function DetailCanvas({
             ) : null}
             {body(block)}
             {picked(block) ? <Handles /> : null}
-            {selection?.block === block.id ? (
+            {!edit && selection?.block === block.id ? (
               <View pointerEvents="none" style={s.tag}>
                 <RNText
                   style={[s.tagText, { color: t.colors.primaryForeground }]}

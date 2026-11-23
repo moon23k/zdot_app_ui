@@ -9,9 +9,11 @@ import {
   DETAIL_LAYOUTS,
   DETAIL_LIST_LAYOUTS,
   type DetailDocValue,
+  type DetailEffect,
   type DetailFont,
   type DetailLayout,
 } from './detail-types';
+import { EffectPicker } from './effect-picker';
 import { DraftStrip } from './draft-strip';
 import { EditorBar } from './editor-bar';
 import { FontPicker } from './font-picker';
@@ -88,6 +90,7 @@ function Demo() {
   const [draft, setDraft] = useState('d1');
   const [layout, setLayout] = useState<DetailLayout>('side');
   const [font, setFont] = useState<DetailFont>('serif');
+  const [effect, setEffect] = useState<DetailEffect>('shadow');
   const [text, setText] = useState('');
   const [open, setOpen] = useState(true);
   return (
@@ -170,6 +173,15 @@ function Demo() {
             value={font}
             onValueChange={setFont}
             sample="Aa 한 송이"
+          />
+        </EditorPanel>
+      </Section>
+      <Section title="효과">
+        <EditorPanel>
+          <EffectPicker
+            value={effect}
+            onValueChange={setEffect}
+            sample="가나다"
           />
         </EditorPanel>
       </Section>

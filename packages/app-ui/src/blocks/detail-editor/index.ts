@@ -1,7 +1,10 @@
 export {
   DetailCanvas,
   textStyleOf,
+  type DetailCanvasFocus,
+  type DetailCanvasInput,
   type DetailCanvasProps,
+  type DetailCanvasResult,
 } from './detail-canvas';
 export {
   DetailComposer,
@@ -41,6 +44,7 @@ export {
   type DraftStripProps,
 } from './draft-strip';
 export { EditorBar, type EditorBarProps } from './editor-bar';
+export { EffectPicker, type EffectPickerProps } from './effect-picker';
 export { FontPicker, type FontPickerProps } from './font-picker';
 export { LayoutPicker, type LayoutPickerProps } from './layout-picker';
 export { ToolRow, type ToolRowItem } from './tool-row';

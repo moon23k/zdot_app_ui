@@ -3,6 +3,8 @@ import { BELL } from './bell';
 import {
   ADD_PRODUCT,
   ALIGN,
+  ALIGN_LEFT,
+  ALIGN_RIGHT,
   CARD,
   CHART,
   CHECKLIST,
@@ -13,6 +15,8 @@ import {
   FILE,
   GLOBE,
   IMAGES,
+  KEYBOARD,
+  LAYOUT,
   LINK,
   NOTE,
   OPEN,
@@ -233,6 +237,23 @@ export function GripGlyph({ color, size }: IconRenderProps) {
   );
 }
 
+export function GemGlyph({ color, size }: IconRenderProps) {
+  const side = size * 0.72;
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width: side,
+          height: side,
+          borderRadius: size * 0.12,
+          backgroundColor: color,
+          transform: [{ rotate: '45deg' }],
+        }}
+      />
+    </View>
+  );
+}
+
 function imageGlyph(uri: string) {
   return function Glyph({ color, size }: IconRenderProps) {
     return (
@@ -287,3 +308,7 @@ export const EyeOffGlyph = imageGlyph(EYE_OFF);
 export const TrashGlyph = imageGlyph(TRASH);
 export const WandGlyph = imageGlyph(WAND);
 export const ImagesGlyph = imageGlyph(IMAGES);
+export const KeyboardGlyph = imageGlyph(KEYBOARD);
+export const LayoutGlyph = imageGlyph(LAYOUT);
+export const AlignLeftGlyph = imageGlyph(ALIGN_LEFT);
+export const AlignRightGlyph = imageGlyph(ALIGN_RIGHT);

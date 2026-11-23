@@ -18,6 +18,7 @@ import {
   OverlayShown,
   useOverlayTransition,
 } from '../../internal/overlay';
+import { SheetHead } from '../../internal/sheet-head';
 import { ListRow } from '../list-row/list-row';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
@@ -30,6 +31,7 @@ export type SheetProps = {
   bottomInset?: number;
   dismissible?: boolean;
   closeLabel?: string;
+  compact?: boolean;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 };
@@ -64,6 +66,7 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     color: t.colors.title,
   },
+  compact: { marginHorizontal: -t.space[4] },
 }));
 
 export function Sheet({
@@ -73,6 +76,7 @@ export function Sheet({
   bottomInset = 0,
   dismissible = true,
   closeLabel = '닫기',
+  compact = false,
   children,
   style,
 }: SheetProps) {
@@ -163,8 +167,18 @@ export function Sheet({
           ]}
         >
           <View style={s.grip} {...grip.panHandlers}>
-            <View style={s.handle} />
-            {title ? (
+            {compact && title ? (
+              <View style={s.compact}>
+                <SheetHead
+                  title={title}
+                  closeLabel={closeLabel}
+                  onClose={() => onOpenChange(false)}
+                />
+              </View>
+            ) : (
+              <View style={s.handle} />
+            )}
+            {title && !compact ? (
               <Text
                 accessibilityRole="header"
                 maxFontSizeMultiplier={t.maxFontScale}

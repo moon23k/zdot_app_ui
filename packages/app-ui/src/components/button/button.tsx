@@ -15,6 +15,7 @@ import {
 } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { CreditCost } from '../credit/credit';
 
 import type {
   ButtonSize,
@@ -37,6 +38,7 @@ export type ButtonProps = Omit<
   leftIcon?: IconSlot;
   rightIcon?: IconSlot;
   point?: boolean;
+  cost?: number | null;
   children: ReactNode;
 };
 
@@ -113,6 +115,7 @@ export function Button({
   leftIcon,
   rightIcon,
   point = false,
+  cost,
   children,
   style,
   accessibilityState,
@@ -216,6 +219,18 @@ export function Button({
         ) : (
           children
         )}
+        {typeof children === 'string' && cost != null ? (
+          <CreditCost
+            value={cost}
+            tone={
+              off
+                ? 'disabled'
+                : variant === 'primary' || variant === 'danger'
+                  ? 'inverse'
+                  : 'muted'
+            }
+          />
+        ) : null}
         {rightIcon ? <View>{renderIcon(rightIcon, icon)}</View> : null}
       </Animated.View>
       {spin && !done ? (

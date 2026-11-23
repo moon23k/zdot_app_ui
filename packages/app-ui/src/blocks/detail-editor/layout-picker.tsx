@@ -6,7 +6,7 @@ import { makeStyles } from '../../utils/styles';
 import { DETAIL_LAYOUTS, type DetailLayout } from './detail-types';
 
 export type LayoutPickerProps = {
-  value: DetailLayout;
+  value: DetailLayout | null;
   onValueChange: (layout: DetailLayout) => void;
   labels?: Partial<Record<DetailLayout, string>>;
   items?: readonly DetailLayout[];
@@ -30,20 +30,24 @@ const useStyles = makeStyles((t) => ({
   row: { gap: t.space[2], paddingHorizontal: t.space[3] },
   item: { width: t.space[16] + t.space[6], gap: t.space[1] },
   frame: {
-    height: t.space[16] + t.space[12],
+    height: t.space[12] * 2,
     overflow: 'hidden',
     borderRadius: t.radius.md,
-    borderWidth: 1,
-    borderColor: t.colors.border,
-    backgroundColor: t.colors.muted,
+    backgroundColor: t.colors.background,
     padding: t.space[1],
     gap: t.space[1],
   },
   on: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    borderRadius: t.radius.md,
     borderWidth: 2,
-    borderColor: t.colors.raised,
-    boxShadow: t.shadow.lift,
+    borderColor: t.colors.primary,
   },
+  onLabel: { color: t.colors.selectForeground },
   photo: {
     flex: 1,
     borderRadius: t.radius.sm,
@@ -223,13 +227,18 @@ export function LayoutPicker({
             onPress={() => onValueChange(layout)}
             style={s.item}
           >
-            <View style={[s.frame, on && s.on]}>
-              <Diagram layout={layout} />
+            <View>
+              <View style={s.frame}>
+                <Diagram layout={layout} />
+              </View>
+              {on ? <View pointerEvents="none" style={s.on} /> : null}
             </View>
             <Text
               variant="caption"
-              tone={on ? 'default' : 'muted'}
+              tone="muted"
+              weight={on ? 'semibold' : undefined}
               numberOfLines={1}
+              style={on && s.onLabel}
             >
               {label}
             </Text>

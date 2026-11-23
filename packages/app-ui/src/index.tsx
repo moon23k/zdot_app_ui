@@ -63,6 +63,11 @@ export {
   TrashGlyph,
   WandGlyph,
   ImagesGlyph,
+  KeyboardGlyph,
+  LayoutGlyph,
+  AlignLeftGlyph,
+  AlignRightGlyph,
+  GemGlyph,
 } from './internal/glyphs';
 export { contrastRatio, pickForeground } from './utils/color';
 
@@ -70,6 +75,7 @@ export * from './components/avatar';
 export * from './components/button';
 export * from './components/check-list';
 export * from './components/checkbox';
+export * from './components/credit';
 export * from './components/chip';
 export * from './components/calendar';
 export * from './components/chip-group';
@@ -95,6 +101,7 @@ export * from './components/result-mark';
 export * from './components/page-header';
 export * from './blocks/setup-guide';
 export * from './components/section-tabs';
+export * from './components/segmented-control';
 export * from './components/segmented-tabs';
 export * from './components/tile-grid';
 export * from './components/sheet';
