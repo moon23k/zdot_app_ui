@@ -105,6 +105,12 @@ describe('sectionThumbFrame', () => {
     expect(frame.top).toBe(0);
     expect(frame.height).toBe(76);
   });
+
+  it('centers a section shorter than the thumbnail', () => {
+    expect(
+      sectionThumbFrame([part('text', 6, 8, 8), part('text', 24, 10, 5)], 80, 6)
+    ).toEqual({ top: -20, height: 80 });
+  });
 });
 
 describe('draftPreviewFit', () => {

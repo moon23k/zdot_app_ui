@@ -41,10 +41,18 @@ export function sectionThumbFrame(
   );
   const first = photo ?? parts.find((part) => part.kind === 'text') ?? parts[0];
   if (!first) return { top: 0, height };
-  const top =
-    first.kind === 'image'
-      ? first.y + Math.max(0, (first.height - height) / 2)
-      : Math.max(0, first.y - pad);
+  let top: number;
+  if (first.kind === 'image') {
+    top = first.y + Math.max(0, (first.height - height) / 2);
+  } else {
+    const start = Math.max(0, first.y - pad);
+    const last = parts.reduce(
+      (max, part) => (part.blank ? max : Math.max(max, part.y + part.height)),
+      0
+    );
+    const spare = height - (last + pad - start);
+    top = spare > 0 ? start - spare / 2 : start;
+  }
   const bottom = top + height;
   let end = height;
   for (const part of parts) {
