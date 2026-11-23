@@ -11,3 +11,8 @@ export {
   type BlockStripItem,
   type BlockStripProps,
 } from './block-strip';
+export {
+  SectionBoard,
+  type SectionBoardItem,
+  type SectionBoardProps,
+} from './section-board';

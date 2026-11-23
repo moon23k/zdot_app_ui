@@ -42,6 +42,7 @@ export type DetailCanvasProps = {
 };
 
 const HANDLE = 10;
+const BLANK_TITLE = 7;
 
 type TapProps = {
   onPress?: () => void;
@@ -75,6 +76,9 @@ const useStyles = makeStyles((t) => ({
   fill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   pair: { flexDirection: 'row', gap: t.space[2] },
   card: { overflow: 'hidden', borderRadius: t.radius.lg },
+  blank: { borderRadius: t.radius.sm, backgroundColor: t.colors.muted },
+  blankTitle: { width: '60%' },
+  blankLine: { width: '80%' },
   ring: {
     position: 'absolute',
     left: 0,
@@ -252,19 +256,36 @@ export function DetailCanvas({
   );
 
   const texts = (block: DetailBlock, shown: DetailLayer[]) => {
-    const list = shown.filter((l) => l.type === 'text' && l.text);
+    const list = shown.filter((l) => l.type === 'text' && (l.text || onSelect));
     if (!list.length) return null;
     return (
       <View style={[s.texts, { padding: pad }]}>
         {list.map((l) => {
           const style = textStyleOf(l, scale, fg, bandText);
+          const blank = !!onSelect && !l.text?.trim();
           return (
             <Tap
               key={l.id}
               onPress={press({ block: block.id, layer: l.id })}
-              label={l.text ?? ''}
+              label={blank ? '글' : (l.text ?? '')}
             >
-              <RNText style={style}>{l.text}</RNText>
+              {blank ? (
+                <View
+                  testID="detail-blank-text"
+                  style={[
+                    s.blank,
+                    (l.style?.size ?? 5) >= BLANK_TITLE
+                      ? s.blankTitle
+                      : s.blankLine,
+                    {
+                      height: style.lineHeight,
+                      alignSelf: alignSelfOf(l.style?.align),
+                    },
+                  ]}
+                />
+              ) : (
+                <RNText style={style}>{l.text}</RNText>
+              )}
               {picked(block, l) ? <Handles /> : null}
             </Tap>
           );

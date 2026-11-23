@@ -58,6 +58,11 @@ export {
   TruckGlyph,
   UsersGlyph,
   WalletGlyph,
+  GripGlyph,
+  EyeOffGlyph,
+  TrashGlyph,
+  WandGlyph,
+  ImagesGlyph,
 } from './internal/glyphs';
 export { contrastRatio, pickForeground } from './utils/color';
 
@@ -71,6 +76,7 @@ export * from './components/chip-group';
 export * from './components/circle-grid';
 export * from './components/dialog';
 export * from './components/divider';
+export * from './components/dropdown-menu';
 export * from './components/empty-state';
 export * from './components/field';
 export * from './components/field-group';
@@ -121,4 +127,5 @@ export type {
 } from './types';
 
 export * from './blocks';
+export * from './blocks/detail-studio';
 export * from './templates';

@@ -9,8 +9,10 @@ import {
   CLOCK,
   COPY,
   EYE,
+  EYE_OFF,
   FILE,
   GLOBE,
+  IMAGES,
   LINK,
   NOTE,
   OPEN,
@@ -30,10 +32,12 @@ import {
   STAR_FILL,
   STORE,
   TEXT_SIZE,
+  TRASH,
   TRUCK,
   TYPE,
   USERS,
   WALLET,
+  WAND,
 } from './line-icons';
 import { CAMERA, MENU, MESSAGE, PERSON, RECEIPT } from './tab-icons';
 import type { IconRenderProps } from './icon';
@@ -116,6 +120,7 @@ export function CheckGlyph({ color, size }: IconRenderProps) {
 const styles = StyleSheet.create({
   scanLine: { position: 'absolute' },
   center: { alignItems: 'center', justifyContent: 'center' },
+  dot: { position: 'absolute' },
 });
 
 export function ChevronGlyph({ color, size }: IconRenderProps) {
@@ -197,6 +202,37 @@ export function PlusGlyph({ color, size }: IconRenderProps) {
   );
 }
 
+export function GripGlyph({ color, size }: IconRenderProps) {
+  const dot = size * 0.155;
+  const dots = [5, 12, 19].flatMap((y) =>
+    [9, 15].map((x) => ({
+      key: `${x}-${y}`,
+      left: (x / 24) * size - dot / 2,
+      top: (y / 24) * size - dot / 2,
+    }))
+  );
+  return (
+    <View style={{ width: size, height: size }}>
+      {dots.map((d) => (
+        <View
+          key={d.key}
+          style={[
+            styles.dot,
+            {
+              left: d.left,
+              top: d.top,
+              width: dot,
+              height: dot,
+              borderRadius: dot / 2,
+              backgroundColor: color,
+            },
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
+
 function imageGlyph(uri: string) {
   return function Glyph({ color, size }: IconRenderProps) {
     return (
@@ -247,3 +283,7 @@ export const ReceivedGlyph = imageGlyph(RECEIVED);
 export const ChecklistGlyph = imageGlyph(CHECKLIST);
 export const AddProductGlyph = imageGlyph(ADD_PRODUCT);
 export const OpenGlyph = imageGlyph(OPEN);
+export const EyeOffGlyph = imageGlyph(EYE_OFF);
+export const TrashGlyph = imageGlyph(TRASH);
+export const WandGlyph = imageGlyph(WAND);
+export const ImagesGlyph = imageGlyph(IMAGES);
