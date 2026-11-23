@@ -36,7 +36,10 @@ export function sectionThumbFrame(
   height: number,
   pad: number
 ): SectionThumbFrame {
-  const first = parts[0];
+  const photo = parts.find(
+    (part) => part.kind === 'image' && !part.blank && part.height > 0
+  );
+  const first = photo ?? parts.find((part) => part.kind === 'text') ?? parts[0];
   if (!first) return { top: 0, height };
   const top =
     first.kind === 'image'

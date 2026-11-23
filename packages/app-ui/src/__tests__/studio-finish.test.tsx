@@ -14,6 +14,9 @@ import {
 import { keepWords } from '../blocks/detail-editor/keep-words';
 import { sectionThumbFrame } from '../blocks/detail-studio/section-thumb';
 import { sheetEdge } from '../blocks/detail-studio/section-edit-template';
+import { fadeLayers } from '../blocks/detail-studio/edge-fade';
+import { draftPreviewFit } from '../blocks/detail-editor/draft-preview';
+import { detailIsTitle } from '../blocks/detail-editor/detail-types';
 import type { DetailPart } from '../blocks/detail-editor/focus-context';
 
 const WJ = '\u2060';
@@ -72,14 +75,73 @@ describe('sectionThumbFrame', () => {
     ).toEqual({ top: 25, height: 80 });
   });
 
-  it('starts at the first text and drops a line cut by the bottom edge', () => {
+  it('centers a photo that comes after the title', () => {
+    expect(
+      sectionThumbFrame(
+        [
+          part('text', 6, 8, 8),
+          part('image', 20, 140),
+          part('text', 166, 20, 5),
+        ],
+        80,
+        6
+      )
+    ).toEqual({ top: 50, height: 80 });
+  });
+
+  it('starts at the first text when the section has no photo', () => {
     const frame = sectionThumbFrame(
-      [part('text', 6, 8, 8), part('image', 20, 50), part('text', 76, 20, 5)],
+      [
+        part('text', 6, 8, 8),
+        { ...part('image', 20, 50), blank: true },
+        part('text', 76, 20, 5),
+      ],
       80,
       6
     );
     expect(frame.top).toBe(0);
     expect(frame.height).toBe(76);
+  });
+});
+
+describe('draftPreviewFit', () => {
+  it('ends at the photo when the next text would be cut', () => {
+    expect(
+      draftPreviewFit([part('image', 0, 200), part('text', 220, 60, 30)], 260)
+    ).toBe(200);
+  });
+
+  it('ends before a cut text and keeps texts that fit', () => {
+    expect(
+      draftPreviewFit(
+        [
+          part('image', 0, 100),
+          part('text', 110, 20, 20),
+          part('text', 140, 60, 20),
+        ],
+        180
+      )
+    ).toBe(140);
+  });
+});
+
+describe('fadeLayers', () => {
+  it('stacks to the same opacity as the even steps', () => {
+    const layers = fadeLayers(4);
+    let clear = 1;
+    layers.forEach((alpha, i) => {
+      clear *= 1 - alpha;
+      expect(1 - clear).toBeCloseTo((i + 1) / 5, 6);
+    });
+  });
+});
+
+describe('detailIsTitle', () => {
+  it('treats step 7 and bold step 6 as titles', () => {
+    expect(detailIsTitle({ size: 7 })).toBe(true);
+    expect(detailIsTitle({ size: 6, weight: 'bold' })).toBe(true);
+    expect(detailIsTitle({ size: 6 })).toBe(false);
+    expect(detailIsTitle({ size: 3, weight: 'bold' })).toBe(false);
   });
 });
 
@@ -92,6 +154,12 @@ describe('sheetEdge', () => {
     expect(sheetEdge(104, [part('text', 100, 40, 20)], 8)).toBe(92);
     expect(sheetEdge(118, [part('text', 100, 40, 20)], 8)).toBe(120);
     expect(sheetEdge(146, [part('text', 100, 40, 20)], 8)).toBe(148);
+  });
+
+  it('picks only stops the page can scroll to', () => {
+    expect(
+      sheetEdge(104, [part('text', 100, 40, 20)], 8, { min: 104, max: 400 })
+    ).toBe(120);
   });
 });
 

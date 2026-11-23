@@ -170,3 +170,40 @@ export const DETAIL_COLORS: readonly { value: string; label: string }[] = [
   { value: '#2F4A2B', label: '초록' },
   { value: '#1F3A5F', label: '남색' },
 ];
+
+export const DETAIL_HEAD_SIZE = 7;
+export const DETAIL_TITLE_SIZE = 6;
+
+export function detailIsTitle(style?: DetailTextStyle | null): boolean {
+  const size = style?.size ?? 5;
+  const weight = style?.weight ?? 'regular';
+  return (
+    size >= DETAIL_HEAD_SIZE ||
+    (size >= DETAIL_TITLE_SIZE && weight !== 'regular')
+  );
+}
+
+export const DETAIL_TEXT_COLORS: readonly { value: string; label: string }[] = [
+  { value: '#1A1A1A', label: '검정' },
+  { value: '#626262', label: '회색' },
+  { value: '#FFFFFF', label: '흰색' },
+  { value: '#8A6A4A', label: '갈색' },
+  { value: '#B5651D', label: '황토색' },
+  { value: '#3F5D45', label: '초록' },
+  { value: '#2F4A6B', label: '남색' },
+  { value: '#9A3412', label: '벽돌색' },
+];
+
+export const DETAIL_BACKGROUND_COLORS: readonly {
+  value: string;
+  label: string;
+}[] = [
+  { value: '#FFFFFF', label: '흰색' },
+  { value: '#F3EFE7', label: '크림색' },
+  { value: '#E6E1D8', label: '연회색' },
+  { value: '#D6C7B2', label: '베이지' },
+  { value: '#8A6A4A', label: '갈색' },
+  { value: '#3F5D45', label: '초록' },
+  { value: '#2F4A6B', label: '남색' },
+  { value: '#2A2D33', label: '먹색' },
+];

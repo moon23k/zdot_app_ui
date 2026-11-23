@@ -47,7 +47,8 @@ function lineStop(part: DetailPart, at: number): boolean {
 export function sheetEdge(
   edge: number,
   parts: readonly DetailPart[],
-  gap: number
+  gap: number,
+  reach?: { min: number; max: number }
 ): number {
   const texts = parts.filter((p) => p.kind === 'text' && p.height > 0);
   const cuts = (at: number) =>
@@ -71,6 +72,7 @@ export function sheetEdge(
   let far = Infinity;
   for (const at of stops) {
     if (cuts(at)) continue;
+    if (reach && (at < reach.min - EPS || at > reach.max + EPS)) continue;
     const away = Math.abs(at - edge);
     if (away < far) {
       far = away;
@@ -107,7 +109,7 @@ export function SectionEditTemplate({
   const scroller = useRef<ComponentRef<typeof ScrollView>>(null);
   const offset = useRef(0);
   const pageTop = useRef(0);
-  const content = useRef(0);
+  const [content, setContent] = useState(0);
   const [height, setHeight] = useState(0);
   const [parts, setParts] = useState<DetailPart[]>([]);
   const listen = useRef((list: DetailPart[]) => setParts(list)).current;
@@ -145,13 +147,17 @@ export function SectionEditTemplate({
     if (!parts.length) return;
     const now = offset.current;
     const page = pageTop.current;
-    const edge = sheetEdge(now + viewport - page, parts, margin / 2) + page;
-    const most = Math.max(0, content.current - height);
+    const most = Math.max(0, content - height);
+    const edge =
+      sheetEdge(now + viewport - page, parts, margin / 2, {
+        min: viewport - page,
+        max: most + viewport - page,
+      }) + page;
     const next = Math.min(most, Math.max(0, edge - viewport));
     if (Math.abs(next - now) > EPS) {
       scroller.current?.scrollTo({ y: next, animated: true });
     }
-  }, [focus, keyboard, sheetHeight, viewport, parts, margin, height]);
+  }, [focus, keyboard, sheetHeight, viewport, parts, margin, height, content]);
 
   const docked = !!accessory || !!panel;
   const below = !panel && !keyboard ? bottomInset : 0;
@@ -171,9 +177,7 @@ export function SectionEditTemplate({
           offset.current = e.nativeEvent.contentOffset.y;
         }}
         onLayout={(e) => setHeight(e.nativeEvent.layout.height)}
-        onContentSizeChange={(_w, h) => {
-          content.current = h;
-        }}
+        onContentSizeChange={(_w, h) => setContent(h)}
       >
         <DetailPartsContext.Provider value={listen}>
           <DetailFocusContext.Provider value={report}>

@@ -12,6 +12,7 @@ export type DetailPart = {
   y: number;
   height: number;
   line: number;
+  blank?: boolean;
 };
 
 export const DetailPartsContext = createContext<

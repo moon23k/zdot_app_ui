@@ -44,6 +44,7 @@ import {
   detailSteps,
   detailTableRows,
   detailFontSize,
+  detailIsTitle,
   detailLineHeight,
   detailTracking,
   type DetailBlock,
@@ -99,7 +100,6 @@ export type DetailCanvasProps = {
 const lay = Platform.OS === 'ios' ? (text: string) => text : keepWords;
 
 const HANDLE = 10;
-const BLANK_TITLE = 7;
 const DOT = 6;
 const MAX_TEXT = 2000;
 const RING = 2;
@@ -114,7 +114,12 @@ type PartSink = {
 
 const PartsContext = createContext<PartSink | null>(null);
 
-type PartSpec = { key: string; kind: DetailPart['kind']; line?: number };
+type PartSpec = {
+  key: string;
+  kind: DetailPart['kind'];
+  line?: number;
+  blank?: boolean;
+};
 
 function useProbe(spec?: PartSpec) {
   const sink = useContext(PartsContext);
@@ -135,11 +140,19 @@ function useProbe(spec?: PartSpec) {
           y,
           height,
           line: now.line ?? 0,
+          ...(now.blank ? { blank: true } : {}),
         }),
       () => undefined
     );
   }, [sink]);
   const key = spec?.key;
+  const blank = !!spec?.blank;
+  const seen = useRef(blank);
+  useEffect(() => {
+    if (seen.current === blank) return;
+    seen.current = blank;
+    measure();
+  }, [blank, measure]);
   useEffect(() => {
     if (!sink || !key) return;
     sink.watch(key, measure);
@@ -696,7 +709,13 @@ export function DetailCanvas({
       put: (key, part) => {
         const now = store.current.get(key);
         if (part) {
-          if (now && now.y === part.y && now.height === part.height) return;
+          if (
+            now &&
+            now.y === part.y &&
+            now.height === part.height &&
+            !!now.blank === !!part.blank
+          )
+            return;
           store.current.set(key, part);
         } else {
           if (!now) return;
@@ -790,7 +809,7 @@ export function DetailCanvas({
         onPress={press({ block: block.id, layer: layer.id })}
         label={'사진'}
         style={flex ? s.half : undefined}
-        part={{ key: `${block.id}/${layer.id}`, kind: 'image' }}
+        part={{ key: `${block.id}/${layer.id}`, kind: 'image', blank: !url }}
       >
         {url ? (
           <Image
@@ -818,7 +837,7 @@ export function DetailCanvas({
       testID="detail-blank-text"
       style={[
         s.blank,
-        (l.style?.size ?? 5) >= BLANK_TITLE ? s.blankTitle : s.blankLine,
+        detailIsTitle(l.style) ? s.blankTitle : s.blankLine,
         { height: style.lineHeight, alignSelf: alignSelfOf(l.style?.align) },
       ]}
     />

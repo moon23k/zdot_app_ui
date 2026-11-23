@@ -9,7 +9,12 @@ export {
 } from './detail-canvas';
 export type { DetailPart } from './focus-context';
 export {
+  DETAIL_BACKGROUND_COLORS,
   DETAIL_COLORS,
+  DETAIL_HEAD_SIZE,
+  DETAIL_TEXT_COLORS,
+  DETAIL_TITLE_SIZE,
+  detailIsTitle,
   DETAIL_FONT_FAMILY,
   DETAIL_LAYOUTS,
   DETAIL_LIST_LAYOUTS,
@@ -37,4 +42,8 @@ export {
   type StructureOption,
   type StructurePickerProps,
 } from './structure-picker';
-export { DraftPreview, type DraftPreviewProps } from './draft-preview';
+export {
+  DraftPreview,
+  draftPreviewFit,
+  type DraftPreviewProps,
+} from './draft-preview';

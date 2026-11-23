@@ -5,6 +5,7 @@ import { PressableBase } from '../../internal/pressable-base';
 import { makeStyles } from '../../utils/styles';
 import {
   DETAIL_STEP_COLUMNS,
+  detailIsTitle,
   type DetailBlock,
   type DetailLayer,
 } from '../detail-editor/detail-types';
@@ -24,7 +25,6 @@ const COLUMNS = 3;
 const ART = 128;
 const TITLE_BAR = 6;
 const LINE_BAR = 4;
-const TITLE_SIZE = 7;
 const DOT = 10;
 const MAX_ROWS = 6;
 
@@ -142,7 +142,7 @@ function bars(s: Styles, layers: readonly DetailLayer[], prefix: string) {
     .map((l) => (
       <View
         key={`${prefix}${l.id}`}
-        style={(l.style?.size ?? 5) >= TITLE_SIZE ? s.title : s.line}
+        style={detailIsTitle(l.style) ? s.title : s.line}
       />
     ));
 }
