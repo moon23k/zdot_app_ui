@@ -72,6 +72,7 @@ export function AdjustTemplate({
         ) : null}
         {onCompareChange ? (
           <PressableBase
+            onPress={() => {}}
             onPressIn={() => onCompareChange(true)}
             onPressOut={() => onCompareChange(false)}
             accessibilityRole="button"
