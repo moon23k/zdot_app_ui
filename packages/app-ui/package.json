@@ -1,6 +1,6 @@
 {
   "name": "@zdot/app-ui",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "description": "React Native UI components for ZDOT partner apps",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
