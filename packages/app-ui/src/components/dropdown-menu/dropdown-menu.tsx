@@ -17,6 +17,8 @@ export type SectionAnchor = {
   y: number;
   width: number;
   height: number;
+  fill?: boolean;
+  pitch?: number;
 };
 
 export type DropdownMenuItem = {
@@ -80,15 +82,24 @@ export function DropdownMenu({
   const screen = useWindowDimensions();
   if (!open || !anchor) return null;
   const height = menuHeight(t, items);
-  const below = anchor.y + anchor.height;
+  const pitch = anchor.pitch ?? 0;
+  const lean =
+    pitch > 0
+      ? (Math.max(1, Math.round(height / pitch)) * pitch - height) / 2
+      : 0;
+  const below = anchor.y + anchor.height + lean;
+  const above = anchor.y - lean - height;
   const top =
     below + height > screen.height - t.space[4]
-      ? Math.max(t.space[4], anchor.y - height)
+      ? Math.max(t.space[4], above)
       : below;
-  const right = Math.max(
-    t.space[2],
-    screen.width - (anchor.x + anchor.width) + t.space[2]
-  );
+  const right = anchor.fill
+    ? screen.width - (anchor.x + anchor.width)
+    : Math.max(
+        t.space[2],
+        screen.width - (anchor.x + anchor.width) + t.space[2]
+      );
+  const width = anchor.fill ? anchor.width : WIDTH;
   const close = () => onOpenChange(false);
   return (
     <Modal
@@ -105,7 +116,7 @@ export function DropdownMenu({
         accessibilityRole="button"
         accessibilityLabel={closeLabel}
       />
-      <View accessibilityRole="menu" style={[s.menu, { top, right }]}>
+      <View accessibilityRole="menu" style={[s.menu, { top, right, width }]}>
         {items.map((item, i) => {
           const color =
             item.tone === 'danger' ? t.colors.danger : t.colors.title;

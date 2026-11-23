@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, type TextStyle } from 'react-native';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -9,6 +9,7 @@ export type SegmentedControlItem<T extends string> = {
   value: T;
   label: string;
   icon?: IconSlot;
+  weight?: TextStyle['fontWeight'];
 };
 
 export type SegmentedControlProps<T extends string> = {
@@ -70,7 +71,14 @@ export function SegmentedControl<T extends string>({
                 size: t.iconSize.md,
               })
             ) : (
-              <Text numberOfLines={1} style={[s.label, on && s.labelOn]}>
+              <Text
+                numberOfLines={1}
+                style={[
+                  s.label,
+                  on && s.labelOn,
+                  item.weight ? { fontWeight: item.weight } : null,
+                ]}
+              >
                 {item.label}
               </Text>
             )}

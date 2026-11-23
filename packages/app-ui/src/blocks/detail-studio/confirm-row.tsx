@@ -23,7 +23,6 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.space[4],
   },
   item: { flex: 1 },
-  off: { backgroundColor: t.colors.muted },
 }));
 
 export function ConfirmRow({ secondary, primary }: ConfirmRowProps) {
@@ -33,14 +32,12 @@ export function ConfirmRow({ secondary, primary }: ConfirmRowProps) {
       variant={variant}
       size="md"
       pill
+      steady
       cost={action.cost}
       disabled={action.disabled}
       loading={action.loading}
       onPress={action.onPress}
-      style={[
-        s.item,
-        variant === 'primary' && action.disabled && !action.loading && s.off,
-      ]}
+      style={s.item}
     >
       {action.label}
     </Button>

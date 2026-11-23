@@ -22,6 +22,7 @@ export type SkeletonProps = {
   width?: DimensionValue;
   height?: DimensionValue;
   radius?: number;
+  sheen?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -36,6 +37,7 @@ export function Skeleton({
   width = '100%',
   height = 16,
   radius,
+  sheen = false,
   style,
 }: SkeletonProps) {
   const t = useTheme();
@@ -57,8 +59,9 @@ export function Skeleton({
     return () => cancelAnimation(sweep);
   }, [reduced, span, sweep]);
 
+  const resting = sheen && reduced;
   const band = useAnimatedStyle(() => ({
-    transform: [{ translateX: -span + span * 2 * sweep.value }],
+    transform: [{ translateX: resting ? 0 : -span + span * 2 * sweep.value }],
   }));
 
   const measure = (event: LayoutChangeEvent) =>
@@ -82,7 +85,7 @@ export function Skeleton({
         style,
       ]}
     >
-      {reduced || span === 0 ? null : (
+      {(reduced && !sheen) || span === 0 ? null : (
         <Animated.View
           style={[
             styles.band,

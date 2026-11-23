@@ -7,6 +7,7 @@ export {
   type DetailCanvasProps,
   type DetailCanvasResult,
 } from './detail-canvas';
+export type { DetailPart } from './focus-context';
 export {
   DETAIL_COLORS,
   DETAIL_FONT_FAMILY,

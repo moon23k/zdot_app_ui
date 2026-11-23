@@ -8,6 +8,7 @@ export type ChipGroupItem<T extends string> = {
   value: T;
   label: string;
   count?: number;
+  cost?: number | null;
   disabled?: boolean;
 };
 
@@ -78,6 +79,7 @@ export function ChipGroup<T extends string>(props: ChipGroupProps<T>) {
         check={check}
         size={size}
         count={item.count}
+        cost={item.cost}
         disabled={item.disabled || (full && !selected)}
         accessibilityRole={props.multiple ? 'checkbox' : 'radio'}
         accessibilityState={{ checked: selected }}

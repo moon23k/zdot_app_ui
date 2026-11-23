@@ -72,6 +72,7 @@ export {
   CropGlyph,
   EraserGlyph,
   BucketGlyph,
+  FocusGlyph,
   MonitorGlyph,
   MobileGlyph,
   ColumnsGlyph,

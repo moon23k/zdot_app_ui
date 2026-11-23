@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -26,7 +27,13 @@ import { useTheme } from '../../theme/theme-provider';
 import { withAlpha } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
 import { CompareSlider } from './compare-slider';
-import { DetailFocusContext, type DetailFocusRect } from './focus-context';
+import {
+  DetailFocusContext,
+  DetailPartsContext,
+  type DetailFocusRect,
+  type DetailPart,
+} from './focus-context';
+import { keepWords } from './keep-words';
 import {
   DETAIL_FONT_FAMILY,
   DETAIL_STEP_COLUMNS,
@@ -86,7 +93,10 @@ export type DetailCanvasProps = {
   paper?: string;
   mode?: 'select' | 'edit';
   focus?: DetailCanvasFocus | null;
+  onMeasure?: (parts: DetailPart[]) => void;
 };
+
+const lay = Platform.OS === 'ios' ? (text: string) => text : keepWords;
 
 const HANDLE = 10;
 const BLANK_TITLE = 7;
@@ -95,19 +105,79 @@ const MAX_TEXT = 2000;
 const RING = 2;
 const HALO = 0.9;
 
+type PartSink = {
+  root: RefObject<ComponentRef<typeof View> | null>;
+  put: (key: string, part: DetailPart | null) => void;
+  watch: (key: string, measure: (() => void) | null) => void;
+  again: () => void;
+};
+
+const PartsContext = createContext<PartSink | null>(null);
+
+type PartSpec = { key: string; kind: DetailPart['kind']; line?: number };
+
+function useProbe(spec?: PartSpec) {
+  const sink = useContext(PartsContext);
+  const node = useRef<ComponentRef<typeof View>>(null);
+  const latest = useRef(spec);
+  latest.current = spec;
+  const measure = useCallback(() => {
+    const now = latest.current;
+    const root = sink?.root.current;
+    const self = node.current;
+    if (!sink || !now || !root || !self) return;
+    self.measureLayout(
+      root,
+      (_x, y, _w, height) =>
+        sink.put(now.key, {
+          key: now.key,
+          kind: now.kind,
+          y,
+          height,
+          line: now.line ?? 0,
+        }),
+      () => undefined
+    );
+  }, [sink]);
+  const key = spec?.key;
+  useEffect(() => {
+    if (!sink || !key) return;
+    sink.watch(key, measure);
+    return () => {
+      sink.watch(key, null);
+      sink.put(key, null);
+    };
+  }, [sink, key, measure]);
+  if (!sink || !spec) return null;
+  return { ref: node, onLayout: measure };
+}
+
 type TapProps = {
   onPress?: () => void;
   label: string;
   style?: StyleProp<ViewStyle>;
+  part?: PartSpec;
   children?: ReactNode;
 };
 
-function Tap({ onPress, label, style, children }: TapProps) {
+function Tap({ onPress, label, style, part, children }: TapProps) {
+  const probe = useProbe(part);
   if (!onPress) {
-    return <View style={style}>{children}</View>;
+    return (
+      <View
+        ref={probe?.ref}
+        onLayout={probe?.onLayout}
+        collapsable={probe ? false : undefined}
+        style={style}
+      >
+        {children}
+      </View>
+    );
   }
   return (
     <PressableBase
+      ref={probe?.ref}
+      onLayout={probe?.onLayout}
       onPress={onPress}
       accessibilityLabel={label}
       feedback="none"
@@ -117,6 +187,17 @@ function Tap({ onPress, label, style, children }: TapProps) {
     </PressableBase>
   );
 }
+
+const textPart = (
+  block: DetailBlock,
+  layer: DetailLayer,
+  style: TextStyle,
+  lines = true
+): PartSpec => ({
+  key: `${block.id}/${layer.id}`,
+  kind: 'text',
+  line: lines ? (style.lineHeight ?? 0) : 0,
+});
 
 const useStyles = makeStyles((t) => ({
   page: { overflow: 'hidden' },
@@ -392,6 +473,7 @@ type FocusTextProps = {
   result?: DetailCanvasResult | null;
   blank: ReactNode;
   style?: StyleProp<ViewStyle>;
+  part?: PartSpec;
 };
 
 function FocusText({
@@ -401,9 +483,11 @@ function FocusText({
   result,
   blank,
   style,
+  part,
 }: FocusTextProps) {
   const t = useTheme();
   const s = useStyles();
+  const probe = useProbe(part);
   const target = useContext(FocusTargetContext);
   const ring = useRef<ComponentRef<typeof View>>(null);
   const field = useRef<ComponentRef<typeof TextInput>>(null);
@@ -500,15 +584,24 @@ function FocusText({
       ]}
     />
   ) : shown ? (
-    <RNText style={text}>{shown.text}</RNText>
+    <RNText lineBreakStrategyIOS="hangul-word" style={text}>
+      {lay(shown.text)}
+    </RNText>
   ) : layer.text?.trim() ? (
-    <RNText style={text}>{layer.text}</RNText>
+    <RNText lineBreakStrategyIOS="hangul-word" style={text}>
+      {lay(layer.text)}
+    </RNText>
   ) : (
     blank
   );
 
   return (
-    <View style={style}>
+    <View
+      ref={probe?.ref}
+      onLayout={probe?.onLayout}
+      collapsable={probe ? false : undefined}
+      style={style}
+    >
       <View
         testID="detail-focus-text"
         style={[s.focus, shown && s.focusResult]}
@@ -570,12 +663,55 @@ export function DetailCanvas({
   paper,
   mode = 'select',
   focus,
+  onMeasure,
 }: DetailCanvasProps) {
   const t = useTheme();
   const s = useStyles();
   const report = useContext(DetailFocusContext);
+  const listen = useContext(DetailPartsContext);
   const root = useRef<ComponentRef<typeof View>>(null);
   const target = useMemo(() => (report ? { root, report } : null), [report]);
+  const sink = onMeasure ?? listen;
+  const latest = useRef(sink);
+  latest.current = sink;
+  const measuring = !!sink;
+  const store = useRef(new Map<string, DetailPart>());
+  const watchers = useRef(new Map<string, () => void>());
+  const frame = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (frame.current !== null) cancelAnimationFrame(frame.current);
+    },
+    []
+  );
+  const parts = useMemo<PartSink | null>(() => {
+    if (!measuring) return null;
+    const flush = () => {
+      frame.current = null;
+      const list = [...store.current.values()].sort((a, b) => a.y - b.y);
+      latest.current?.(list);
+    };
+    return {
+      root,
+      put: (key, part) => {
+        const now = store.current.get(key);
+        if (part) {
+          if (now && now.y === part.y && now.height === part.height) return;
+          store.current.set(key, part);
+        } else {
+          if (!now) return;
+          store.current.delete(key);
+        }
+        if (frame.current === null)
+          frame.current = requestAnimationFrame(flush);
+      },
+      watch: (key, measure) => {
+        if (measure) watchers.current.set(key, measure);
+        else watchers.current.delete(key);
+      },
+      again: () => watchers.current.forEach((measure) => measure()),
+    };
+  }, [measuring]);
   const pad = t.space[5] * scale;
   const fg = ink ?? t.colors.foreground;
   const bandText = paper ?? t.colors.surface;
@@ -639,6 +775,7 @@ export function DetailCanvas({
             after={compare.after}
             aspectRatio={ratio}
             labels={compare.labels}
+            inset={t.space[1] + RING}
           />
           <PhotoRing />
         </View>
@@ -653,6 +790,7 @@ export function DetailCanvas({
         onPress={press({ block: block.id, layer: layer.id })}
         label={'사진'}
         style={flex ? s.half : undefined}
+        part={{ key: `${block.id}/${layer.id}`, kind: 'image' }}
       >
         {url ? (
           <Image
@@ -687,6 +825,7 @@ export function DetailCanvas({
   );
 
   const focusText = (
+    block: DetailBlock,
     l: DetailLayer,
     style: TextStyle,
     wrap?: StyleProp<ViewStyle>
@@ -699,6 +838,7 @@ export function DetailCanvas({
       result={focus?.result}
       blank={blankBar(l, style)}
       style={wrap}
+      part={textPart(block, l, style, false)}
     />
   );
 
@@ -709,7 +849,7 @@ export function DetailCanvas({
   ) => {
     if (!l || l.hidden) return <View style={style} />;
     const text = tx(l);
-    if (focused(block, l)) return focusText(l, text, style);
+    if (focused(block, l)) return focusText(block, l, text, style);
     const blank = !l.text?.trim();
     if (blank && !onSelect) return <View style={style} />;
     return (
@@ -717,8 +857,15 @@ export function DetailCanvas({
         onPress={press({ block: block.id, layer: l.id })}
         label={blank ? '글' : (l.text ?? '')}
         style={style}
+        part={textPart(block, l, text)}
       >
-        {blank ? blankBar(l, text) : <RNText style={text}>{l.text}</RNText>}
+        {blank ? (
+          blankBar(l, text)
+        ) : (
+          <RNText lineBreakStrategyIOS="hangul-word" style={text}>
+            {lay(l.text ?? '')}
+          </RNText>
+        )}
         {picked(block, l) ? <Handles /> : null}
       </Tap>
     );
@@ -802,7 +949,7 @@ export function DetailCanvas({
                 return (
                   <View key={l.id} style={[s.step, { gap }]}>
                     {dot}
-                    {focusText(l, text, s.stretch)}
+                    {focusText(block, l, text, s.stretch)}
                   </View>
                 );
               }
@@ -812,12 +959,18 @@ export function DetailCanvas({
                   onPress={press({ block: block.id, layer: l.id })}
                   label={blank ? '글' : (l.text ?? '')}
                   style={[s.step, { gap }]}
+                  part={textPart(block, l, text, false)}
                 >
                   {dot}
                   {blank ? (
                     blankBar(l, text)
                   ) : (
-                    <RNText style={[text, s.stretch]}>{l.text}</RNText>
+                    <RNText
+                      lineBreakStrategyIOS="hangul-word"
+                      style={[text, s.stretch]}
+                    >
+                      {lay(l.text ?? '')}
+                    </RNText>
                   )}
                   {picked(block, l) ? <Handles /> : null}
                 </Tap>
@@ -838,18 +991,21 @@ export function DetailCanvas({
       <View style={[s.texts, { padding: pad }]}>
         {list.map((l) => {
           const style = tx(l);
-          if (focused(block, l)) return focusText(l, style);
+          if (focused(block, l)) return focusText(block, l, style);
           const blank = !!onSelect && !l.text?.trim();
           return (
             <Tap
               key={l.id}
               onPress={press({ block: block.id, layer: l.id })}
               label={blank ? '글' : (l.text ?? '')}
+              part={textPart(block, l, style)}
             >
               {blank ? (
                 blankBar(l, style)
               ) : (
-                <RNText style={style}>{l.text}</RNText>
+                <RNText lineBreakStrategyIOS="hangul-word" style={style}>
+                  {lay(l.text ?? '')}
+                </RNText>
               )}
               {picked(block, l) ? <Handles /> : null}
             </Tap>
@@ -915,52 +1071,55 @@ export function DetailCanvas({
   };
 
   return (
-    <FocusTargetContext.Provider value={target}>
-      <View
-        ref={root}
-        style={[
-          s.page,
-          { backgroundColor: doc.background ?? paper ?? t.colors.surface },
-        ]}
-      >
-        {doc.blocks.map((block, index) => (
-          <View
-            key={block.id}
-            style={{
-              backgroundColor: block.background?.color ?? undefined,
-              paddingTop: detailBlockSpace(block.space_top) * scale,
-              paddingBottom: detailBlockSpace(block.space_bottom) * scale,
-            }}
-          >
-            {block.background?.url ? (
-              <Image
-                source={{ uri: block.background.url }}
-                resizeMode="cover"
-                style={s.fill}
-              />
-            ) : null}
-            {onSelect && !edit ? (
-              <PressableBase
-                onPress={() => onSelect({ block: block.id })}
-                accessibilityLabel="블록"
-                feedback="none"
-                style={s.fill}
-              />
-            ) : null}
-            {body(block)}
-            {picked(block) ? <Handles /> : null}
-            {!edit && selection?.block === block.id ? (
-              <View pointerEvents="none" style={s.tag}>
-                <RNText
-                  style={[s.tagText, { color: t.colors.primaryForeground }]}
-                >
-                  {String(index + 1)}
-                </RNText>
-              </View>
-            ) : null}
-          </View>
-        ))}
-      </View>
-    </FocusTargetContext.Provider>
+    <PartsContext.Provider value={parts}>
+      <FocusTargetContext.Provider value={target}>
+        <View
+          ref={root}
+          style={[
+            s.page,
+            { backgroundColor: doc.background ?? paper ?? t.colors.surface },
+          ]}
+        >
+          {doc.blocks.map((block, index) => (
+            <View
+              key={block.id}
+              onLayout={parts?.again}
+              style={{
+                backgroundColor: block.background?.color ?? undefined,
+                paddingTop: detailBlockSpace(block.space_top) * scale,
+                paddingBottom: detailBlockSpace(block.space_bottom) * scale,
+              }}
+            >
+              {block.background?.url ? (
+                <Image
+                  source={{ uri: block.background.url }}
+                  resizeMode="cover"
+                  style={s.fill}
+                />
+              ) : null}
+              {onSelect && !edit ? (
+                <PressableBase
+                  onPress={() => onSelect({ block: block.id })}
+                  accessibilityLabel="블록"
+                  feedback="none"
+                  style={s.fill}
+                />
+              ) : null}
+              {body(block)}
+              {picked(block) ? <Handles /> : null}
+              {!edit && selection?.block === block.id ? (
+                <View pointerEvents="none" style={s.tag}>
+                  <RNText
+                    style={[s.tagText, { color: t.colors.primaryForeground }]}
+                  >
+                    {String(index + 1)}
+                  </RNText>
+                </View>
+              ) : null}
+            </View>
+          ))}
+        </View>
+      </FocusTargetContext.Provider>
+    </PartsContext.Provider>
   );
 }

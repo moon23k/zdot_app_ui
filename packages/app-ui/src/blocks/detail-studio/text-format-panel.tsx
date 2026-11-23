@@ -1,4 +1,4 @@
-import { Text as RNText, View } from 'react-native';
+import { Text as RNText, View, type TextStyle } from 'react-native';
 import { SegmentedControl } from '../../components/segmented-control/segmented-control';
 import { Slider } from '../../components/slider/slider';
 import {
@@ -45,10 +45,14 @@ const TABS: { value: TextFormatTab; label: string }[] = [
   { value: 'effect', label: '효과' },
 ];
 
-const WEIGHTS: { value: DetailWeight; label: string }[] = [
-  { value: 'regular', label: '보통' },
-  { value: 'bold', label: '굵게' },
-  { value: 'heavy', label: '아주 굵게' },
+const WEIGHTS: {
+  value: DetailWeight;
+  label: string;
+  weight: TextStyle['fontWeight'];
+}[] = [
+  { value: 'regular', label: '보통', weight: '400' },
+  { value: 'bold', label: '굵게', weight: '600' },
+  { value: 'heavy', label: '아주 굵게', weight: '700' },
 ];
 
 const ALIGNS = [

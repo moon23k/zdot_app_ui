@@ -48,6 +48,9 @@ const WAIT_LINE = 120;
 
 const rowHeight = (t: Theme) => SECTION_THUMB.height + t.space[2] * 2;
 
+const textLead = (t: Theme) =>
+  t.space[1] + t.space[8] + SECTION_THUMB.width + t.space[3];
+
 const useStyles = makeStyles((t) => ({
   scroll: { flex: 1 },
   card: {
@@ -76,7 +79,7 @@ const useStyles = makeStyles((t) => ({
     position: 'absolute',
     top: 0,
     right: 0,
-    left: t.space[1] + t.space[8] + SECTION_THUMB.width + t.space[3],
+    left: textLead(t),
     height: 1,
     backgroundColor: t.colors.border,
   },
@@ -157,7 +160,7 @@ const Row = memo(function SectionRow({
 }: RowProps) {
   const t = useTheme();
   const s = useStyles();
-  const more = useRef<ComponentRef<typeof View>>(null);
+  const box = useRef<ComponentRef<typeof View>>(null);
   const hidden = !!item.hidden;
   if (item.pending) {
     return (
@@ -194,14 +197,24 @@ const Row = memo(function SectionRow({
     );
   }
   const openMore = () => {
-    const box = more.current;
-    if (!box) return;
-    box.measureInWindow((x, y, width, height) =>
-      onMore(item.key, { x, y, width, height })
+    const row = box.current;
+    if (!row) return;
+    const lead = textLead(t) - t.space[1];
+    row.measureInWindow((x, y, width, height) =>
+      onMore(item.key, {
+        x: x + lead,
+        y,
+        width: width - lead,
+        height,
+        fill: true,
+        pitch: height,
+      })
     );
   };
   return (
     <View
+      ref={box}
+      collapsable={false}
       style={[
         s.row,
         index === 0 && s.first,
@@ -269,18 +282,16 @@ const Row = memo(function SectionRow({
           <EyeOffGlyph color={t.colors.mutedForeground} size={t.iconSize.md} />
         </View>
       ) : null}
-      <View ref={more} collapsable={false}>
-        <PressableBase
-          onPress={openMore}
-          accessibilityLabel={moreLabel}
-          feedback="small"
-          style={s.icon}
-        >
-          <View style={s.turn}>
-            <MoreGlyph color={t.colors.mutedForeground} size={t.iconSize.md} />
-          </View>
-        </PressableBase>
-      </View>
+      <PressableBase
+        onPress={openMore}
+        accessibilityLabel={moreLabel}
+        feedback="small"
+        style={s.icon}
+      >
+        <View style={s.turn}>
+          <MoreGlyph color={t.colors.mutedForeground} size={t.iconSize.md} />
+        </View>
+      </PressableBase>
     </View>
   );
 });

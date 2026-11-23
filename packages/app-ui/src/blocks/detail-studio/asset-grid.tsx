@@ -144,7 +144,7 @@ export function AssetGrid({
     if (item.pending) {
       return (
         <View style={[s.cell, slot]}>
-          <Skeleton width="100%" height="100%" radius={t.radius.md} />
+          <Skeleton width="100%" height="100%" radius={t.radius.md} sheen />
         </View>
       );
     }

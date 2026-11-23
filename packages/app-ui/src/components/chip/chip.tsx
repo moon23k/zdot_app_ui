@@ -12,6 +12,7 @@ import {
 } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { CreditCost } from '../credit/credit';
 
 export type ChipSize = 'sm' | 'md' | 'lg';
 
@@ -21,6 +22,7 @@ export type ChipProps = Omit<PressableBaseProps, 'children' | 'touchHeight'> & {
   size?: ChipSize;
   leftIcon?: IconSlot;
   count?: number;
+  cost?: number | null;
   children: string;
 };
 
@@ -68,6 +70,7 @@ export function Chip({
   size = 'sm',
   leftIcon,
   count,
+  cost,
   children,
   style,
   accessibilityState,
@@ -101,7 +104,11 @@ export function Chip({
       {...rest}
       accessibilityLabel={
         accessibilityLabel ??
-        (count === undefined ? undefined : `${children}, ${count}건`)
+        (count !== undefined
+          ? `${children}, ${count}건`
+          : cost != null
+            ? `${children}, 크레딧 ${cost}`
+            : undefined)
       }
       accessibilityState={accessibilityState ?? { selected }}
       touchHeight={HEIGHT[size]}
@@ -140,6 +147,7 @@ export function Chip({
           {count}
         </Animated.Text>
       )}
+      {cost == null ? null : <CreditCost value={cost} />}
     </PressableBase>
   );
 }

@@ -162,6 +162,7 @@ export function StudioBar({
           <Button
             size="md"
             pill
+            steady
             style={s.done}
             onPress={action.onPress}
             disabled={action.disabled}

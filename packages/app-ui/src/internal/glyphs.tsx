@@ -16,6 +16,7 @@ import {
   EYE,
   EYE_OFF,
   FILE,
+  FOCUS,
   GLOBE,
   IMAGES,
   KEYBOARD,
@@ -320,6 +321,7 @@ export const SlidersGlyph = imageGlyph(SLIDERS);
 export const CropGlyph = imageGlyph(CROP);
 export const EraserGlyph = imageGlyph(ERASER);
 export const BucketGlyph = imageGlyph(BUCKET);
+export const FocusGlyph = imageGlyph(FOCUS);
 
 function lineOf(size: number) {
   return Math.max(1.5, size / 12);

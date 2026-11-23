@@ -39,6 +39,7 @@ export type ButtonProps = Omit<
   rightIcon?: IconSlot;
   point?: boolean;
   pill?: boolean;
+  steady?: boolean;
   cost?: number | null;
   children: ReactNode;
 };
@@ -85,6 +86,7 @@ const useStyles = makeStyles((t) => ({
   },
   primary: { backgroundColor: t.colors.primary },
   off: { backgroundColor: t.colors.disabledSurface },
+  soft: { backgroundColor: t.colors.muted },
   secondary: { backgroundColor: t.colors.muted },
   bare: { paddingHorizontal: 0 },
   ghost: { backgroundColor: 'transparent' },
@@ -118,6 +120,7 @@ export function Button({
   rightIcon,
   point = false,
   pill = false,
+  steady = false,
   cost,
   children,
   style,
@@ -129,7 +132,7 @@ export function Button({
   const busy = loading || done;
   const off = !!disabled && !busy;
   const flat = (variant === 'primary' || variant === 'danger') && !point;
-  const still = off && flat;
+  const still = off && (flat || steady);
   const color = {
     primary: t.colors.primaryForeground,
     secondary: t.colors.title,
@@ -185,8 +188,8 @@ export function Button({
       {...rest}
       disabled={off || busy}
       onDisabledPress={off ? shake : undefined}
-      live={live}
-      dim={!flat}
+      live={steady ? undefined : live}
+      dim={!flat && !steady}
       nudge={nudge}
       touchHeight={t.controlSize[size]}
       accessibilityState={{ ...accessibilityState, busy: loading }}
@@ -195,7 +198,7 @@ export function Button({
         s.base,
         s[size],
         s[variant],
-        still && s.off,
+        still && (steady ? s.soft : s.off),
         point && s.bare,
         pill && s.pill,
         style,

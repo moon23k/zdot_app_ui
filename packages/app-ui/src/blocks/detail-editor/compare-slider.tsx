@@ -18,6 +18,7 @@ export type CompareSliderProps = {
   aspectRatio?: number;
   label?: string;
   labels?: { before: string; after: string };
+  inset?: number;
 };
 
 const STEP = 0.1;
@@ -80,6 +81,7 @@ export function CompareSlider({
   aspectRatio = 4 / 5,
   label = '원본과 비교',
   labels,
+  inset = 0,
 }: CompareSliderProps) {
   const t = useTheme();
   const s = useStyles();
@@ -134,7 +136,7 @@ export function CompareSlider({
           style={[s.fill, { width }]}
         />
       </View>
-      <View style={[s.line, { left: x - 1 }]} />
+      <View style={[s.line, { left: x - 1, top: inset, bottom: inset }]} />
       <View style={[s.knob, { left: x - knob / 2 }]}>
         <View style={s.flip}>
           <ChevronGlyph color={t.colors.title} size={t.space[3]} />

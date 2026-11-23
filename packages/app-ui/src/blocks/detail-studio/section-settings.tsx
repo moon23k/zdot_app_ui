@@ -42,6 +42,7 @@ const useStyles = makeStyles((t) => ({
   tabs: { paddingHorizontal: t.space[4] },
   body: { paddingTop: t.space[3] },
   inset: { paddingHorizontal: t.space[4] },
+  swatches: { paddingTop: t.space[4], paddingHorizontal: t.space[1] },
   space: { paddingHorizontal: t.space[5] },
 }));
 
@@ -81,6 +82,8 @@ export function SectionSettings({
         ) : tab === 'background' ? (
           <View style={s.inset}>
             <ColorSwatchPicker
+              variant="row"
+              style={s.swatches}
               colors={colors ?? DETAIL_COLORS}
               value={background}
               onValueChange={onBackgroundChange}

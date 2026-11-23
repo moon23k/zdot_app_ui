@@ -55,6 +55,9 @@ export function PhotoToolBar({ items, action }: PhotoToolBarProps) {
   const [content, setContent] = useState(0);
   const [offset, setOffset] = useState(0);
   const more = hasMore(offset, view, content);
+  const step = t.space[16];
+  const over = view > 0 ? items.length * step - view : 0;
+  const tail = over > 0 ? (step - (over % step)) % step : 0;
   return (
     <View accessibilityRole="toolbar" style={s.bar}>
       <View style={s.tools}>
@@ -62,7 +65,9 @@ export function PhotoToolBar({ items, action }: PhotoToolBarProps) {
           testID="photo-tools"
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.row}
+          contentContainerStyle={[s.row, { paddingRight: tail }]}
+          snapToInterval={over > 0 ? step : undefined}
+          decelerationRate={over > 0 ? 'fast' : undefined}
           scrollEventThrottle={16}
           onLayout={(e) => setView(e.nativeEvent.layout.width)}
           onContentSizeChange={(w) => setContent(w)}
