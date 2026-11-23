@@ -12,7 +12,7 @@ export type ColorSwatchPickerProps = {
   colors: readonly ColorSwatch[];
   value: string;
   onValueChange: (value: string) => void;
-  variant?: 'circle' | 'card' | 'grid';
+  variant?: 'circle' | 'card' | 'grid' | 'row';
   style?: StyleProp<ViewStyle>;
 };
 
@@ -24,6 +24,27 @@ const RING_GAP = 3;
 
 const useStyles = makeStyles((t) => ({
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: t.space[3] },
+  strip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  swatch: {
+    width: t.space[8],
+    height: t.space[8],
+    borderRadius: t.radius.full,
+  },
+  pale: { borderWidth: 1, borderColor: t.colors.border },
+  swatchRing: {
+    position: 'absolute',
+    top: -(RING + RING_GAP),
+    left: -(RING + RING_GAP),
+    right: -(RING + RING_GAP),
+    bottom: -(RING + RING_GAP),
+    borderRadius: t.radius.full,
+    borderWidth: RING,
+    borderColor: t.colors.primary,
+  },
   dot: {
     width: DOT,
     height: DOT,
@@ -99,6 +120,40 @@ export function ColorSwatchPicker({
 }: ColorSwatchPickerProps) {
   const t = useTheme();
   const s = useStyles();
+  if (variant === 'row') {
+    const slop = Math.ceil((t.minTouchSize - t.space[8]) / 2);
+    const hitSlop = {
+      top: slop,
+      bottom: slop,
+      left: t.space[1],
+      right: t.space[1],
+    };
+    return (
+      <View accessibilityRole="radiogroup" style={[s.strip, style]}>
+        {colors.map((c) => {
+          const selected = c.value.toLowerCase() === value.toLowerCase();
+          const pale =
+            pickForeground(c.value, '#0a0a0a', '#ffffff') === '#0a0a0a';
+          return (
+            <PressableBase
+              key={c.value}
+              accessibilityRole="radio"
+              accessibilityLabel={c.label}
+              accessibilityState={{ selected }}
+              hitSlop={hitSlop}
+              feedback="small"
+              onPress={() => onValueChange(c.value)}
+              style={[s.swatch, { backgroundColor: c.value }, pale && s.pale]}
+            >
+              {selected ? (
+                <View style={s.swatchRing} pointerEvents="none" />
+              ) : null}
+            </PressableBase>
+          );
+        })}
+      </View>
+    );
+  }
   return (
     <View accessibilityRole="radiogroup" style={[s.wrap, style]}>
       {colors.map((c) => {

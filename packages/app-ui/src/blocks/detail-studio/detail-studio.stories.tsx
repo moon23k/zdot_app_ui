@@ -2,17 +2,29 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState, type ReactNode } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Button } from '../../components/button/button';
 import { CreditPill } from '../../components/credit/credit';
+import { SegmentedControl } from '../../components/segmented-control/segmented-control';
+import { Sheet } from '../../components/sheet/sheet';
 import { Text } from '../../components/text/text';
 import {
+  BucketGlyph,
+  CropGlyph,
+  EraserGlyph,
   EyeGlyph,
+  EyeOffGlyph,
+  ImagesGlyph,
   LayoutGlyph,
   PlusGlyph,
   ReturnGlyph,
+  ScanGlyph,
+  SlidersGlyph,
   SparklesGlyph,
   TextSizeGlyph,
+  TrashGlyph,
   WandGlyph,
 } from '../../internal/glyphs';
+import { demoPhotoList, sample } from '../../__stories__/helpers';
 import { SectionBoard } from '../../sortable/section-board';
 import { useTheme } from '../../theme/theme-provider';
 import {
@@ -23,7 +35,10 @@ import {
 import { makeStyles } from '../../utils/styles';
 import { DetailCanvas } from '../detail-editor/detail-canvas';
 import type { DetailCanvasFocus } from '../detail-editor/detail-canvas';
+import { AdjustTiles } from './adjust-tiles';
+import { AssetGrid } from './asset-grid';
 import { ConfirmRow } from './confirm-row';
+import { PhotoToolBar } from './photo-tool-bar';
 import { DetailStudioTemplate } from './detail-studio-template';
 import { KeyboardBar } from './keyboard-bar';
 import { RewriteTray } from './rewrite-tray';
@@ -348,6 +363,141 @@ function SettingsScreen() {
   );
 }
 
+const scenePhoto = scene.doc.blocks[0]!.layers.find((l) => l.type === 'image')!;
+const sceneFocus = { block: 'b1', layer: scenePhoto.id };
+
+const photoTools = [
+  { key: 'library', icon: ImagesGlyph, label: '보관함', onPress: () => {} },
+  { key: 'ai', icon: SparklesGlyph, label: 'AI', onPress: () => {} },
+  { key: 'adjust', icon: SlidersGlyph, label: '보정', onPress: () => {} },
+  {
+    key: 'crop',
+    icon: CropGlyph,
+    label: '자르기',
+    onPress: () => {},
+    cost: 1,
+  },
+  { key: 'hide', icon: EyeOffGlyph, label: '숨기기', onPress: () => {} },
+  { key: 'remove', icon: TrashGlyph, label: '삭제', onPress: () => {} },
+];
+
+const adjustTiles = [
+  { value: 'remove_background', icon: EraserGlyph, label: '배경 지우기' },
+  { value: 'replace_background', icon: BucketGlyph, label: '배경 바꾸기' },
+  { value: 'enhance', icon: ScanGlyph, label: '선명하게' },
+] as const;
+
+function PhotoToolsScreen() {
+  return (
+    <EditScreen
+      title={scene.name}
+      doc={scene.doc}
+      focus={sceneFocus}
+      accessory={
+        <PhotoToolBar
+          items={photoTools}
+          action={{ label: '완료', onPress: () => {} }}
+        />
+      }
+    />
+  );
+}
+
+function AdjustScreen() {
+  return (
+    <EditScreen
+      title={scene.name}
+      doc={scene.doc}
+      focus={sceneFocus}
+      sheet={
+        <StudioSheet
+          open
+          title="보정"
+          onClose={() => {}}
+          end={<CreditPill balance={127} />}
+        >
+          <AdjustTiles items={adjustTiles} cost={1} onPick={() => {}} />
+        </StudioSheet>
+      }
+    />
+  );
+}
+
+function CompareScreen() {
+  const url = scenePhoto.url ?? '';
+  return (
+    <EditScreen
+      title={scene.name}
+      doc={scene.doc}
+      focus={{
+        ...sceneFocus,
+        compare: {
+          before: url,
+          after: url,
+          labels: { before: '전', after: '후' },
+        },
+      }}
+      sheet={
+        <StudioSheet
+          open
+          title="선명하게"
+          onClose={() => {}}
+          end={<CreditPill balance={126} />}
+        >
+          <ConfirmRow
+            secondary={{ label: '다시 만들기', cost: 1, onPress: () => {} }}
+            primary={{ label: '적용', onPress: () => {} }}
+          />
+        </StudioSheet>
+      }
+    />
+  );
+}
+
+const libraryTabs = [
+  { value: 'all', label: '전체' },
+  { value: 'upload', label: '올린 사진' },
+  { value: 'made', label: '만든 이미지' },
+] as const;
+
+const libraryItems = [
+  ...demoPhotoList.slice(0, 4).map((id) => ({
+    key: `made-${id}`,
+    uri: sample(id, 360, 360).uri,
+    made: true,
+  })),
+  ...[...demoPhotoList, ...demoPhotoList].map((id, i) => ({
+    key: `up-${i}`,
+    uri: sample(id, 360, 360).uri,
+  })),
+];
+
+function LibraryScreen() {
+  const [tab, setTab] = useState<(typeof libraryTabs)[number]['value']>('all');
+  const [pick, setPick] = useState<string | null>(libraryItems[1]!.key);
+  return (
+    <>
+      <EditScreen title={scene.name} doc={scene.doc} />
+      <Sheet open compact tall title="보관함" onOpenChange={() => {}}>
+        <SegmentedControl
+          items={libraryTabs}
+          value={tab}
+          onValueChange={setTab}
+        />
+        <AssetGrid
+          items={libraryItems}
+          value={pick}
+          onValueChange={setPick}
+          onAdd={() => {}}
+        />
+        <Button disabled={!pick} onPress={() => {}}>
+          넣기
+        </Button>
+      </Sheet>
+    </>
+  );
+}
+
 const meta = {
   title: 'Blocks/Detail/Studio',
   component: ListScreen,
@@ -372,4 +522,16 @@ export const Rewrite: StoryObj<typeof meta> = {
 };
 export const Settings: StoryObj<typeof meta> = {
   render: () => <SettingsScreen />,
+};
+export const PhotoTools: StoryObj<typeof meta> = {
+  render: () => <PhotoToolsScreen />,
+};
+export const Adjust: StoryObj<typeof meta> = {
+  render: () => <AdjustScreen />,
+};
+export const Compare: StoryObj<typeof meta> = {
+  render: () => <CompareScreen />,
+};
+export const Library: StoryObj<typeof meta> = {
+  render: () => <LibraryScreen />,
 };

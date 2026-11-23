@@ -25,6 +25,7 @@ import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { withAlpha } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
+import { CompareSlider } from './compare-slider';
 import { DetailFocusContext, type DetailFocusRect } from './focus-context';
 import {
   DETAIL_FONT_FAMILY,
@@ -61,11 +62,18 @@ export type DetailCanvasResult = {
   onIndexChange: (index: number) => void;
 };
 
+export type DetailCanvasCompare = {
+  before: string;
+  after: string;
+  labels?: { before: string; after: string };
+};
+
 export type DetailCanvasFocus = {
   block: string;
   layer: string;
   input?: DetailCanvasInput | null;
   result?: DetailCanvasResult | null;
+  compare?: DetailCanvasCompare | null;
 };
 
 export type DetailCanvasProps = {
@@ -84,6 +92,7 @@ const BLANK_TITLE = 7;
 const DOT = 6;
 const MAX_TEXT = 2000;
 const RING = 2;
+const HALO = 0.9;
 
 type TapProps = {
   onPress?: () => void;
@@ -217,6 +226,18 @@ const useStyles = makeStyles((t) => ({
     includeFontPadding: false,
     textAlignVertical: 'top',
   },
+  photoRing: {
+    position: 'absolute',
+    top: t.space[1],
+    bottom: t.space[1],
+    left: t.space[1],
+    right: t.space[1],
+    borderWidth: RING,
+    borderColor: t.colors.primary,
+    borderRadius: t.radius.md,
+    boxShadow: `0px 0px 0px ${RING}px ${withAlpha(t.colors.surface, HALO)}`,
+  },
+  faded: { opacity: t.opacity.disabled },
   handle: {
     position: 'absolute',
     width: HANDLE,
@@ -258,6 +279,31 @@ function Handles() {
       <View style={[s.handle, { left: edge, bottom: edge }]} />
       <View style={[s.handle, { right: edge, bottom: edge }]} />
     </>
+  );
+}
+
+function PhotoRing() {
+  const s = useStyles();
+  const target = useContext(FocusTargetContext);
+  const ring = useRef<ComponentRef<typeof View>>(null);
+  useEffect(() => () => target?.report(null), [target]);
+  const measure = () => {
+    const root = target?.root.current;
+    if (!target || !root || !ring.current) return;
+    ring.current.measureLayout(
+      root,
+      (_x, y, _w, height) => target.report({ y, height }),
+      () => undefined
+    );
+  };
+  return (
+    <View
+      ref={ring}
+      testID="detail-photo-ring"
+      onLayout={measure}
+      pointerEvents="none"
+      style={s.photoRing}
+    />
   );
 }
 
@@ -315,13 +361,19 @@ function alignSelfOf(align?: 'left' | 'center' | 'right') {
       : 'flex-start';
 }
 
-function reveal(block: DetailBlock): DetailBlock {
-  const empty = (l: DetailLayer) =>
-    !!l.hidden && l.type === 'text' && !l.text?.trim();
-  if (!block.layers.some(empty)) return block;
+function reveal(
+  block: DetailBlock,
+  text: boolean,
+  photo: boolean
+): DetailBlock {
+  const shows = (l: DetailLayer) =>
+    !!l.hidden &&
+    ((text && l.type === 'text' && !l.text?.trim()) ||
+      (photo && l.type === 'image'));
+  if (!block.layers.some(shows)) return block;
   return {
     ...block,
-    layers: block.layers.map((l) => (empty(l) ? { ...l, hidden: false } : l)),
+    layers: block.layers.map((l) => (shows(l) ? { ...l, hidden: false } : l)),
   };
 }
 
@@ -539,6 +591,27 @@ export function DetailCanvas({
     l.type === 'text' &&
     !l.hidden;
 
+  const shot = (block: DetailBlock, l: DetailLayer) =>
+    edit &&
+    !!focus &&
+    focus.block === block.id &&
+    focus.layer === l.id &&
+    l.type === 'image';
+
+  const faded = useMemo(
+    () =>
+      edit
+        ? new Set(
+            doc.blocks.flatMap((b) =>
+              b.layers
+                .filter((l) => l.hidden && l.type === 'image')
+                .map((l) => `${b.id}/${l.id}`)
+            )
+          )
+        : null,
+    [doc, edit]
+  );
+
   const press = (next: DetailSelection) =>
     onSelect ? () => onSelect(next) : undefined;
 
@@ -547,30 +620,50 @@ export function DetailCanvas({
     layer: DetailLayer,
     flex = false,
     ratio = 1
-  ) => (
-    <Tap
-      key={layer.id}
-      onPress={press({ block: block.id, layer: layer.id })}
-      label={'사진'}
-      style={flex ? s.half : undefined}
-    >
-      {layer.url ? (
-        <Image
-          source={{ uri: layer.url }}
-          resizeMode="cover"
-          style={[s.full, { aspectRatio: ratio }]}
-        />
-      ) : (
-        <View
-          style={[
-            s.full,
-            { aspectRatio: ratio, backgroundColor: t.colors.muted },
-          ]}
-        />
-      )}
-      {picked(block, layer) ? <Handles /> : null}
-    </Tap>
-  );
+  ) => {
+    const on = shot(block, layer);
+    const compare = on ? focus?.compare : null;
+    if (compare) {
+      return (
+        <View key={layer.id} style={flex ? s.half : undefined}>
+          <CompareSlider
+            before={compare.before}
+            after={compare.after}
+            aspectRatio={ratio}
+            labels={compare.labels}
+          />
+          <PhotoRing />
+        </View>
+      );
+    }
+    const dim = !!faded?.has(`${block.id}/${layer.id}`) && s.faded;
+    return (
+      <Tap
+        key={layer.id}
+        onPress={press({ block: block.id, layer: layer.id })}
+        label={'사진'}
+        style={flex ? s.half : undefined}
+      >
+        {layer.url ? (
+          <Image
+            source={{ uri: layer.url }}
+            resizeMode="cover"
+            style={[s.full, { aspectRatio: ratio }, dim]}
+          />
+        ) : (
+          <View
+            style={[
+              s.full,
+              { aspectRatio: ratio, backgroundColor: t.colors.muted },
+              dim,
+            ]}
+          />
+        )}
+        {picked(block, layer) ? <Handles /> : null}
+        {on ? <PhotoRing /> : null}
+      </Tap>
+    );
+  };
 
   const blankBar = (l: DetailLayer, style: TextStyle) => (
     <View
@@ -757,7 +850,7 @@ export function DetailCanvas({
   };
 
   const body = (raw: DetailBlock): ReactNode => {
-    const block = onSelect ? reveal(raw) : raw;
+    const block = reveal(raw, !!onSelect, edit);
     const shown = block.layers.filter((l) => !l.hidden);
     const images = shown.filter((l) => l.type === 'image');
     switch (block.layout) {

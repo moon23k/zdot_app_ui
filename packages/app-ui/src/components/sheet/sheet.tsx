@@ -32,6 +32,7 @@ export type SheetProps = {
   dismissible?: boolean;
   closeLabel?: string;
   compact?: boolean;
+  tall?: boolean;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 };
@@ -67,6 +68,7 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.title,
   },
   compact: { marginHorizontal: -t.space[4] },
+  tall: { height: '90%' },
 }));
 
 export function Sheet({
@@ -77,6 +79,7 @@ export function Sheet({
   dismissible = true,
   closeLabel = '닫기',
   compact = false,
+  tall = false,
   children,
   style,
 }: SheetProps) {
@@ -149,6 +152,7 @@ export function Sheet({
           accessibilityViewIsModal
           style={[
             s.panel,
+            tall && s.tall,
             { paddingBottom: t.space[4] + bottomInset },
             {
               transform: [

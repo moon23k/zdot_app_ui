@@ -68,6 +68,10 @@ export {
   AlignLeftGlyph,
   AlignRightGlyph,
   GemGlyph,
+  SlidersGlyph,
+  CropGlyph,
+  EraserGlyph,
+  BucketGlyph,
 } from './internal/glyphs';
 export { contrastRatio, pickForeground } from './utils/color';
 

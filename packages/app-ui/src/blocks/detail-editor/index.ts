@@ -1,6 +1,7 @@
 export {
   DetailCanvas,
   textStyleOf,
+  type DetailCanvasCompare,
   type DetailCanvasFocus,
   type DetailCanvasInput,
   type DetailCanvasProps,

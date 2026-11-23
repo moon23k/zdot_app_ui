@@ -70,6 +70,7 @@ const useStyles = makeStyles((t) => ({
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
+  swatches: { paddingTop: t.space[4], paddingHorizontal: t.space[1] },
   large: {
     fontSize: t.typography.display.fontSize,
     lineHeight: t.typography.display.lineHeight,
@@ -162,6 +163,8 @@ export function TextFormatPanel({
       case 'color':
         return (
           <ColorSwatchPicker
+            variant="row"
+            style={s.swatches}
             colors={colors ?? DETAIL_COLORS}
             value={value.color ?? DETAIL_COLORS[0]!.value}
             onValueChange={(color) => onChange({ color })}

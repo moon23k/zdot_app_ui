@@ -49,3 +49,18 @@ export {
   type TextFormatPanelProps,
   type TextFormatTab,
 } from './text-format-panel';
+export {
+  PhotoToolBar,
+  type PhotoToolBarProps,
+  type PhotoToolItem,
+} from './photo-tool-bar';
+export {
+  AdjustTiles,
+  type AdjustTile,
+  type AdjustTilesProps,
+} from './adjust-tiles';
+export {
+  AssetGrid,
+  type AssetGridItem,
+  type AssetGridProps,
+} from './asset-grid';

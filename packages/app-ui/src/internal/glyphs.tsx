@@ -5,11 +5,14 @@ import {
   ALIGN,
   ALIGN_LEFT,
   ALIGN_RIGHT,
+  BUCKET,
   CARD,
   CHART,
   CHECKLIST,
   CLOCK,
   COPY,
+  CROP,
+  ERASER,
   EYE,
   EYE_OFF,
   FILE,
@@ -29,6 +32,7 @@ import {
   SEARCH,
   SEND,
   SHARE,
+  SLIDERS,
   SMS,
   SPARKLES,
   STAR,
@@ -312,3 +316,7 @@ export const KeyboardGlyph = imageGlyph(KEYBOARD);
 export const LayoutGlyph = imageGlyph(LAYOUT);
 export const AlignLeftGlyph = imageGlyph(ALIGN_LEFT);
 export const AlignRightGlyph = imageGlyph(ALIGN_RIGHT);
+export const SlidersGlyph = imageGlyph(SLIDERS);
+export const CropGlyph = imageGlyph(CROP);
+export const EraserGlyph = imageGlyph(ERASER);
+export const BucketGlyph = imageGlyph(BUCKET);
