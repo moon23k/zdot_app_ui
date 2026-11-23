@@ -320,3 +320,317 @@ export const SlidersGlyph = imageGlyph(SLIDERS);
 export const CropGlyph = imageGlyph(CROP);
 export const EraserGlyph = imageGlyph(ERASER);
 export const BucketGlyph = imageGlyph(BUCKET);
+
+function lineOf(size: number) {
+  return Math.max(1.5, size / 12);
+}
+
+export function MonitorGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center' }}>
+      <View
+        style={{
+          marginTop: size * 0.16,
+          width: size * 0.8,
+          height: size * 0.54,
+          borderWidth: stroke,
+          borderRadius: size * 0.08,
+          borderColor: color,
+        }}
+      />
+      <View
+        style={{ width: stroke, height: size * 0.12, backgroundColor: color }}
+      />
+      <View
+        style={{
+          width: size * 0.36,
+          height: stroke,
+          borderRadius: stroke,
+          backgroundColor: color,
+        }}
+      />
+    </View>
+  );
+}
+
+export function MobileGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width: size * 0.48,
+          height: size * 0.78,
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          paddingBottom: size * 0.08,
+          borderWidth: stroke,
+          borderRadius: size * 0.12,
+          borderColor: color,
+        }}
+      >
+        <View
+          style={{
+            width: size * 0.12,
+            height: stroke,
+            borderRadius: stroke,
+            backgroundColor: color,
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+function columnsGlyph(count: number) {
+  return function Columns({ color, size }: IconRenderProps) {
+    const stroke = lineOf(size);
+    const column = {
+      width: size * (count > 2 ? 0.2 : 0.26),
+      height: size * 0.66,
+      borderWidth: stroke,
+      borderRadius: size * 0.06,
+      borderColor: color,
+    };
+    return (
+      <View
+        style={[
+          styles.center,
+          { width: size, height: size, flexDirection: 'row', gap: size * 0.06 },
+        ]}
+      >
+        {Array.from({ length: count }, (_, i) => (
+          <View key={i} style={column} />
+        ))}
+      </View>
+    );
+  };
+}
+
+export const ColumnsGlyph = columnsGlyph(3);
+
+export const TwoColumnsGlyph = columnsGlyph(2);
+
+export function TagGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const height = size * 0.46;
+  const body = size * 0.4;
+  const tip = height / Math.SQRT2;
+  const hole = stroke * 1.3;
+  const round = size * 0.08;
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width: body + height / 2,
+          height,
+          transform: [{ rotate: '45deg' }],
+        }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            left: height / 2,
+            top: 0,
+            width: body,
+            height,
+            borderRightWidth: stroke,
+            borderTopWidth: stroke,
+            borderBottomWidth: stroke,
+            borderTopRightRadius: round,
+            borderBottomRightRadius: round,
+            borderColor: color,
+          }}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            left: (height - tip) / 2,
+            top: (height - tip) / 2,
+            width: tip,
+            height: tip,
+            borderLeftWidth: stroke,
+            borderBottomWidth: stroke,
+            borderBottomLeftRadius: round * 0.75,
+            borderColor: color,
+            transform: [{ rotate: '45deg' }],
+          }}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            left: height / 2 - hole / 2,
+            top: (height - hole) / 2,
+            width: hole,
+            height: hole,
+            borderRadius: hole,
+            backgroundColor: color,
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+export function SortGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const head = size * 0.24;
+  const shaft = {
+    position: 'absolute' as const,
+    top: size * 0.16,
+    width: stroke,
+    height: size * 0.68,
+    borderRadius: stroke,
+    backgroundColor: color,
+  };
+  const tip = {
+    position: 'absolute' as const,
+    width: head,
+    height: head,
+    borderColor: color,
+    transform: [{ rotate: '45deg' }],
+  };
+  const left = size * 0.3;
+  const right = size * 0.7;
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={[shaft, { left: left - stroke / 2 }]} />
+      <View
+        style={[
+          tip,
+          {
+            left: left - head / 2,
+            top: size * 0.84 - head * 1.2,
+            borderRightWidth: stroke,
+            borderBottomWidth: stroke,
+          },
+        ]}
+      />
+      <View style={[shaft, { left: right - stroke / 2 }]} />
+      <View
+        style={[
+          tip,
+          {
+            left: right - head / 2,
+            top: size * 0.16 + head * 0.2,
+            borderLeftWidth: stroke,
+            borderTopWidth: stroke,
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
+export function PositionGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const box = size * 0.78;
+  const dot = size * 0.26;
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={{
+          width: box,
+          height: box * 0.92,
+          alignItems: 'flex-end',
+          justifyContent: 'flex-end',
+          padding: size * 0.1,
+          borderWidth: stroke,
+          borderRadius: size * 0.12,
+          borderColor: color,
+        }}
+      >
+        <View
+          style={{
+            width: dot,
+            height: dot,
+            borderRadius: size * 0.04,
+            backgroundColor: color,
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+export function ResizeGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const arm = size * 0.3;
+  const line = {
+    position: 'absolute' as const,
+    left: size * 0.12,
+    top: (size - stroke) / 2,
+    width: size * 0.76,
+    height: stroke,
+    borderRadius: stroke,
+    backgroundColor: color,
+    transform: [{ rotate: '-45deg' }],
+  };
+  const corner = {
+    position: 'absolute' as const,
+    width: arm,
+    height: arm,
+    borderColor: color,
+  };
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={line} />
+      <View
+        style={[
+          corner,
+          {
+            right: size * 0.14,
+            top: size * 0.14,
+            borderTopWidth: stroke,
+            borderRightWidth: stroke,
+          },
+        ]}
+      />
+      <View
+        style={[
+          corner,
+          {
+            left: size * 0.14,
+            bottom: size * 0.14,
+            borderBottomWidth: stroke,
+            borderLeftWidth: stroke,
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
+export function OverlayGlyph({ color, size }: IconRenderProps) {
+  const stroke = lineOf(size);
+  const box = size * 0.78;
+  const hatch = {
+    position: 'absolute' as const,
+    width: box * 1.6,
+    height: stroke * 0.85,
+    backgroundColor: color,
+    transform: [{ rotate: '-45deg' }],
+  };
+  return (
+    <View style={[styles.center, { width: size, height: size }]}>
+      <View
+        style={[
+          styles.center,
+          {
+            width: box,
+            height: box * 0.92,
+            overflow: 'hidden',
+            borderWidth: stroke,
+            borderRadius: size * 0.12,
+            borderColor: color,
+          },
+        ]}
+      >
+        <View style={[hatch, { top: box * 0.06 }]} />
+        <View style={hatch} />
+        <View style={[hatch, { bottom: box * 0.06 }]} />
+      </View>
+    </View>
+  );
+}

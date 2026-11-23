@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { Column, Section } from '../../__stories__/helpers';
-import { BellGlyph } from '../../internal/glyphs';
+import { BellGlyph, ColumnsGlyph } from '../../internal/glyphs';
 import { HeaderButton, PageHeader } from './page-header';
 
 function Demo() {
@@ -23,6 +23,15 @@ function Demo() {
         <PageHeader
           title="주문"
           action={{ label: '일괄 발송', onPress: () => {} }}
+        />
+        <PageHeader
+          title="상품"
+          action={{
+            icon: ColumnsGlyph,
+            label: '진열',
+            framed: true,
+            onPress: () => {},
+          }}
         />
         <HeaderButton label="저장" onPress={() => {}} />
         <HeaderButton label="저장" disabled onPress={() => {}} />

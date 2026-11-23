@@ -9,6 +9,7 @@ export type PageHeaderAction = {
   icon?: IconSlot;
   label: string;
   badge?: boolean;
+  framed?: boolean;
   onPress: () => void;
 };
 
@@ -45,6 +46,16 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
   text: { paddingHorizontal: t.space[2], width: 'auto' },
+  framed: {
+    height: t.space[8] + t.space[1],
+    marginVertical: -(t.space[1] / 2),
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[2],
+    paddingHorizontal: t.space[3],
+    borderRadius: t.radius.lg,
+    backgroundColor: t.colors.surface,
+  },
   dot: {
     position: 'absolute',
     top: t.space[2] + t.space[1],
@@ -108,7 +119,23 @@ export function PageHeader({
       <Text accessibilityRole="header" style={s.title}>
         {title}
       </Text>
-      {action && !action.icon ? (
+      {action?.icon && action.framed ? (
+        <PressableBase
+          onPress={action.onPress}
+          accessibilityRole="button"
+          accessibilityLabel={action.label}
+          feedback="small"
+          style={s.framed}
+        >
+          {renderIcon(action.icon, {
+            color: t.colors.title,
+            size: t.iconSize.md,
+          })}
+          <Text variant="body" weight="medium">
+            {action.label}
+          </Text>
+        </PressableBase>
+      ) : action && !action.icon ? (
         <HeaderButton label={action.label} onPress={action.onPress} />
       ) : action ? (
         <PressableBase

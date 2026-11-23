@@ -1,4 +1,5 @@
 export * from './art-frame';
+export * from './choice-art';
 export * from './brand-palette-art';
 export * from './mockup-strip';
 export * from './token-sample';

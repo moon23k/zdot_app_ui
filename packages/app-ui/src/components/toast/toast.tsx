@@ -154,12 +154,20 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
-export function ToastHost() {
+export type ToastHostProps = { bottom?: number };
+
+export function ToastHost({ bottom }: ToastHostProps = {}) {
   const store = useContext(StoreContext);
-  return store ? <ToastHostInner store={store} /> : null;
+  return store ? <ToastHostInner store={store} bottom={bottom} /> : null;
 }
 
-function ToastHostInner({ store }: { store: ToastStore }) {
+function ToastHostInner({
+  store,
+  bottom,
+}: {
+  store: ToastStore;
+  bottom?: number;
+}) {
   const t = useTheme();
   const s = useStyles();
   const id = useId();
@@ -211,7 +219,7 @@ function ToastHostInner({ store }: { store: ToastStore }) {
   return (
     <View
       pointerEvents="box-none"
-      style={[s.layer, { bottom: t.space[4] + store.bottomInset }]}
+      style={[s.layer, { bottom: bottom ?? t.space[4] + store.bottomInset }]}
     >
       <Animated.View
         accessibilityRole="alert"

@@ -72,6 +72,15 @@ export {
   CropGlyph,
   EraserGlyph,
   BucketGlyph,
+  MonitorGlyph,
+  MobileGlyph,
+  ColumnsGlyph,
+  TwoColumnsGlyph,
+  TagGlyph,
+  SortGlyph,
+  PositionGlyph,
+  ResizeGlyph,
+  OverlayGlyph,
 } from './internal/glyphs';
 export { contrastRatio, pickForeground } from './utils/color';
 

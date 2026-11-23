@@ -47,3 +47,10 @@ export type {
   SheetBlockProps,
   SheetFormTemplateProps,
 } from './sheet-form-template';
+export { PreviewEditTemplate } from './preview-edit-template';
+export type {
+  PreviewDevice,
+  PreviewEditChoice,
+  PreviewEditTemplateProps,
+  PreviewEditTool,
+} from './preview-edit-template';
