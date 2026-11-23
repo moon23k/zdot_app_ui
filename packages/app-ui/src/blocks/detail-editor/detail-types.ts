@@ -2,7 +2,15 @@ export type DetailFont = 'gothic' | 'serif' | 'display' | 'hand';
 export type DetailWeight = 'regular' | 'bold' | 'heavy';
 export type DetailEffect = 'none' | 'shadow' | 'outline' | 'band';
 export type DetailLayout =
-  'text' | 'image' | 'image_top' | 'text_top' | 'side' | 'two_images' | 'card';
+  | 'text'
+  | 'image'
+  | 'image_top'
+  | 'text_top'
+  | 'side'
+  | 'two_images'
+  | 'card'
+  | 'table'
+  | 'steps';
 
 export type DetailTextStyle = {
   font?: DetailFont;
@@ -55,6 +63,57 @@ export const DETAIL_LAYOUTS: readonly DetailLayout[] = [
   'card',
   'text',
 ];
+
+export const DETAIL_LIST_LAYOUTS: readonly DetailLayout[] = ['table', 'steps'];
+
+export function detailLayoutsFor(block: DetailBlock): readonly DetailLayout[] {
+  return block.layers.some((l) => l.type === 'image')
+    ? DETAIL_LAYOUTS
+    : [...DETAIL_LAYOUTS, ...DETAIL_LIST_LAYOUTS];
+}
+
+const LINE_INK = '#1A1A1A';
+
+export function detailLineColor(color?: string | null): string {
+  return `${color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : LINE_INK}33`;
+}
+
+export type DetailTableRow = {
+  label: DetailLayer | null;
+  value: DetailLayer | null;
+};
+
+const visible = (layer: DetailLayer | null) =>
+  !!layer && !layer.hidden && !!layer.text?.trim();
+
+export function detailTableRows(
+  block: DetailBlock,
+  editing = false
+): DetailTableRow[] {
+  const texts = block.layers.filter((l) => l.type === 'text');
+  const rows: DetailTableRow[] = [];
+  for (let i = 0; i < texts.length; i += 2) {
+    const label = texts[i] ?? null;
+    const value = texts[i + 1] ?? null;
+    const open = (l: DetailLayer | null) => !!l && !l.hidden;
+    if (editing ? open(label) || open(value) : visible(label) || visible(value))
+      rows.push({ label, value });
+  }
+  return rows;
+}
+
+export function detailSteps(
+  block: DetailBlock,
+  editing = false
+): DetailLayer[] {
+  return block.layers.filter(
+    (l) => l.type === 'text' && (editing ? !l.hidden : visible(l))
+  );
+}
+
+export const DETAIL_STEP_COLUMNS = 4;
+export const DETAIL_TABLE_LABEL = '28%';
+export const DETAIL_STEP_DOT = 2.4;
 
 export const DETAIL_FONT_FAMILY: Record<
   DetailFont,

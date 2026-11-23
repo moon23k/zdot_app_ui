@@ -3,7 +3,11 @@ import { ScrollView, View } from 'react-native';
 import { Text } from '../../components/text/text';
 import { PressableBase } from '../../internal/pressable-base';
 import { makeStyles } from '../../utils/styles';
-import type { DetailBlock, DetailLayer } from '../detail-editor/detail-types';
+import {
+  DETAIL_STEP_COLUMNS,
+  type DetailBlock,
+  type DetailLayer,
+} from '../detail-editor/detail-types';
 
 export type SectionKindItem = {
   key: string;
@@ -21,6 +25,8 @@ const ART = 128;
 const TITLE_BAR = 6;
 const LINE_BAR = 4;
 const TITLE_SIZE = 7;
+const DOT = 10;
+const MAX_ROWS = 6;
 
 const useStyles = makeStyles((t) => ({
   scroll: { flexShrink: 1 },
@@ -86,6 +92,41 @@ const useStyles = makeStyles((t) => ({
     gap: t.space[1],
     paddingBottom: t.space[1],
   },
+  table: { alignSelf: 'stretch' },
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[2],
+    paddingVertical: t.space[1],
+  },
+  rule: { borderTopWidth: 1, borderColor: t.colors.border },
+  cellShort: {
+    width: '30%',
+    height: LINE_BAR,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.input,
+  },
+  cellLong: {
+    width: '55%',
+    height: LINE_BAR,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.border,
+  },
+  steps: { alignSelf: 'stretch', flexDirection: 'row', gap: t.space[1] },
+  step: { flex: 1, alignItems: 'center', gap: t.space[1] },
+  dot: {
+    width: DOT,
+    height: DOT,
+    borderRadius: t.radius.full,
+    borderWidth: 1,
+    borderColor: t.colors.input,
+  },
+  stepLine: {
+    width: '70%',
+    height: LINE_BAR,
+    borderRadius: t.radius.full,
+    backgroundColor: t.colors.border,
+  },
   label: {
     fontSize: t.typography.eyebrow.fontSize,
     lineHeight: t.typography.eyebrow.lineHeight,
@@ -106,6 +147,41 @@ function bars(s: Styles, layers: readonly DetailLayer[], prefix: string) {
     ));
 }
 
+function tableArt(s: Styles, block: DetailBlock): ReactNode {
+  const texts = block.layers.filter((l) => l.type === 'text');
+  const rows = Math.min(Math.ceil(texts.length / 2), MAX_ROWS);
+  return (
+    <View key="table" style={s.table}>
+      {Array.from({ length: rows }, (_, i) => (
+        <View
+          key={texts[i * 2]?.id ?? i}
+          testID="kind-table-row"
+          style={[s.tableRow, i > 0 && s.rule]}
+        >
+          <View style={s.cellShort} />
+          <View style={s.cellLong} />
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function stepsArt(s: Styles, block: DetailBlock): ReactNode {
+  const texts = block.layers
+    .filter((l) => l.type === 'text')
+    .slice(0, DETAIL_STEP_COLUMNS);
+  return (
+    <View key="steps" style={s.steps}>
+      {texts.map((l) => (
+        <View key={`s${l.id}`} testID="kind-step" style={s.step}>
+          <View style={s.dot} />
+          <View style={s.stepLine} />
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function blockArt(s: Styles, block: DetailBlock): ReactNode {
   const shown = block.layers.filter((l) => !l.hidden);
   const images = shown.filter((l) => l.type === 'image');
@@ -114,6 +190,10 @@ function blockArt(s: Styles, block: DetailBlock): ReactNode {
   switch (block.layout) {
     case 'text':
       return bars(s, shown, 't');
+    case 'table':
+      return tableArt(s, block);
+    case 'steps':
+      return stepsArt(s, block);
     case 'image':
       return photos(s.bleed);
     case 'text_top':

@@ -40,6 +40,25 @@ function Demo() {
   );
 }
 
+function Waiting() {
+  const s = useStyles();
+  return (
+    <GestureHandlerRootView style={s.root}>
+      <SectionBoard
+        items={studioSections.map((section) => ({
+          key: section.key,
+          title: section.name,
+          thumb: null,
+          pending: true,
+        }))}
+        onPress={() => {}}
+        onMore={() => {}}
+        onReorder={() => {}}
+      />
+    </GestureHandlerRootView>
+  );
+}
+
 const meta = {
   title: 'Sortable/SectionBoard',
   component: Demo,
@@ -47,3 +66,5 @@ const meta = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {};
+
+export const Pending: StoryObj<typeof meta> = { render: () => <Waiting /> };

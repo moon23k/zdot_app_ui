@@ -9,6 +9,7 @@ export type LayoutPickerProps = {
   value: DetailLayout;
   onValueChange: (layout: DetailLayout) => void;
   labels?: Partial<Record<DetailLayout, string>>;
+  items?: readonly DetailLayout[];
 };
 
 const LABELS: Record<DetailLayout, string> = {
@@ -19,7 +20,11 @@ const LABELS: Record<DetailLayout, string> = {
   two_images: '사진 두 장',
   card: '카드',
   text: '글만',
+  table: '표',
+  steps: '순서',
 };
+
+const DIAGRAM_ROWS = [0, 1, 2];
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.space[2], paddingHorizontal: t.space[3] },
@@ -50,6 +55,33 @@ const useStyles = makeStyles((t) => ({
   half: { flex: 1, justifyContent: 'center' },
   long: { width: '80%' },
   short: { width: '50%' },
+  list: { flex: 1, justifyContent: 'center', padding: t.space[1] },
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+    paddingVertical: t.space[1],
+    borderTopWidth: 1,
+    borderColor: t.colors.border,
+  },
+  tableLast: { borderBottomWidth: 1 },
+  cellShort: { width: '30%' },
+  cellLong: { width: '55%' },
+  steps: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.space[1],
+  },
+  step: { flex: 1, alignItems: 'center', gap: t.space[1] },
+  dot: {
+    width: t.space[3],
+    height: t.space[3],
+    borderRadius: t.radius.full,
+    borderWidth: 1,
+    borderColor: t.colors.mutedForeground,
+  },
+  stepLine: { width: '70%' },
   card: {
     flex: 1,
     borderRadius: t.radius.sm,
@@ -114,6 +146,52 @@ export function Diagram({ layout }: { layout: DetailLayout }) {
       );
     case 'text':
       return <View style={s.half}>{lines}</View>;
+    case 'table':
+      return (
+        <View style={s.list}>
+          {DIAGRAM_ROWS.map((row) => (
+            <View
+              key={row}
+              style={[
+                s.tableRow,
+                row === DIAGRAM_ROWS.length - 1 && s.tableLast,
+              ]}
+            >
+              <View
+                style={[
+                  s.line,
+                  s.cellShort,
+                  { backgroundColor: t.colors.mutedForeground },
+                ]}
+              />
+              <View
+                style={[
+                  s.line,
+                  s.cellLong,
+                  { backgroundColor: t.colors.foreground },
+                ]}
+              />
+            </View>
+          ))}
+        </View>
+      );
+    case 'steps':
+      return (
+        <View style={s.steps}>
+          {DIAGRAM_ROWS.map((row) => (
+            <View key={row} style={s.step}>
+              <View style={s.dot} />
+              <View
+                style={[
+                  s.line,
+                  s.stepLine,
+                  { backgroundColor: t.colors.foreground },
+                ]}
+              />
+            </View>
+          ))}
+        </View>
+      );
     default:
       return photo;
   }
@@ -123,6 +201,7 @@ export function LayoutPicker({
   value,
   onValueChange,
   labels,
+  items = DETAIL_LAYOUTS,
 }: LayoutPickerProps) {
   const s = useStyles();
   return (
@@ -132,7 +211,7 @@ export function LayoutPicker({
       contentContainerStyle={s.row}
       accessibilityRole="radiogroup"
     >
-      {DETAIL_LAYOUTS.map((layout) => {
+      {items.map((layout) => {
         const on = layout === value;
         const label = labels?.[layout] ?? LABELS[layout];
         return (

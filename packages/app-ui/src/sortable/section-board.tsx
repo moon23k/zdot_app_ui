@@ -11,6 +11,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedRef } from 'react-native-reanimated';
 import Sortable from 'react-native-sortables';
 import { SECTION_THUMB } from '../blocks/detail-studio/section-thumb';
+import { Skeleton } from '../components/skeleton/skeleton';
 import { Text } from '../components/text/text';
 import type { SectionAnchor } from '../components/dropdown-menu/dropdown-menu';
 import { EyeOffGlyph, GripGlyph, MoreGlyph } from '../internal/glyphs';
@@ -26,6 +27,7 @@ export type SectionBoardItem = {
   snippet?: string;
   thumb: ReactNode;
   hidden?: boolean;
+  pending?: boolean;
 };
 
 export type SectionBoardProps = {
@@ -42,6 +44,7 @@ export type SectionBoardProps = {
 };
 
 const MOVE_LABELS: [string, string] = ['위로 이동', '아래로 이동'];
+const WAIT_LINE = 120;
 
 const rowHeight = (t: Theme) => SECTION_THUMB.height + t.space[2] * 2;
 
@@ -120,6 +123,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  wait: { marginTop: t.space[2] },
   flag: { marginRight: -t.space[2] },
   turn: { transform: [{ rotate: '90deg' }] },
 }));
@@ -155,6 +159,40 @@ const Row = memo(function SectionRow({
   const s = useStyles();
   const more = useRef<ComponentRef<typeof View>>(null);
   const hidden = !!item.hidden;
+  if (item.pending) {
+    return (
+      <View
+        style={[s.row, index === 0 && s.first, index === count - 1 && s.last]}
+      >
+        {index > 0 ? <View pointerEvents="none" style={s.line} /> : null}
+        <Sortable.Handle mode="fixed-order">
+          <View style={s.grip} />
+        </Sortable.Handle>
+        <View style={s.main} accessible accessibilityLabel={item.title}>
+          <View style={s.thumb}>
+            <Skeleton
+              width={SECTION_THUMB.width}
+              height={SECTION_THUMB.height}
+              radius={t.radius.md}
+            />
+            <View pointerEvents="none" style={s.ring} />
+          </View>
+          <View style={s.text}>
+            <Text weight="semibold" tone="muted" numberOfLines={1}>
+              {item.title}
+            </Text>
+            <Skeleton
+              width={WAIT_LINE}
+              height={t.space[3]}
+              radius={t.radius.full}
+              style={s.wait}
+            />
+          </View>
+        </View>
+        <View style={s.icon} />
+      </View>
+    );
+  }
   const openMore = () => {
     const box = more.current;
     if (!box) return;

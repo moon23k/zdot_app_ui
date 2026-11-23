@@ -5,7 +5,13 @@ import { FileGlyph, ImageGlyph, MenuGlyph, PaletteGlyph } from '../../index';
 import { DetailCanvas } from './detail-canvas';
 import { DetailComposer } from './detail-composer';
 import { DetailEditorTemplate, EditorPanel } from './detail-editor-template';
-import type { DetailDocValue, DetailFont, DetailLayout } from './detail-types';
+import {
+  DETAIL_LAYOUTS,
+  DETAIL_LIST_LAYOUTS,
+  type DetailDocValue,
+  type DetailFont,
+  type DetailLayout,
+} from './detail-types';
 import { DraftStrip } from './draft-strip';
 import { EditorBar } from './editor-bar';
 import { FontPicker } from './font-picker';
@@ -47,6 +53,33 @@ const doc: DetailDocValue = {
           style: { size: 6, weight: 'bold', effect: 'band' },
         },
       ],
+    },
+    {
+      id: 'b4',
+      layout: 'table',
+      layers: [
+        ['크기', '지름 17cm · 높이 7.5cm'],
+        ['용량', '750ml'],
+        ['소재', '백자토 · 무광 유약'],
+      ].flatMap(([label, value], i) => [
+        {
+          id: `k${i}`,
+          type: 'text' as const,
+          text: label,
+          style: { size: 4, color: '#626262' },
+        },
+        { id: `v${i}`, type: 'text' as const, text: value, style: { size: 5 } },
+      ]),
+    },
+    {
+      id: 'b5',
+      layout: 'steps',
+      layers: ['물레 성형', '초벌 800도', '유약', ''].map((text, i) => ({
+        id: `s${i}`,
+        type: 'text' as const,
+        text,
+        style: { size: 4, align: 'center' as const },
+      })),
     },
   ],
 };
@@ -125,7 +158,11 @@ function Demo() {
         <CompareSlider before={photo} after={photo} />
       </Section>
       <Section title="블록 배치">
-        <LayoutPicker value={layout} onValueChange={setLayout} />
+        <LayoutPicker
+          value={layout}
+          onValueChange={setLayout}
+          items={[...DETAIL_LAYOUTS, ...DETAIL_LIST_LAYOUTS]}
+        />
       </Section>
       <Section title="글꼴">
         <EditorPanel>

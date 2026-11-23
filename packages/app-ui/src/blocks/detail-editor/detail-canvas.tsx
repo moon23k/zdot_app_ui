@@ -22,7 +22,13 @@ import { makeStyles } from '../../utils/styles';
 import { DetailFocusContext, type DetailFocusRect } from './focus-context';
 import {
   DETAIL_FONT_FAMILY,
+  DETAIL_STEP_COLUMNS,
+  DETAIL_STEP_DOT,
+  DETAIL_TABLE_LABEL,
   detailBlockSpace,
+  detailLineColor,
+  detailSteps,
+  detailTableRows,
   detailFontSize,
   detailLineHeight,
   detailTracking,
@@ -76,6 +82,22 @@ const useStyles = makeStyles((t) => ({
   fill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   pair: { flexDirection: 'row', gap: t.space[2] },
   card: { overflow: 'hidden', borderRadius: t.radius.lg },
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderTopWidth: 1,
+  },
+  tableLast: { borderBottomWidth: 1 },
+  label: { width: DETAIL_TABLE_LABEL },
+  stepRow: { flexDirection: 'row' },
+  step: { flex: 1, alignItems: 'center' },
+  stretch: { alignSelf: 'stretch' },
+  dot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: t.radius.full,
+  },
   blank: { borderRadius: t.radius.sm, backgroundColor: t.colors.muted },
   blankTitle: { width: '60%' },
   blankLine: { width: '80%' },
@@ -255,6 +277,132 @@ export function DetailCanvas({
     </Tap>
   );
 
+  const blankBar = (l: DetailLayer, style: TextStyle) => (
+    <View
+      testID="detail-blank-text"
+      style={[
+        s.blank,
+        (l.style?.size ?? 5) >= BLANK_TITLE ? s.blankTitle : s.blankLine,
+        { height: style.lineHeight, alignSelf: alignSelfOf(l.style?.align) },
+      ]}
+    />
+  );
+
+  const cell = (
+    block: DetailBlock,
+    l: DetailLayer | null,
+    style?: StyleProp<ViewStyle>
+  ) => {
+    if (!l || l.hidden) return <View style={style} />;
+    const text = textStyleOf(l, scale, fg, bandText);
+    const blank = !l.text?.trim();
+    if (blank && !onSelect) return <View style={style} />;
+    return (
+      <Tap
+        onPress={press({ block: block.id, layer: l.id })}
+        label={blank ? '글' : (l.text ?? '')}
+        style={style}
+      >
+        {blank ? blankBar(l, text) : <RNText style={text}>{l.text}</RNText>}
+        {picked(block, l) ? <Handles /> : null}
+      </Tap>
+    );
+  };
+
+  const table = (block: DetailBlock) => {
+    const rows = detailTableRows(block, !!onSelect);
+    if (!rows.length) return null;
+    const first = block.layers.filter((l) => l.type === 'text')[1];
+    const borderColor = detailLineColor(first?.style?.color);
+    const gap = t.space[3] * scale;
+    return (
+      <View style={{ padding: pad }}>
+        {rows.map((row, i) => (
+          <View
+            key={row.label?.id ?? row.value?.id ?? i}
+            style={[
+              s.tableRow,
+              i === rows.length - 1 && s.tableLast,
+              { paddingVertical: gap, borderColor },
+            ]}
+          >
+            {cell(block, row.label, s.label)}
+            {cell(block, row.value, s.half)}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const steps = (block: DetailBlock) => {
+    const list = detailSteps(block, !!onSelect);
+    if (!list.length) return null;
+    const columns = Math.min(list.length, DETAIL_STEP_COLUMNS);
+    const gap = t.space[2] * scale;
+    const lines: (DetailLayer | null)[][] = [];
+    for (let i = 0; i < list.length; i += columns) {
+      const line: (DetailLayer | null)[] = list.slice(i, i + columns);
+      while (line.length < columns) line.push(null);
+      lines.push(line);
+    }
+    return (
+      <View style={{ padding: pad, gap }}>
+        {lines.map((line, r) => (
+          <View key={r} style={[s.stepRow, { gap }]}>
+            {line.map((l, c) => {
+              if (!l) return <View key={`empty-${c}`} style={s.step} />;
+              const text = textStyleOf(l, scale, fg, bandText);
+              const size = text.fontSize ?? 0;
+              const blank = !l.text?.trim();
+              const number = textStyleOf(
+                {
+                  ...l,
+                  style: {
+                    ...l.style,
+                    weight: 'bold',
+                    align: 'center',
+                    effect: 'none',
+                  },
+                },
+                scale,
+                fg
+              );
+              return (
+                <Tap
+                  key={l.id}
+                  onPress={press({ block: block.id, layer: l.id })}
+                  label={blank ? '글' : (l.text ?? '')}
+                  style={[s.step, { gap }]}
+                >
+                  <View
+                    style={[
+                      s.dot,
+                      {
+                        width: size * DETAIL_STEP_DOT,
+                        height: size * DETAIL_STEP_DOT,
+                        borderColor: detailLineColor(l.style?.color),
+                      },
+                    ]}
+                  >
+                    <RNText style={[number, { lineHeight: size }]}>
+                      {String(r * columns + c + 1)}
+                    </RNText>
+                  </View>
+                  {blank ? (
+                    blankBar(l, text)
+                  ) : (
+                    <RNText style={[text, s.stretch]}>{l.text}</RNText>
+                  )}
+                  {picked(block, l) ? <Handles /> : null}
+                </Tap>
+              );
+            })}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   const texts = (block: DetailBlock, shown: DetailLayer[]) => {
     const list = shown.filter((l) => l.type === 'text' && (l.text || onSelect));
     if (!list.length) return null;
@@ -270,19 +418,7 @@ export function DetailCanvas({
               label={blank ? '글' : (l.text ?? '')}
             >
               {blank ? (
-                <View
-                  testID="detail-blank-text"
-                  style={[
-                    s.blank,
-                    (l.style?.size ?? 5) >= BLANK_TITLE
-                      ? s.blankTitle
-                      : s.blankLine,
-                    {
-                      height: style.lineHeight,
-                      alignSelf: alignSelfOf(l.style?.align),
-                    },
-                  ]}
-                />
+                blankBar(l, style)
               ) : (
                 <RNText style={style}>{l.text}</RNText>
               )}
@@ -325,6 +461,10 @@ export function DetailCanvas({
             {texts(block, shown)}
           </>
         );
+      case 'table':
+        return table(block);
+      case 'steps':
+        return steps(block);
       case 'card':
         return (
           <View style={{ padding: pad }}>

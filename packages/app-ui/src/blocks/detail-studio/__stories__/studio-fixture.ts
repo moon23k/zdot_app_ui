@@ -23,6 +23,15 @@ const text = (
   style: { size: 5, ...style },
 });
 
+const table = (rows: [string, string][]): DetailLayer[] =>
+  rows.flatMap(([label, value], i) => [
+    text(`k${i}`, label, { size: 4, color: '#626262' }),
+    text(`v${i}`, value),
+  ]);
+
+const steps = (names: string[]): DetailLayer[] =>
+  names.map((name, i) => text(`s${i}`, name, { size: 4, align: 'center' }));
+
 const title = (value: string, align: 'center' | 'left' = 'center') =>
   text('t0', value, { size: 8, weight: 'bold', align });
 
@@ -136,13 +145,13 @@ export const studioSections: StudioSection[] = [
       },
       {
         id: 'b2',
-        layout: 'text',
-        layers: [
-          text(
-            't1',
-            '지름 17cm · 높이 7.5cm · 750ml\n무게 · 약 420g\n소재 · 백자토 · 무광 유약'
-          ),
-        ],
+        layout: 'table',
+        layers: table([
+          ['크기', '지름 17cm · 높이 7.5cm'],
+          ['용량', '750ml'],
+          ['무게', '약 420g'],
+          ['소재', '백자토 · 무광 유약'],
+        ]),
       },
     ]),
   },
@@ -158,8 +167,8 @@ export const studioSections: StudioSection[] = [
       },
       {
         id: 'b2',
-        layout: 'text',
-        layers: [text('t1', '물레 성형 · 초벌 800도 · 유약\n재벌 1,250도')],
+        layout: 'steps',
+        layers: steps(['물레 성형', '초벌 800도', '유약', '재벌 1,250도']),
       },
     ]),
   },
@@ -194,13 +203,12 @@ export const studioSections: StudioSection[] = [
       },
       {
         id: 'b2',
-        layout: 'text',
-        layers: [
-          text(
-            't1',
-            '주문 후 2 ~ 3일 · 3,000원\n완충 상자 포장\n수령 후 7일 이내'
-          ),
-        ],
+        layout: 'table',
+        layers: table([
+          ['배송', '주문 후 2 ~ 3일 · 3,000원'],
+          ['포장', '완충 상자 포장'],
+          ['교환 · 반품', '수령 후 7일 이내'],
+        ]),
       },
     ]),
   },
