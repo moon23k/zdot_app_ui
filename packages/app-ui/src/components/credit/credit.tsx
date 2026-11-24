@@ -15,6 +15,11 @@ export type CreditPillProps = {
 };
 
 const INVERSE = 0.78;
+const GROUP = /\B(?=(\d{3})+(?!\d))/g;
+
+export function creditText(value: number): string {
+  return String(value).replace(GROUP, ',');
+}
 
 const useStyles = makeStyles((t) => ({
   cost: { flexDirection: 'row', alignItems: 'center', gap: t.space[1] },
@@ -53,7 +58,7 @@ export function CreditCost({ value, tone = 'muted' }: CreditCostProps) {
         maxFontSizeMultiplier={t.maxFontScale}
         style={[s.value, { color }]}
       >
-        {String(value)}
+        {creditText(value)}
       </RNText>
     </View>
   );
@@ -64,7 +69,9 @@ export function CreditPill({ balance, accessibilityLabel }: CreditPillProps) {
   return (
     <View
       accessible
-      accessibilityLabel={accessibilityLabel ?? `크레딧 잔액 ${balance}`}
+      accessibilityLabel={
+        accessibilityLabel ?? `크레딧 잔액 ${creditText(balance)}`
+      }
       style={s.pill}
     >
       <CreditCost value={balance} />

@@ -152,6 +152,9 @@ it('credit marks show the number only', async () => {
   await view.rerender(<CreditPill balance={126} />);
   expect(screen.getByLabelText(/126/)).toBeTruthy();
   expect(screen.queryByText(/크레딧/)).toBeNull();
+  await view.rerender(<CreditPill balance={12950} />);
+  expect(screen.getByText('12,950')).toBeTruthy();
+  expect(screen.getByLabelText('크레딧 잔액 12,950')).toBeTruthy();
 });
 
 it('draws an empty bold step 5 text as a title bar and smaller bold text as a line', async () => {
