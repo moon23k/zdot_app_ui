@@ -1,19 +1,17 @@
 import { StyleSheet, View } from 'react-native';
 
+const OPEN = 'transparent';
+
 const g = StyleSheet.create({
-  arc: {
-    position: 'absolute',
-    borderTopColor: 'transparent',
-    transform: [{ rotate: '-45deg' }],
-  },
-  head: { position: 'absolute', transform: [{ rotate: '-6deg' }] },
+  arc: { position: 'absolute', transform: [{ rotate: '-55deg' }] },
+  head: { position: 'absolute', transform: [{ rotate: '45deg' }] },
 });
 
 export function UndoGlyph({ color, size }: { color: string; size: number }) {
   const unit = size / 18;
   const stroke = Math.max(1.5, unit * 1.7);
   const ring = unit * 13;
-  const head = unit * 5;
+  const head = unit * 4.8;
   return (
     <View style={{ width: size, height: size }}>
       <View
@@ -26,7 +24,10 @@ export function UndoGlyph({ color, size }: { color: string; size: number }) {
             height: ring,
             borderRadius: ring / 2,
             borderWidth: stroke,
-            borderColor: color,
+            borderTopColor: OPEN,
+            borderRightColor: color,
+            borderBottomColor: color,
+            borderLeftColor: color,
           },
         ]}
       />
@@ -34,14 +35,14 @@ export function UndoGlyph({ color, size }: { color: string; size: number }) {
         style={[
           g.head,
           {
-            left: unit * 1.6,
-            top: unit * 1.2,
+            left: unit * 6.6,
+            top: unit * 1.45,
             width: head,
             height: head,
             borderLeftWidth: stroke,
             borderBottomWidth: stroke,
             borderColor: color,
-            borderRadius: unit * 0.8,
+            borderRadius: unit * 0.5,
           },
         ]}
       />

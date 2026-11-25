@@ -1,8 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
+const OPEN = 'transparent';
+
 const g = StyleSheet.create({
   center: { alignItems: 'center', justifyContent: 'center' },
-  open: { borderTopColor: 'transparent', transform: [{ rotate: '45deg' }] },
+  open: { transform: [{ rotate: '45deg' }] },
   head: { position: 'absolute' },
 });
 
@@ -19,7 +21,10 @@ export function RetryGlyph({ color, size }: { color: string; size: number }) {
             height: ring,
             borderRadius: ring / 2,
             borderWidth: stroke,
-            borderColor: color,
+            borderTopColor: OPEN,
+            borderRightColor: color,
+            borderBottomColor: color,
+            borderLeftColor: color,
           },
         ]}
       />
