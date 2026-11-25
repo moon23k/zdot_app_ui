@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { studioSections } from '../blocks/detail-studio/__stories__/studio-fixture';
-import { SectionThumb } from '../blocks/detail-studio/section-thumb';
+import { SectionCover } from '../blocks/detail-studio/section-cover';
+import { ImageGlyph } from '../internal/glyphs';
 import { makeStyles } from '../utils/styles';
 import { SectionBoard } from './section-board';
 
@@ -25,7 +26,16 @@ function Demo() {
       title: section.name,
       snippet: section.snippet,
       hidden: section.hidden,
-      thumb: <SectionThumb doc={section.doc} />,
+      thumb: (
+        <SectionCover
+          uri={
+            section.doc.blocks
+              .flatMap((b) => b.layers)
+              .find((l) => l.type === 'image' && l.url)?.url ?? null
+          }
+          icon={ImageGlyph}
+        />
+      ),
     };
   });
   return (

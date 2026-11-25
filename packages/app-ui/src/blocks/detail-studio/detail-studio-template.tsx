@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
 
@@ -41,11 +41,7 @@ export function DetailStudioTemplate({
       ) : (
         <View style={s.body}>{children}</View>
       )}
-      {dock ? (
-        <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-          {dock}
-        </View>
-      ) : null}
+      {dock}
     </View>
   );
 }

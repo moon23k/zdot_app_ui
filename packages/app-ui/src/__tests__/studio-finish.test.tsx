@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native';
 import { StyleSheet, type ViewStyle } from 'react-native';
 import {
   Button,
@@ -6,13 +6,11 @@ import {
   CopyGlyph,
   DropdownMenu,
   EyeOffGlyph,
-  PhotoToolBar,
   SegmentedControl,
   TrashGlyph,
   defaultThemes,
 } from '../index';
 import { keepWords } from '../blocks/detail-editor/keep-words';
-import { sectionThumbFrame } from '../blocks/detail-studio/section-thumb';
 import {
   sheetEdge,
   typingOffset,
@@ -64,52 +62,6 @@ describe('keepWords', () => {
     expect(keepWords('살펴보세요\n가까이')).toBe(
       `살${WJ}펴${WJ}보${WJ}세${WJ}요\n가${WJ}까${WJ}이`
     );
-  });
-});
-
-describe('sectionThumbFrame', () => {
-  it('centers a leading photo', () => {
-    expect(
-      sectionThumbFrame(
-        [part('image', 0, 130), part('text', 136, 10, 10)],
-        80,
-        6
-      )
-    ).toEqual({ top: 25, height: 80 });
-  });
-
-  it('centers a photo that comes after the title', () => {
-    expect(
-      sectionThumbFrame(
-        [
-          part('text', 6, 8, 8),
-          part('image', 20, 140),
-          part('text', 166, 20, 5),
-        ],
-        80,
-        6
-      )
-    ).toEqual({ top: 50, height: 80 });
-  });
-
-  it('starts at the first text when the section has no photo', () => {
-    const frame = sectionThumbFrame(
-      [
-        part('text', 6, 8, 8),
-        { ...part('image', 20, 50), blank: true },
-        part('text', 76, 20, 5),
-      ],
-      80,
-      6
-    );
-    expect(frame.top).toBe(0);
-    expect(frame.height).toBe(76);
-  });
-
-  it('centers a section shorter than the thumbnail', () => {
-    expect(
-      sectionThumbFrame([part('text', 6, 8, 8), part('text', 24, 10, 5)], 80, 6)
-    ).toEqual({ top: -20, height: 80 });
   });
 });
 
@@ -285,27 +237,4 @@ it('segment labels can carry their own weight', async () => {
   );
   expect(screen.getByText('보통')).toHaveStyle({ fontWeight: '400' });
   expect(screen.getByText('아주 굵게')).toHaveStyle({ fontWeight: '700' });
-});
-
-it('PhotoToolBar stops on whole tools when they overflow', async () => {
-  await render(
-    <PhotoToolBar
-      items={['a', 'b', 'c', 'd', 'e', 'f'].map((key) => ({
-        key,
-        icon: null,
-        label: key,
-        onPress: () => {},
-      }))}
-      action={{ label: '완료', onPress: () => {} }}
-    />
-  );
-  const scroller = screen.getByTestId('photo-tools');
-  await fireEvent(scroller, 'layout', {
-    nativeEvent: { layout: { width: 300, height: 64 } },
-  });
-  const now = screen.getByTestId('photo-tools');
-  expect(now.props.snapToInterval).toBe(64);
-  expect(StyleSheet.flatten(now.props.contentContainerStyle).paddingRight).toBe(
-    44
-  );
 });

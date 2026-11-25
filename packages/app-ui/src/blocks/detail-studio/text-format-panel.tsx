@@ -29,6 +29,7 @@ export type TextFormatPanelProps = {
   onSlidingStart?: () => void;
   tab: TextFormatTab;
   onTabChange: (tab: TextFormatTab) => void;
+  tabs?: readonly TextFormatTab[];
   sample?: string;
   colors?: readonly ColorSwatch[];
   bottomInset?: number;
@@ -90,6 +91,7 @@ export function TextFormatPanel({
   onSlidingStart,
   tab,
   onTabChange,
+  tabs,
   sample = '가나다',
   colors,
   bottomInset = 0,
@@ -99,6 +101,7 @@ export function TextFormatPanel({
   const size = value.size ?? 5;
   const line = value.line ?? 5;
   const tracking = value.tracking ?? 0;
+  const shown = tabs ? TABS.filter((item) => tabs.includes(item.value)) : TABS;
 
   const body = () => {
     switch (tab) {
@@ -198,13 +201,15 @@ export function TextFormatPanel({
 
   return (
     <View style={[s.panel, { height: FORMAT_PANEL + bottomInset }]}>
-      <View style={s.tabs}>
-        <SegmentedControl
-          items={TABS}
-          value={tab}
-          onValueChange={onTabChange}
-        />
-      </View>
+      {shown.length > 1 ? (
+        <View style={s.tabs}>
+          <SegmentedControl
+            items={shown}
+            value={tab}
+            onValueChange={onTabChange}
+          />
+        </View>
+      ) : null}
       <View style={s.body}>{body()}</View>
     </View>
   );

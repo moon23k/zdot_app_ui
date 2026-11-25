@@ -42,3 +42,4 @@ export * from './scan-modal';
 export * from './summary-cards';
 export * from './request-card';
 export * from './photo-grid';
+export * from './detail-request';

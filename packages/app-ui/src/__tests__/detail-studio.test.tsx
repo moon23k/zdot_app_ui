@@ -8,9 +8,15 @@ import {
   detailLayoutsFor,
   DropdownMenu,
   SectionKindGrid,
-  SectionThumb,
+  SectionCover,
+  SectionSettings,
   StudioBar,
   StudioDock,
+  StudioSteps,
+  RewriteTray,
+  TextFormatPanel,
+  ImageGlyph,
+  MinusGlyph,
   PlusGlyph,
   CopyGlyph,
   TrashGlyph,
@@ -44,7 +50,7 @@ const items = [
     key: 'a',
     title: '인트로',
     snippet: '첫 줄',
-    thumb: <SectionThumb doc={doc} />,
+    thumb: <SectionCover uri="https://example.test/a.jpg" icon={ImageGlyph} />,
   },
   { key: 'b', title: '특징', thumb: <View />, hidden: true },
   { key: 'c', title: '연출', thumb: <View /> },
@@ -74,10 +80,10 @@ describe('SectionBoard', () => {
     await fireEvent.press(screen.getAllByLabelText('더보기')[2]!);
     expect(p.onMore).toHaveBeenCalledWith('c', {
       x: 16,
-      y: 312,
+      y: 296,
       width: 358,
-      height: 96,
-      pitch: 96,
+      height: 88,
+      pitch: 88,
     });
     measure.mockRestore();
   });
@@ -162,13 +168,17 @@ it('dock and bar buttons respond', async () => {
   const add = jest.fn();
   const close = jest.fn();
   const done = jest.fn();
+  const preview = jest.fn();
   await render(
     <DetailStudioTemplate
       bar={
         <StudioBar
           title="상세페이지"
           onClose={close}
-          action={{ label: '완료', onPress: done }}
+          tools={[
+            { key: 'eye', icon: null, label: '미리보기', onPress: preview },
+          ]}
+          action={{ label: '저장', onPress: done }}
         />
       }
       dock={
@@ -182,10 +192,12 @@ it('dock and bar buttons respond', async () => {
   );
   await fireEvent.press(screen.getByLabelText('추가'));
   await fireEvent.press(screen.getByLabelText('닫기'));
-  await fireEvent.press(screen.getByText('완료'));
+  await fireEvent.press(screen.getByText('저장'));
+  await fireEvent.press(screen.getByLabelText('미리보기'));
   expect(add).toHaveBeenCalled();
   expect(close).toHaveBeenCalled();
   expect(done).toHaveBeenCalled();
+  expect(preview).toHaveBeenCalled();
   expect(screen.getByText('상세페이지')).toBeTruthy();
 });
 
@@ -319,4 +331,122 @@ it('pending rows wait without actions', async () => {
   });
   expect(onPress).not.toHaveBeenCalledWith('points');
   expect(onReorder).not.toHaveBeenCalled();
+});
+
+it('pending rows show a given thumb and wait for the rest', async () => {
+  await render(
+    <SectionBoard
+      items={[
+        {
+          key: 'intro',
+          title: '인트로',
+          thumb: <View testID="cover" />,
+          pending: true,
+        },
+        { key: 'points', title: '특징', thumb: null, pending: true },
+      ]}
+      onPress={jest.fn()}
+      onMore={jest.fn()}
+      onReorder={jest.fn()}
+    />
+  );
+  expect(screen.getAllByTestId('cover')).toHaveLength(1);
+});
+
+it('bar shows a check that confirms after the tools', async () => {
+  const confirm = jest.fn();
+  await render(
+    <StudioBar
+      title="인트로"
+      leading="back"
+      onClose={jest.fn()}
+      tools={[{ key: 'undo', icon: null, label: '실행 취소' }]}
+      confirm={{ label: '완료', onPress: confirm }}
+    />
+  );
+  await fireEvent.press(screen.getByLabelText('완료'));
+  expect(confirm).toHaveBeenCalled();
+  expect(screen.getByLabelText('실행 취소')).toBeTruthy();
+});
+
+it('section settings show layout, color and space in one sheet', async () => {
+  const onLayoutChange = jest.fn();
+  const onSpaceChange = jest.fn();
+  await render(
+    <SectionSettings
+      layout="image_top"
+      layouts={DETAIL_LAYOUTS}
+      onLayoutChange={onLayoutChange}
+      background="#FFFFFF"
+      onBackgroundChange={jest.fn()}
+      space={{ top: 3, bottom: 3 }}
+      onSpaceChange={onSpaceChange}
+    />
+  );
+  expect(screen.queryByText('배치')).toBeNull();
+  expect(screen.queryByText('사진 위 · 글 아래')).toBeNull();
+  expect(
+    screen.getByLabelText('사진 위 · 글 아래').props.accessibilityState
+  ).toMatchObject({ selected: true });
+  await fireEvent.press(screen.getByLabelText('나란히'));
+  expect(onLayoutChange).toHaveBeenCalledWith('side');
+  expect(
+    screen.getByLabelText('여백 보통').props.accessibilityState
+  ).toMatchObject({ selected: true });
+  await fireEvent.press(screen.getByLabelText('여백 넓게'));
+  expect(onSpaceChange).toHaveBeenCalledWith({ top: 6, bottom: 6 });
+});
+
+it('rewrite tray shows one cost over the request tools', async () => {
+  const onPick = jest.fn();
+  await render(
+    <RewriteTray
+      cost={50}
+      items={[
+        { value: 'short', label: '더 짧게', icon: MinusGlyph },
+        { value: 'long', label: '더 자세히', icon: PlusGlyph },
+      ]}
+      onPick={onPick}
+    />
+  );
+  expect(screen.getAllByText('50')).toHaveLength(1);
+  expect(screen.queryByLabelText('직접 고치기')).toBeNull();
+  await fireEvent.press(screen.getByLabelText('더 자세히'));
+  expect(onPick).toHaveBeenCalledWith('long');
+});
+
+it('format panel hides the tabs for a single tab', async () => {
+  const props = {
+    value: {},
+    onChange: jest.fn(),
+    tab: 'font' as const,
+    onTabChange: jest.fn(),
+  };
+  const view = await render(<TextFormatPanel {...props} tabs={['font']} />);
+  expect(screen.queryByText('글꼴')).toBeNull();
+  await view.rerender(
+    <TextFormatPanel
+      {...props}
+      tab="spacing"
+      tabs={['spacing', 'align', 'effect']}
+    />
+  );
+  expect(screen.getByText('간격')).toBeTruthy();
+  expect(screen.getByText('효과')).toBeTruthy();
+  expect(screen.queryByText('글꼴')).toBeNull();
+});
+
+it('steps fill the finished step and half of the current one', async () => {
+  await render(
+    <StudioSteps
+      steps={[
+        { key: 'writing', label: '글 쓰기' },
+        { key: 'composing', label: '구획 만들기' },
+      ]}
+      current="composing"
+    />
+  );
+  const bar = screen.getByRole('progressbar');
+  expect(bar.props.accessibilityLabel).toBe('구획 만들기');
+  expect(bar.props.accessibilityValue).toMatchObject({ now: 1, max: 2 });
 });

@@ -10,7 +10,6 @@ import {
 import { View } from 'react-native';
 import Animated, { useAnimatedRef } from 'react-native-reanimated';
 import Sortable from 'react-native-sortables';
-import { SECTION_THUMB } from '../blocks/detail-studio/section-thumb';
 import { Skeleton } from '../components/skeleton/skeleton';
 import { Text } from '../components/text/text';
 import type { SectionAnchor } from '../components/dropdown-menu/dropdown-menu';
@@ -46,13 +45,13 @@ export type SectionBoardProps = {
 const MOVE_LABELS: [string, string] = ['위로 이동', '아래로 이동'];
 const WAIT_LINE = 120;
 
-const rowHeight = (t: Theme) => SECTION_THUMB.height + t.space[2] * 2;
+const rowHeight = (t: Theme) => t.listRow.threeLine;
 
-const textLead = (t: Theme) =>
-  t.space[1] + t.space[8] + SECTION_THUMB.width + t.space[3];
+const thumbSize = (t: Theme) => t.space[16];
 
 const useStyles = makeStyles((t) => ({
   scroll: { flex: 1 },
+  content: { paddingTop: t.space[1], paddingBottom: t.space[4] },
   card: {
     marginHorizontal: t.space[4],
     borderRadius: t.radius.md * 2,
@@ -62,7 +61,8 @@ const useStyles = makeStyles((t) => ({
     height: rowHeight(t),
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: t.space[1],
+    paddingLeft: t.space[3],
+    paddingRight: t.space[1],
     backgroundColor: t.colors.surface,
   },
   first: {
@@ -79,12 +79,12 @@ const useStyles = makeStyles((t) => ({
     position: 'absolute',
     top: 0,
     right: 0,
-    left: textLead(t),
+    left: 0,
     height: 1,
     backgroundColor: t.colors.border,
   },
   grip: {
-    width: t.space[8],
+    width: t.minTouchSize,
     height: t.minTouchSize,
     alignItems: 'center',
     justifyContent: 'center',
@@ -96,21 +96,11 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
   },
   thumb: {
-    width: SECTION_THUMB.width,
-    height: SECTION_THUMB.height,
+    width: thumbSize(t),
+    height: thumbSize(t),
     overflow: 'hidden',
-    borderRadius: t.radius.md,
-    backgroundColor: t.colors.surface,
-  },
-  ring: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    borderRadius: t.radius.md,
-    borderWidth: 1,
-    borderColor: t.colors.border,
+    borderRadius: t.radius.lg,
+    backgroundColor: t.colors.muted,
   },
   text: { flex: 1, paddingLeft: t.space[3], paddingRight: t.space[1] },
   snippet: {
@@ -127,8 +117,9 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
   wait: { marginTop: t.space[2] },
-  flag: { marginRight: -t.space[2] },
+  flag: { marginRight: -t.space[3] },
   turn: { transform: [{ rotate: '90deg' }] },
+  space: { width: t.minTouchSize * 2 },
 }));
 
 type RowProps = {
@@ -167,17 +158,15 @@ const Row = memo(function SectionRow({
         style={[s.row, index === 0 && s.first, index === count - 1 && s.last]}
       >
         {index > 0 ? <View pointerEvents="none" style={s.line} /> : null}
-        <Sortable.Handle mode="fixed-order">
-          <View style={s.grip} />
-        </Sortable.Handle>
         <View style={s.main} accessible accessibilityLabel={item.title}>
           <View style={s.thumb}>
-            <Skeleton
-              width={SECTION_THUMB.width}
-              height={SECTION_THUMB.height}
-              radius={t.radius.md}
-            />
-            <View pointerEvents="none" style={s.ring} />
+            {item.thumb ?? (
+              <Skeleton
+                width={thumbSize(t)}
+                height={thumbSize(t)}
+                radius={t.radius.lg}
+              />
+            )}
           </View>
           <View style={s.text}>
             <Text weight="semibold" tone="muted" numberOfLines={1}>
@@ -191,7 +180,9 @@ const Row = memo(function SectionRow({
             />
           </View>
         </View>
-        <View style={s.icon} />
+        <Sortable.Handle mode="fixed-order">
+          <View style={s.space} />
+        </Sortable.Handle>
       </View>
     );
   }
@@ -208,18 +199,6 @@ const Row = memo(function SectionRow({
       {index > 0 && !lifted ? (
         <View pointerEvents="none" style={s.line} />
       ) : null}
-      <Sortable.Handle>
-        <View
-          style={s.grip}
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-        >
-          <GripGlyph
-            color={lifted ? t.colors.title : t.colors.faint}
-            size={t.iconSize.md}
-          />
-        </View>
-      </Sortable.Handle>
       <PressableBase
         onPress={() => onPress(item.key)}
         accessibilityLabel={item.title}
@@ -236,10 +215,7 @@ const Row = memo(function SectionRow({
         feedback="none"
         style={s.main}
       >
-        <View style={[s.thumb, hidden && s.faded]}>
-          {item.thumb}
-          <View pointerEvents="none" style={s.ring} />
-        </View>
+        <View style={[s.thumb, hidden && s.faded]}>{item.thumb}</View>
         <View style={s.text}>
           <Text weight="semibold" numberOfLines={1} style={hidden && s.faded}>
             {item.title}
@@ -274,6 +250,18 @@ const Row = memo(function SectionRow({
           <MoreGlyph color={t.colors.mutedForeground} size={t.iconSize.md} />
         </View>
       </PressableBase>
+      <Sortable.Handle>
+        <View
+          style={s.grip}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          <GripGlyph
+            color={lifted ? t.colors.title : t.colors.faint}
+            size={t.iconSize.md}
+          />
+        </View>
+      </Sortable.Handle>
     </View>
   );
 });
@@ -351,6 +339,7 @@ export function SectionBoard({
     <Animated.ScrollView
       ref={scroller}
       style={s.scroll}
+      contentContainerStyle={s.content}
       scrollEventThrottle={16}
       onScroll={(e) => {
         offset.current = e.nativeEvent.contentOffset.y;

@@ -1,12 +1,19 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { View } from 'react-native';
 import {
   AdjustTiles,
   AssetGrid,
   DetailCanvas,
-  PhotoToolBar,
+  StudioTools,
   StudioToggle,
   type DetailDocValue,
 } from '../index';
+
+type Measurable = {
+  measureInWindow: (
+    cb: (x: number, y: number, width: number, height: number) => void
+  ) => void;
+};
 
 const doc: DetailDocValue = {
   blocks: [
@@ -127,21 +134,20 @@ it('asset grid picks, clears, long presses and adds', async () => {
   expect(screen.queryByLabelText('사진 올리기')).toBeNull();
 });
 
-it('adjust tiles show the cost and the tool bar reports presses', async () => {
+it('adjust tiles show the cost and the tool row reports presses', async () => {
   const onPick = jest.fn();
   const onCrop = jest.fn();
-  const onDone = jest.fn();
   await render(
     <>
       <AdjustTiles
         items={[
           { value: 'remove_background', icon: null, label: '배경 지우기' },
-          { value: 'enhance', icon: null, label: '선명하게' },
+          { value: 'enhance', icon: null, label: '밝게' },
         ]}
         cost={1}
         onPick={onPick}
       />
-      <PhotoToolBar
+      <StudioTools
         items={[
           {
             key: 'crop',
@@ -151,55 +157,59 @@ it('adjust tiles show the cost and the tool bar reports presses', async () => {
             cost: 2,
           },
           {
-            key: 'hide',
+            key: 'font',
             icon: null,
-            label: '숨기기',
+            label: '글꼴',
             onPress: () => {},
             active: true,
           },
         ]}
-        action={{ label: '완료', onPress: onDone }}
       />
     </>
   );
   expect(screen.getAllByText('1')).toHaveLength(2);
   expect(screen.getByText('2')).toBeTruthy();
-  await fireEvent.press(screen.getByLabelText('선명하게'));
+  await fireEvent.press(screen.getByLabelText('밝게'));
   expect(onPick).toHaveBeenCalledWith('enhance');
   await fireEvent.press(screen.getByLabelText('자르기'));
-  expect(onCrop).toHaveBeenCalled();
-  expect(
-    screen.getByLabelText('숨기기').props.accessibilityState
-  ).toMatchObject({
+  expect(onCrop).toHaveBeenCalledWith();
+  expect(screen.getByLabelText('글꼴').props.accessibilityState).toMatchObject({
     selected: true,
   });
-  await fireEvent.press(screen.getByText('완료'));
-  expect(onDone).toHaveBeenCalled();
 });
 
-it('PhotoToolBar fades its right edge only while more tools are hidden', async () => {
+it('StudioTools anchors a menu tool to its cell', async () => {
+  const onMore = jest.fn();
+  const measure = jest
+    .spyOn(View.prototype as unknown as Measurable, 'measureInWindow')
+    .mockImplementation((cb) => cb(300, 700, 72, 80));
   await render(
-    <PhotoToolBar
-      items={['a', 'b', 'c'].map((key) => ({
-        key,
-        icon: null,
-        label: key,
-        onPress: () => {},
-      }))}
-      action={{ label: '완료', onPress: () => {} }}
+    <StudioTools
+      items={[
+        ...['a', 'b', 'c', 'd'].map((key) => ({
+          key,
+          icon: null,
+          label: key,
+          onPress: () => {},
+        })),
+        {
+          key: 'more',
+          icon: null,
+          label: '더보기',
+          menu: true,
+          onPress: onMore,
+        },
+      ]}
     />
   );
-  const scroller = screen.getByTestId('photo-tools');
-  expect(screen.queryByTestId('edge-fade')).toBeNull();
-  await fireEvent(scroller, 'layout', {
-    nativeEvent: { layout: { width: 120, height: 64 } },
+  await fireEvent.press(screen.getByLabelText('더보기'));
+  expect(onMore).toHaveBeenCalledWith({
+    x: 300,
+    y: 700,
+    width: 72,
+    height: 80,
   });
-  await fireEvent(scroller, 'contentSizeChange', 192, 64);
-  expect(screen.getByTestId('edge-fade')).toBeTruthy();
-  await fireEvent.scroll(scroller, {
-    nativeEvent: { contentOffset: { x: 72, y: 0 } },
-  });
-  expect(screen.queryByTestId('edge-fade')).toBeNull();
+  measure.mockRestore();
 });
 
 it('StudioToggle flips its value from the whole row', async () => {

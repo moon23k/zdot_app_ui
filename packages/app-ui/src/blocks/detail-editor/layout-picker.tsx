@@ -13,7 +13,7 @@ export type LayoutPickerProps = {
   variant?: 'default' | 'soft';
 };
 
-const LABELS: Record<DetailLayout, string> = {
+export const LABELS: Record<DetailLayout, string> = {
   image_top: '사진 위 · 글 아래',
   text_top: '글 위 · 사진 아래',
   side: '나란히',
@@ -179,7 +179,7 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
-function SoftDiagram({ layout }: { layout: DetailLayout }) {
+export function SoftDiagram({ layout }: { layout: DetailLayout }) {
   const s = useStyles();
   const title = <View style={s.softTitle} />;
   const line = <View style={s.softLine} />;

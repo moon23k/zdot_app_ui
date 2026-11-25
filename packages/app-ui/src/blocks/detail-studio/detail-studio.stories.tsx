@@ -12,21 +12,20 @@ import {
   CropGlyph,
   EraserGlyph,
   EyeGlyph,
-  EyeOffGlyph,
+  FocusGlyph,
+  ImageGlyph,
   ImagesGlyph,
   LayoutGlyph,
+  PaletteGlyph,
   PlusGlyph,
   ReturnGlyph,
-  ScanGlyph,
-  SlidersGlyph,
   SparklesGlyph,
   TextSizeGlyph,
-  TrashGlyph,
+  TypeGlyph,
   WandGlyph,
 } from '../../internal/glyphs';
 import { demoPhotoList, sample } from '../../__stories__/helpers';
 import { SectionBoard } from '../../sortable/section-board';
-import { useTheme } from '../../theme/theme-provider';
 import {
   DETAIL_COLORS,
   DETAIL_LAYOUTS,
@@ -40,20 +39,21 @@ import type { DetailCanvasFocus } from '../detail-editor/detail-canvas';
 import { AdjustTiles } from './adjust-tiles';
 import { AssetGrid } from './asset-grid';
 import { ConfirmRow } from './confirm-row';
-import { PhotoToolBar } from './photo-tool-bar';
 import { DetailStudioTemplate } from './detail-studio-template';
 import { ImagePrompt } from './image-prompt';
-import { KeyboardBar } from './keyboard-bar';
 import { RewriteTray } from './rewrite-tray';
 import { SectionEditTemplate } from './section-edit-template';
-import { SectionSettings, type SectionSettingsTab } from './section-settings';
+import { SectionCover } from './section-cover';
+import { SectionSettings } from './section-settings';
 import { StudioSheet } from './studio-sheet';
 import { StudioToggle, StudioToggleList } from './studio-toggle';
 import { TextFormatPanel, type TextFormatTab } from './text-format-panel';
 import { SectionKindGrid } from './section-kind-grid';
-import { SectionThumb } from './section-thumb';
 import { StudioBar } from './studio-bar';
-import { StudioDock, studioDockSpace } from './studio-dock';
+import { StudioDock } from './studio-dock';
+import { DotsGlyph, MinusGlyph, RetryGlyph, WaveGlyph } from './studio-glyphs';
+import { StudioSteps } from './studio-steps';
+import { StudioTools } from './studio-tools';
 import {
   studioKinds,
   studioPage,
@@ -95,11 +95,22 @@ function Phone({ children }: { children: ReactNode }) {
 const dockItems = [
   { key: 'add', icon: PlusGlyph, label: '추가', onPress: () => {} },
   { key: 'polish', icon: WandGlyph, label: '다듬기', onPress: () => {} },
-  { key: 'preview', icon: EyeGlyph, label: '미리보기', onPress: () => {} },
+  { key: 'library', icon: ImagesGlyph, label: '보관함', onPress: () => {} },
 ];
 
+type StudioSectionDoc = (typeof studioSections)[number]['doc'];
+
+function firstPhoto(doc: StudioSectionDoc) {
+  for (const block of doc.blocks) {
+    const photo = block.layers.find(
+      (l) => l.type === 'image' && !l.hidden && l.url
+    );
+    if (photo) return photo.url ?? null;
+  }
+  return null;
+}
+
 function ListScreen() {
-  const t = useTheme();
   const [order, setOrder] = useState(studioSections.map((x) => x.key));
   const items = order.map((key) => {
     const section = studioSections.find((x) => x.key === key)!;
@@ -107,7 +118,7 @@ function ListScreen() {
       key,
       title: section.name,
       snippet: section.snippet,
-      thumb: <SectionThumb doc={section.doc} />,
+      thumb: <SectionCover uri={firstPhoto(section.doc)} icon={ImageGlyph} />,
     };
   });
   return (
@@ -117,7 +128,15 @@ function ListScreen() {
           <StudioBar
             title="상세페이지"
             onClose={() => {}}
-            action={{ label: '완료', onPress: () => {} }}
+            tools={[
+              {
+                key: 'preview',
+                icon: EyeGlyph,
+                label: '미리보기',
+                onPress: () => {},
+              },
+            ]}
+            action={{ label: '저장', onPress: () => {} }}
           />
         }
         dock={<StudioDock items={dockItems} />}
@@ -127,7 +146,43 @@ function ListScreen() {
           onPress={() => {}}
           onMore={() => {}}
           onReorder={setOrder}
-          bottomSpace={studioDockSpace(t)}
+        />
+      </DetailStudioTemplate>
+    </Phone>
+  );
+}
+
+function MakingScreen() {
+  const items = studioSections.map((section, i) => ({
+    key: section.key,
+    title: section.name,
+    pending: true,
+    thumb:
+      i === 0 ? (
+        <SectionCover uri={firstPhoto(section.doc)} icon={ImageGlyph} />
+      ) : null,
+  }));
+  return (
+    <Phone>
+      <DetailStudioTemplate
+        bar={
+          <>
+            <StudioBar title="상세페이지" onClose={() => {}} />
+            <StudioSteps
+              steps={[
+                { key: 'writing', label: '글 쓰기' },
+                { key: 'composing', label: '구획 만들기' },
+              ]}
+              current="composing"
+            />
+          </>
+        }
+      >
+        <SectionBoard
+          items={items}
+          onPress={() => {}}
+          onMore={() => {}}
+          onReorder={() => {}}
         />
       </DetailStudioTemplate>
     </Phone>
@@ -186,6 +241,7 @@ function EditScreen({
   accessory,
   panel,
   sheet,
+  confirm,
 }: {
   title: string;
   doc: typeof intro.doc;
@@ -194,6 +250,7 @@ function EditScreen({
   accessory?: ReactNode;
   panel?: ReactNode;
   sheet?: ReactNode;
+  confirm?: boolean;
 }) {
   return (
     <Phone>
@@ -205,6 +262,7 @@ function EditScreen({
             tone="surface"
             onClose={() => {}}
             tools={editTools(section)}
+            confirm={confirm ? { label: '완료', onPress: () => {} } : undefined}
           />
         }
         accessory={accessory}
@@ -223,20 +281,46 @@ function EditScreen({
   );
 }
 
-function keyboardBar(format?: boolean) {
+function keyboardBar(open?: 'font' | 'size' | 'color' | 'more') {
   return (
-    <KeyboardBar
+    <StudioTools
       items={[
-        { key: 'ai', icon: SparklesGlyph, label: 'AI 글', onPress: () => {} },
         {
-          key: 'format',
-          icon: TextSizeGlyph,
-          label: '서식',
+          key: 'ai',
+          icon: SparklesGlyph,
+          label: 'AI 글',
+          accent: true,
           onPress: () => {},
-          active: !!format,
+        },
+        {
+          key: 'font',
+          icon: TypeGlyph,
+          label: '글꼴',
+          onPress: () => {},
+          active: open === 'font',
+        },
+        {
+          key: 'size',
+          icon: TextSizeGlyph,
+          label: '크기',
+          onPress: () => {},
+          active: open === 'size',
+        },
+        {
+          key: 'color',
+          icon: PaletteGlyph,
+          label: '색',
+          onPress: () => {},
+          active: open === 'color',
+        },
+        {
+          key: 'more',
+          icon: DotsGlyph,
+          label: '더보기',
+          onPress: () => {},
+          active: open === 'more',
         },
       ]}
-      action={{ label: '완료', onPress: () => {} }}
     />
   );
 }
@@ -254,6 +338,7 @@ function SectionEditScreen() {
         input: { value: text, onChangeText: setText, active: false },
       }}
       accessory={keyboardBar()}
+      confirm
     />
   );
 }
@@ -275,13 +360,15 @@ function FormatScreen() {
           active: false,
         },
       }}
-      accessory={keyboardBar(true)}
+      accessory={keyboardBar('font')}
+      confirm
       panel={
         <TextFormatPanel
           value={{ ...body.style, font }}
           onChange={(patch) => patch.font && setFont(patch.font)}
           tab={tab}
           onTabChange={setTab}
+          tabs={['font']}
         />
       }
     />
@@ -320,16 +407,15 @@ function RewriteScreen() {
           <RewriteTray
             cost={1}
             items={[
-              { value: 'short', label: '더 짧게' },
-              { value: 'long', label: '더 자세히' },
-              { value: 'soft', label: '부드럽게' },
-              { value: 'again', label: '다시 쓰기' },
+              { value: 'short', label: '더 짧게', icon: MinusGlyph },
+              { value: 'long', label: '더 자세히', icon: PlusGlyph },
+              { value: 'soft', label: '부드럽게', icon: WaveGlyph },
+              { value: 'again', label: '다시 쓰기', icon: RetryGlyph },
             ]}
             onPick={() => {}}
-            onKeyboard={() => {}}
           />
           <ConfirmRow
-            secondary={{ label: '다시 만들기', cost: 1, onPress: () => {} }}
+            secondary={{ label: '다시', cost: 1, onPress: () => {} }}
             primary={{ label: '적용', onPress: () => {} }}
           />
         </StudioSheet>
@@ -339,9 +425,8 @@ function RewriteScreen() {
 }
 
 function SettingsScreen() {
-  const [tab, setTab] = useState<SectionSettingsTab>('layout');
   const [layout, setLayout] = useState<DetailLayout>('text_top');
-  const [space, setSpace] = useState({ top: 9, bottom: 6 });
+  const [space, setSpace] = useState({ top: 3, bottom: 3 });
   const [background, setBackground] = useState('#FFFFFF');
   return (
     <EditScreen
@@ -351,15 +436,13 @@ function SettingsScreen() {
       sheet={
         <StudioSheet open title="구획" onClose={() => {}}>
           <SectionSettings
-            tab={tab}
-            onTabChange={setTab}
             layout={layout}
             layouts={DETAIL_LAYOUTS}
             onLayoutChange={setLayout}
             background={background}
             onBackgroundChange={setBackground}
             space={space}
-            onSpaceChange={(patch) => setSpace((now) => ({ ...now, ...patch }))}
+            onSpaceChange={setSpace}
           />
         </StudioSheet>
       }
@@ -371,24 +454,17 @@ const scenePhoto = scene.doc.blocks[0]!.layers.find((l) => l.type === 'image')!;
 const sceneFocus = { block: 'b1', layer: scenePhoto.id };
 
 const photoTools = [
-  { key: 'library', icon: ImagesGlyph, label: '보관함', onPress: () => {} },
-  { key: 'ai', icon: SparklesGlyph, label: 'AI', onPress: () => {} },
-  { key: 'adjust', icon: SlidersGlyph, label: '보정', onPress: () => {} },
-  {
-    key: 'crop',
-    icon: CropGlyph,
-    label: '자르기',
-    onPress: () => {},
-    cost: 1,
-  },
-  { key: 'hide', icon: EyeOffGlyph, label: '숨기기', onPress: () => {} },
-  { key: 'remove', icon: TrashGlyph, label: '삭제', onPress: () => {} },
+  { key: 'library', icon: ImagesGlyph, label: '바꾸기', onPress: () => {} },
+  { key: 'ai', icon: SparklesGlyph, label: 'AI 이미지', onPress: () => {} },
+  { key: 'adjust', icon: WandGlyph, label: '보정', onPress: () => {} },
+  { key: 'crop', icon: CropGlyph, label: '자르기', onPress: () => {} },
+  { key: 'more', icon: DotsGlyph, label: '더보기', onPress: () => {} },
 ];
 
 const adjustTiles = [
   { value: 'remove_background', icon: EraserGlyph, label: '배경 지우기' },
   { value: 'replace_background', icon: BucketGlyph, label: '배경 바꾸기' },
-  { value: 'enhance', icon: ScanGlyph, label: '선명하게' },
+  { value: 'enhance', icon: FocusGlyph, label: '밝게' },
 ] as const;
 
 function PhotoToolsScreen() {
@@ -397,12 +473,8 @@ function PhotoToolsScreen() {
       title={scene.name}
       doc={scene.doc}
       focus={sceneFocus}
-      accessory={
-        <PhotoToolBar
-          items={photoTools}
-          action={{ label: '완료', onPress: () => {} }}
-        />
-      }
+      accessory={<StudioTools items={photoTools} />}
+      confirm
     />
   );
 }
@@ -444,12 +516,12 @@ function CompareScreen() {
       sheet={
         <StudioSheet
           open
-          title="선명하게"
+          title="밝게"
           onClose={() => {}}
           end={<CreditPill balance={126} />}
         >
           <ConfirmRow
-            secondary={{ label: '다시 만들기', cost: 1, onPress: () => {} }}
+            secondary={{ label: '다시', cost: 1, onPress: () => {} }}
             primary={{ label: '적용', onPress: () => {} }}
           />
         </StudioSheet>
@@ -574,7 +646,7 @@ function AiImagePickScreen() {
             onValueChange={setPick}
           />
           <ConfirmRow
-            secondary={{ label: '다시 만들기', cost: 1, onPress: () => {} }}
+            secondary={{ label: '다시', cost: 1, onPress: () => {} }}
             primary={{ label: '넣기', disabled: !pick, onPress: () => {} }}
           />
         </StudioSheet>
@@ -584,10 +656,10 @@ function AiImagePickScreen() {
 }
 
 const polishRows = [
-  { key: 'enhance', label: '모든 사진 밝고 선명하게' },
-  { key: 'unify', label: '사진 배경 하나로 맞추기' },
-  { key: 'shorten', label: '글 짧고 읽기 쉽게' },
-  { key: 'price', label: '가격 크게' },
+  { key: 'enhance', label: '사진 밝게' },
+  { key: 'unify', label: '배경 통일' },
+  { key: 'shorten', label: '글 줄이기' },
+  { key: 'price', label: '가격 강조' },
 ] as const;
 
 function PolishScreen() {
@@ -645,6 +717,9 @@ const meta = {
 export default meta;
 
 export const List: StoryObj<typeof meta> = {};
+export const Making: StoryObj<typeof meta> = {
+  render: () => <MakingScreen />,
+};
 export const AddSection: StoryObj<typeof meta> = {
   render: () => <AddScreen />,
 };

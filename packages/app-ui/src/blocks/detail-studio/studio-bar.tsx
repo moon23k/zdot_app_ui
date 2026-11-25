@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { View } from 'react-native';
 import { Button } from '../../components/button/button';
 import { Text } from '../../components/text/text';
-import { ChevronGlyph, CloseGlyph } from '../../internal/glyphs';
+import { CheckGlyph, ChevronGlyph, CloseGlyph } from '../../internal/glyphs';
 import { renderIcon, type IconSlot } from '../../internal/icon';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -32,6 +32,7 @@ export type StudioBarProps = {
     loading?: boolean;
   };
   tools?: readonly StudioBarTool[];
+  confirm?: { label: string; onPress: () => void };
 };
 
 const useStyles = makeStyles((t) => ({
@@ -55,8 +56,6 @@ const useStyles = makeStyles((t) => ({
   mirror: { transform: [{ scaleX: -1 }] },
   center: {
     position: 'absolute',
-    left: t.space[16] + t.space[8],
-    right: t.space[16] + t.space[8],
     top: 0,
     bottom: 0,
     flexDirection: 'row',
@@ -70,13 +69,12 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.title,
     flexShrink: 1,
   },
-  end: { marginLeft: 'auto', paddingRight: t.space[2] },
-  done: { height: t.space[8] + t.space[1] },
-  narrow: {
-    left: t.space[16] * 2 + t.space[3],
-    right: t.space[16] * 2 + t.space[3],
+  end: {
+    marginLeft: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  tools: { marginLeft: 'auto', flexDirection: 'row', alignItems: 'center' },
+  done: { paddingHorizontal: t.space[3] },
   tool: {
     width: t.minTouchSize,
     height: t.minTouchSize,
@@ -97,13 +95,25 @@ export function StudioBar({
   tag,
   action,
   tools,
+  confirm,
 }: StudioBarProps) {
   const t = useTheme();
   const s = useStyles();
+  const [width, setWidth] = useState(0);
+  const [end, setEnd] = useState(0);
   const back = leading === 'back';
   const Glyph = back ? ChevronGlyph : CloseGlyph;
+  const pad = t.space[2];
+  const lead = pad + t.minTouchSize;
+  const trail = pad + end;
+  const side = Math.max(lead, trail);
+  const even = width - side * 2 >= t.space[16] * 2;
+  const center = even
+    ? { left: side, right: side }
+    : { left: lead, right: trail };
   return (
     <View
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={[
         s.bar,
         {
@@ -115,7 +125,7 @@ export function StudioBar({
       ]}
     >
       <View
-        style={[s.center, tools && s.narrow, { top: topInset }]}
+        style={[s.center, center, { top: topInset }]}
         pointerEvents="box-none"
       >
         <Text accessibilityRole="header" numberOfLines={1} style={s.title}>
@@ -132,37 +142,34 @@ export function StudioBar({
           <Glyph color={t.colors.title} size={t.iconSize.md} />
         </View>
       </PressableBase>
-      {tools ? (
-        <View style={s.tools}>
-          {tools.map((tool) => (
-            <PressableBase
-              key={tool.key}
-              onPress={tool.onPress}
-              disabled={!tool.onPress}
-              disabledStyle={{}}
-              accessibilityLabel={tool.label}
-              accessibilityState={
-                tool.active === undefined
-                  ? undefined
-                  : { selected: tool.active }
-              }
-              style={[s.tool, tool.active && s.toolOn]}
-            >
-              <View style={tool.mirror && s.mirror}>
-                {renderIcon(tool.icon, {
-                  color: tool.onPress ? t.colors.title : t.colors.input,
-                  size: t.iconSize.md,
-                })}
-              </View>
-            </PressableBase>
-          ))}
-        </View>
-      ) : action ? (
-        <View style={s.end}>
+      <View style={s.end} onLayout={(e) => setEnd(e.nativeEvent.layout.width)}>
+        {tools?.map((tool) => (
+          <PressableBase
+            key={tool.key}
+            onPress={tool.onPress}
+            disabled={!tool.onPress}
+            disabledStyle={{}}
+            accessibilityLabel={tool.label}
+            accessibilityState={
+              tool.active === undefined ? undefined : { selected: tool.active }
+            }
+            style={[s.tool, tool.active && s.toolOn]}
+          >
+            <View style={tool.mirror && s.mirror}>
+              {renderIcon(tool.icon, {
+                color: tool.onPress
+                  ? t.colors.title
+                  : t.colors.disabledForeground,
+                size: t.iconSize.md,
+              })}
+            </View>
+          </PressableBase>
+        ))}
+        {action ? (
           <Button
+            variant="ghost"
+            point
             size="md"
-            pill
-            steady
             style={s.done}
             onPress={action.onPress}
             disabled={action.disabled}
@@ -170,8 +177,17 @@ export function StudioBar({
           >
             {action.label}
           </Button>
-        </View>
-      ) : null}
+        ) : null}
+        {confirm ? (
+          <PressableBase
+            onPress={confirm.onPress}
+            accessibilityLabel={confirm.label}
+            style={s.tool}
+          >
+            <CheckGlyph color={t.colors.primary} size={t.iconSize.md} />
+          </PressableBase>
+        ) : null}
+      </View>
     </View>
   );
 }

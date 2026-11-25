@@ -8,18 +8,12 @@ export {
   type SectionKindItem,
 } from './section-kind-grid';
 export {
-  SECTION_THUMB,
-  SectionThumb,
-  type SectionThumbProps,
-} from './section-thumb';
-export {
   StudioBar,
   type StudioBarProps,
   type StudioBarTool,
 } from './studio-bar';
 export {
   StudioDock,
-  studioDockSpace,
   type StudioDockItem,
   type StudioDockProps,
 } from './studio-dock';
@@ -28,20 +22,16 @@ export {
   type ConfirmAction,
   type ConfirmRowProps,
 } from './confirm-row';
-export {
-  KeyboardBar,
-  type KeyboardBarItem,
-  type KeyboardBarProps,
-} from './keyboard-bar';
 export { RewriteTray, type RewriteTrayProps } from './rewrite-tray';
 export {
   SectionEditTemplate,
   type SectionEditTemplateProps,
 } from './section-edit-template';
 export {
+  SECTION_SPACES,
   SectionSettings,
   type SectionSettingsProps,
-  type SectionSettingsTab,
+  type SectionSpace,
 } from './section-settings';
 export { StudioSheet, type StudioSheetProps } from './studio-sheet';
 export {
@@ -50,10 +40,17 @@ export {
   type TextFormatTab,
 } from './text-format-panel';
 export {
-  PhotoToolBar,
-  type PhotoToolBarProps,
-  type PhotoToolItem,
-} from './photo-tool-bar';
+  StudioTools,
+  type StudioToolItem,
+  type StudioToolsProps,
+} from './studio-tools';
+export {
+  StudioSteps,
+  type StudioStep,
+  type StudioStepsProps,
+} from './studio-steps';
+export { SectionCover, type SectionCoverProps } from './section-cover';
+export { DotsGlyph, MinusGlyph, RetryGlyph, WaveGlyph } from './studio-glyphs';
 export {
   AdjustTiles,
   type AdjustTile,
