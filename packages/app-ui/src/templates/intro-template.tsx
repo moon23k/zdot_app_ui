@@ -109,18 +109,20 @@ export function IntroTemplate({
         }
         style={s.pager}
       >
-        {pages.map((page) => (
-          <View key={page.key} style={[s.page, { width }]}>
-            {art ? page.art(art) : null}
-            <Text
-              variant="screenTitle"
-              accessibilityRole="header"
-              style={s.title}
-            >
-              {page.title}
-            </Text>
-          </View>
-        ))}
+        {width
+          ? pages.map((page) => (
+              <View key={page.key} style={[s.page, { width }]}>
+                {page.art(art)}
+                <Text
+                  variant="screenTitle"
+                  accessibilityRole="header"
+                  style={s.title}
+                >
+                  {page.title}
+                </Text>
+              </View>
+            ))
+          : null}
       </ScrollView>
       <View
         style={[
