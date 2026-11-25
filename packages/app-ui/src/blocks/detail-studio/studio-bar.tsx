@@ -131,7 +131,7 @@ export function StudioBar({
         <Text accessibilityRole="header" numberOfLines={1} style={s.title}>
           {title}
         </Text>
-        {tag}
+        {tag ? <View>{tag}</View> : null}
       </View>
       <PressableBase
         onPress={onClose}
