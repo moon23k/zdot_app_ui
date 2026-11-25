@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { DesignPickTemplate, designPickBarSpace } from '../index';
 
 const options = [
@@ -78,6 +78,30 @@ describe('DesignPickTemplate', () => {
     ).toMatchObject({ selected: true });
     await fireEvent.press(screen.getByRole('button', { name: '색' }));
     expect(onColor).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps every option tappable and narrows them past three', async () => {
+    const many = ['a', 'b', 'c', 'd', 'e', 'f'].map((value, i) => ({
+      value,
+      label: `${i + 1}안`,
+    }));
+    const onValueChange = jest.fn();
+    await render(
+      <DesignPickTemplate
+        options={many}
+        value="a"
+        onValueChange={onValueChange}
+        preview={null}
+        primaryAction={{ label: '이 디자인으로 만들기', onPress: () => {} }}
+      />
+    );
+    expect(screen.getAllByRole('tab')).toHaveLength(6);
+    const width = (name: string) =>
+      StyleSheet.flatten(screen.getByRole('tab', { name }).props.style)
+        .minWidth;
+    expect(width('6안')).toBeLessThan(64);
+    await fireEvent.press(screen.getByRole('tab', { name: '6안' }));
+    expect(onValueChange).toHaveBeenCalledWith('f');
   });
 
   it('reports the height the floating bar covers above the bottom edge', () => {

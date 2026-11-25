@@ -44,6 +44,7 @@ export type DesignPickTemplateProps<T extends string> = {
 };
 
 const BAR_BORDER = 1;
+const ROOMY = 3;
 
 export function designPickBarSpace(bottomInset = 0): number {
   const gap = tokens.space[2];
@@ -77,6 +78,10 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     paddingHorizontal: t.space[3],
     borderRadius: t.radius.full,
+  },
+  tight: {
+    minWidth: t.space[10],
+    paddingHorizontal: t.space[2],
   },
   thumb: {
     position: 'absolute',
@@ -134,11 +139,13 @@ const useStyles = makeStyles((t) => ({
 function Option({
   label,
   selected,
+  tight,
   onPress,
   onLayout,
 }: {
   label: string;
   selected: boolean;
+  tight: boolean;
   onPress: () => void;
   onLayout: (event: LayoutChangeEvent) => void;
 }) {
@@ -158,7 +165,7 @@ function Option({
       feedback="none"
       onPress={onPress}
       onLayout={onLayout}
-      style={s.option}
+      style={[s.option, tight && s.tight]}
     >
       <SteadyText
         selected={selected}
@@ -236,6 +243,7 @@ export function DesignPickTemplate<T extends string>({
                 key={option.value}
                 label={option.label}
                 selected={selected}
+                tight={options.length > ROOMY}
                 onPress={() => {
                   if (selected) return;
                   haptic('select');

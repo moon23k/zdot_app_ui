@@ -34,6 +34,7 @@ export type ResultTemplateProps = {
   index: number;
   onIndexChange: (index: number) => void;
   progress?: ReactNode;
+  tray?: ReactNode;
   notice?: TemplateNotice;
   primaryAction?: TemplateAction;
   secondaryAction?: TemplateAction;
@@ -150,6 +151,7 @@ export function ResultTemplate({
   index,
   onIndexChange,
   progress,
+  tray,
   notice,
   primaryAction,
   secondaryAction,
@@ -235,6 +237,7 @@ export function ResultTemplate({
           </>
         )}
       </View>
+      {tray ?? null}
       {notice ? (
         <View style={s.notice}>
           <Notice notice={notice} />
