@@ -2,8 +2,11 @@ import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import {
   AdjustTemplate,
+  AxisAdjust,
   AxisDial,
   AxisDialGroup,
+  AxisTabs,
+  AxisWheel,
   ColorAdjustNote,
   ColorTrack,
   DialStrip,
@@ -268,5 +271,98 @@ describe('FontControls', () => {
     );
     await fireEvent.press(screen.getByLabelText('제목 기울임'));
     expect(onToggle).not.toHaveBeenCalled();
+  });
+});
+
+describe('AxisWheel', () => {
+  const wheel = (level: -1 | 0 | 1, onChange: () => void) => (
+    <AxisWheel
+      level={level}
+      onChange={onChange}
+      startLabel="반듯한"
+      endLabel="둥근"
+      accessibilityLabel="모양"
+    />
+  );
+
+  it('picks an end by its name', async () => {
+    const onChange = jest.fn();
+    await render(wheel(0, onChange));
+    await fireEvent.press(screen.getByText('둥근'));
+    expect(onChange).toHaveBeenLastCalledWith(1);
+    await fireEvent.press(screen.getByText('반듯한'));
+    expect(onChange).toHaveBeenLastCalledWith(-1);
+  });
+
+  it('steps by accessibility actions and stays in range', async () => {
+    const onChange = jest.fn();
+    await render(wheel(1, onChange));
+    const dial = screen.getByLabelText('모양');
+    expect(dial.props.accessibilityValue).toMatchObject({
+      now: 1,
+      text: '둥근',
+    });
+    await fireEvent(dial, 'accessibilityAction', {
+      nativeEvent: { actionName: 'increment' },
+    });
+    expect(onChange).not.toHaveBeenCalled();
+    await fireEvent(dial, 'accessibilityAction', {
+      nativeEvent: { actionName: 'decrement' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith(0);
+  });
+});
+
+describe('AxisTabs', () => {
+  it('selects an axis', async () => {
+    const onSelect = jest.fn();
+    await render(
+      <AxisTabs
+        items={[
+          { key: 'a', label: '색감' },
+          { key: 'b', label: '모양', changed: true },
+        ]}
+        selected="a"
+        onSelect={onSelect}
+      />
+    );
+    await fireEvent.press(screen.getByText('모양'));
+    expect(onSelect).toHaveBeenCalledWith('b');
+  });
+});
+
+describe('AxisAdjust', () => {
+  it('changes the title with the axis and reports the level', async () => {
+    const onChange = jest.fn();
+    await render(
+      <AxisAdjust
+        items={[
+          {
+            key: 'a',
+            label: '색감',
+            title: '바탕색은 어떤 느낌이 좋으세요?',
+            startLabel: '시원한',
+            endLabel: '따뜻한',
+          },
+          {
+            key: 'b',
+            label: '모양',
+            title: '사진과 버튼은 어떤 모양이 좋으세요?',
+            startLabel: '반듯한',
+            endLabel: '둥근',
+          },
+        ]}
+        levels={{}}
+        onChange={onChange}
+        renderPreview={() => null}
+      />
+    );
+    expect(screen.getByText('바탕색은 어떤 느낌이 좋으세요?')).toBeTruthy();
+    await fireEvent.press(screen.getByText('모양'));
+    expect(
+      screen.getByText('사진과 버튼은 어떤 모양이 좋으세요?')
+    ).toBeTruthy();
+    await fireEvent.press(screen.getByText('둥근'));
+    expect(onChange).toHaveBeenCalledWith('b', 1);
   });
 });

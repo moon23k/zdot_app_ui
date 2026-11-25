@@ -5,8 +5,11 @@ import { Phone } from '../__stories__/phone';
 import { useTheme } from '../theme/theme-provider';
 import { StepScreen } from '../blocks/step-screen/step-screen';
 import { AdjustTemplate } from './adjust-template';
+import { AxisAdjust } from './axis-adjust';
 import { AxisDial } from './axis-dial';
 import { AxisDialGroup } from './axis-dial-group';
+import { AxisTabs } from './axis-tabs';
+import { AxisWheel, type AxisLevel } from './axis-wheel';
 import { BrandFeelArt } from './brand-feel-art';
 import { ColorAdjustNote } from './color-adjust-note';
 import { ColorTrack } from './color-track';
@@ -14,6 +17,11 @@ import { AxisRing, DialStrip } from './dial-strip';
 import { FontControls } from './font-controls';
 import { hslToHex } from './hsl';
 import { ScrubRuler } from './scrub-ruler';
+import {
+  StoreSample,
+  type StoreSampleLook,
+  type StoreSampleScene,
+} from './store-sample';
 
 const axes = [
   { key: 'temperature', label: '색감', neg: '시원한', pos: '따뜻한' },
@@ -248,3 +256,112 @@ export const DialSingle: StoryObj = {
 const dial = StyleSheet.create({
   frame: { height: 760, maxWidth: 390 },
 });
+
+const scenes: Record<string, StoreSampleScene> = {
+  temperature: 'color',
+  energy: 'motion',
+  softness: 'shape',
+  era: 'style',
+  intensity: 'power',
+};
+
+const lookOf = (l: Readonly<Record<string, AxisLevel>>): StoreSampleLook => {
+  const at = <T,>(key: string, values: readonly [T, T, T]): T =>
+    values[(l[key] ?? 0) + 1]!;
+  return {
+    surface: at('temperature', ['#F7F8FB', '#FCFCFC', '#FAF7F3']),
+    surfaceAlt: at('temperature', ['#EEF2F6', '#F6F6F6', '#F6F1EA']),
+    text: '#1a1a1a',
+    muted: '#6b6b6b',
+    accent: '#334155',
+    onAccent: '#ffffff',
+    radiusSm: at('softness', [2, 4, 11]),
+    radiusMd: at('softness', [4, 8, 22]),
+    radiusLg: at('softness', [7, 14, 38]),
+    button: at('softness', ['square', 'rounded', 'pill'] as const),
+    gutter: at('energy', [22, 16, 12]),
+    sectionGap: at('energy', [88, 64, 48]),
+    autoplay: at('energy', [false, false, true]),
+    photoRatio: at('era', [4 / 5, 1, 16 / 9]),
+    tracking: at('era', [0.015, 0, -0.015]),
+    scale: at('intensity', [1.2, 1.25, 1.333]),
+    weight: at('intensity', [500, 600, 700] as const),
+    area: at('intensity', [0, 1, 2] as const),
+    serif: at('era', [true, false, false]),
+  };
+};
+
+const copy = {
+  store: '소담',
+  headline: '오래 곁에 두는 물건',
+  hero: '매일 쓰는\n작은 물건',
+  section: '이번 주 새 상품',
+  more: '보러 가기',
+  notice: '3만 원 이상 무료 배송',
+  add: '담기',
+};
+
+function AxisAdjustDemo() {
+  const [value, setValue] = useState<Record<string, AxisLevel>>({});
+  return (
+    <View style={styles.fill}>
+      <StepScreen
+        fill
+        total={3}
+        current={1}
+        onBack={() => {}}
+        primaryAction={{ label: '다음', onPress: () => {} }}
+      >
+        <AxisAdjust
+          items={axes.map((a) => ({
+            key: a.key,
+            label: a.label,
+            title: `${a.label}은 어떤 느낌이 좋으세요?`,
+            startLabel: a.neg,
+            endLabel: a.pos,
+          }))}
+          levels={value}
+          onChange={(key, level) => setValue({ ...value, [key]: level })}
+          renderPreview={(key, levels_, size) => (
+            <StoreSample
+              scene={key ? scenes[key]! : 'whole'}
+              look={lookOf(levels_)}
+              photos={[]}
+              hero={{ uri: '' }}
+              copy={copy}
+              {...size}
+            />
+          )}
+        />
+      </StepScreen>
+    </View>
+  );
+}
+
+export const Adjust: StoryObj = {
+  render: () => <AxisAdjustDemo />,
+};
+
+function AxisWheelDemo() {
+  const [level, setLevel] = useState<AxisLevel>(0);
+  return (
+    <View>
+      <AxisWheel
+        level={level}
+        onChange={setLevel}
+        startLabel="반듯한"
+        endLabel="둥근"
+        accessibilityLabel="모양"
+      />
+      <AxisTabs
+        items={axes.map((a) => ({ key: a.key, label: a.label }))}
+        selected="softness"
+        onSelect={() => {}}
+      />
+    </View>
+  );
+}
+
+export const Wheel: StoryObj = {
+  render: () => <AxisWheelDemo />,
+};
