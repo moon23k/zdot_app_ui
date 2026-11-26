@@ -55,13 +55,14 @@ export type StepScreenProps = {
 
 const TITLE_SIZE = 26;
 const TITLE_LEADING = 34;
-const TITLE_TRACKING = -0.8;
+const TITLE_TRACKING = -0.57;
 const DOCK = 68;
 const DOCK_GO = 112;
 const DOCK_RADIUS = 14;
 const DOCK_THUMB = 44;
 const DOCK_LABEL_SIZE = 16;
 const DOCK_LABEL_LEADING = 22;
+const DOCK_LABEL_TRACKING = -0.19;
 const THUMB_INSET = '14%';
 const THUMB_PHOTO = '72%';
 
@@ -81,8 +82,9 @@ const useStyles = makeStyles((t) => ({
   countText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
-    fontWeight: '600',
+    fontWeight: '500',
     color: t.colors.faint,
   },
   countNow: { color: t.colors.title },
@@ -173,6 +175,7 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     fontSize: DOCK_LABEL_SIZE,
     lineHeight: DOCK_LABEL_LEADING,
+    letterSpacing: DOCK_LABEL_TRACKING,
     fontWeight: '600',
     color: t.colors.title,
   },

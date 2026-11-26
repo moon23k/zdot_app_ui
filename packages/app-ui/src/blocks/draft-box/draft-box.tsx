@@ -33,6 +33,7 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '600',
     color: t.colors.primary,
@@ -41,12 +42,14 @@ const useStyles = makeStyles((t) => ({
     flexShrink: 1,
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
   text: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     color: t.colors.title,
   },

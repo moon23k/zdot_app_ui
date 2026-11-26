@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { View } from 'react-native';
 import { ListRow } from '../components/list-row/list-row';
+import { Won } from '../components/text/figures';
 import { Text } from '../components/text/text';
 import { Phone, useStoryStyles } from '../__stories__/phone';
 import { ListSection } from './parts';
@@ -25,7 +26,7 @@ function Line({
         {label}
       </Text>
       <Text variant="body" weight={strong ? 'semibold' : 'regular'}>
-        {value}
+        <Won>{value}</Won>
       </Text>
     </View>
   );
@@ -60,13 +61,21 @@ function Screen({ deposit }: { deposit?: boolean }) {
             leading={thumb}
             title="린넨 오버핏 셔츠"
             description="아이보리 · L · 1개"
-            trailing={<Text variant="body">29,000원</Text>}
+            trailing={
+              <Text variant="body">
+                <Won>29,000원</Won>
+              </Text>
+            }
           />
           <ListRow
             leading={thumb}
             title="패브릭 코스터 세트"
             description="1개"
-            trailing={<Text variant="body">6,000원</Text>}
+            trailing={
+              <Text variant="body">
+                <Won>6,000원</Won>
+              </Text>
+            }
           />
         </ListSection>
         <ListSection title="배송">

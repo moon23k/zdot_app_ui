@@ -70,6 +70,7 @@ const useStyles = makeStyles((t) => ({
   },
   linkLabel: {
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     fontWeight: '600',
     fontFamily: t.fontFamily,
     color: t.colors.title,

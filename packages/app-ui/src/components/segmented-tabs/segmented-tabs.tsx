@@ -53,15 +53,16 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     color: t.colors.mutedForeground,
   },
   count: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
-    fontVariant: ['tabular-nums'],
   },
   strong: { fontWeight: '600' },
   bar: {

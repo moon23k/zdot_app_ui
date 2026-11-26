@@ -69,6 +69,7 @@ const useStyles = makeStyles((t) => ({
   tagText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
     fontWeight: '600',
     color: t.colors.title,

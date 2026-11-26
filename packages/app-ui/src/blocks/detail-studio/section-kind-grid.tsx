@@ -129,6 +129,8 @@ const useStyles = makeStyles((t) => ({
   },
   label: {
     fontSize: t.typography.eyebrow.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.title,
   },

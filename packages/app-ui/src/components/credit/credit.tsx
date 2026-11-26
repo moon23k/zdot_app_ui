@@ -26,9 +26,9 @@ const useStyles = makeStyles((t) => ({
   value: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
-    fontWeight: '600',
-    fontVariant: ['tabular-nums'],
+    fontWeight: '500',
   },
   pill: {
     flexDirection: 'row',

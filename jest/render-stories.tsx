@@ -22,8 +22,8 @@ function findStories(dir: string): string[] {
   });
 }
 
-export function renderAllStories(dir: string) {
-  const cases = findStories(dir).flatMap((file) => {
+export function storyCases(dir: string) {
+  return findStories(dir).flatMap((file) => {
     const mod: StoryModule = require(file);
     const { title, component: Component, args: metaArgs } = mod.default;
     return Object.entries(mod)
@@ -39,6 +39,10 @@ export function renderAllStories(dir: string) {
         return [`${title} / ${name}`, element] as const;
       });
   });
+}
+
+export function renderAllStories(dir: string) {
+  const cases = storyCases(dir);
 
   if (cases.length === 0) {
     it.todo(`stories in ${dir}`);

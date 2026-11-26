@@ -35,6 +35,8 @@ const useStyles = makeStyles((t) => ({
   on: { backgroundColor: t.colors.surface, boxShadow: t.shadow.sm },
   label: {
     fontSize: t.typography.eyebrow.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },

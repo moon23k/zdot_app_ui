@@ -76,6 +76,7 @@ const useStyles = makeStyles((t) => ({
   icon: { position: 'absolute', left: t.space[4] },
   label: {
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     fontWeight: '600',
     fontFamily: t.fontFamily,
   },

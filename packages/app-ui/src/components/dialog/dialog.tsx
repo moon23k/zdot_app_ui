@@ -36,6 +36,7 @@ const useStyles = makeStyles((t) => ({
   title: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.title.fontSize,
+    letterSpacing: t.typography.title.letterSpacing,
     lineHeight: t.typography.title.lineHeight,
     fontWeight: '600',
     textAlign: 'center',
@@ -45,6 +46,7 @@ const useStyles = makeStyles((t) => ({
   description: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     textAlign: 'center',
     color: t.colors.mutedForeground,

@@ -39,6 +39,7 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
     fontWeight: '500',
     color: t.colors.mutedForeground,

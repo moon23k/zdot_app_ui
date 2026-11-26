@@ -72,12 +72,16 @@ const useStyles = makeStyles((t) => ({
   },
   small: {
     fontSize: t.typography.eyebrow.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
   swatches: { paddingTop: t.space[4], paddingHorizontal: t.space[1] },
   large: {
     fontSize: t.typography.screenTitle.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.screenTitle.letterSpacing,
     lineHeight: t.typography.screenTitle.lineHeight,
     color: t.colors.title,
   },

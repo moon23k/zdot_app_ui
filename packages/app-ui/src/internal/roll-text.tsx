@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { StyleProp, TextStyle } from 'react-native';
+import { StyleSheet, type StyleProp, type TextStyle } from 'react-native';
 import Animated, {
   interpolateColor,
   type AnimatedStyle,
@@ -8,6 +8,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { Won } from '../components/text/figures';
 import { useTheme } from '../theme/theme-provider';
 import { timing } from './motion';
 
@@ -19,11 +20,13 @@ export function RollText({
   style,
   animatedStyle,
   flash = false,
+  money = false,
 }: {
   children: string | number;
   style?: StyleProp<TextStyle>;
   animatedStyle?: StyleProp<AnimatedStyle<TextStyle>>;
   flash?: boolean;
+  money?: boolean;
 }) {
   const t = useTheme();
   const roll = useSharedValue(0);
@@ -54,6 +57,7 @@ export function RollText({
       ['transparent', tint]
     ),
   }));
+  const flat = StyleSheet.flatten(style) ?? {};
   return (
     <Animated.Text
       maxFontSizeMultiplier={t.maxFontScale}
@@ -64,7 +68,13 @@ export function RollText({
         move,
       ]}
     >
-      {children}
+      {money ? (
+        <Won size={flat.fontSize} tracking={flat.letterSpacing}>
+          {String(children)}
+        </Won>
+      ) : (
+        children
+      )}
     </Animated.Text>
   );
 }

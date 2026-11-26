@@ -14,6 +14,18 @@ export type TypographyToken = {
   lineHeight: number;
   fontWeight: TextStyle['fontWeight'];
   letterSpacing?: number;
+  fontFamily?: string;
+};
+
+export type FigureTokens = {
+  weight: TextStyle['fontWeight'];
+  unitScale: number;
+  unitGap: number;
+  unitWeight: TextStyle['fontWeight'];
+  unitTracking: number;
+  emphasisWeight: TextStyle['fontWeight'];
+  emphasisTracking: number;
+  emphasisMinSize: number;
 };
 
 export type ThemeTokens = {
@@ -21,6 +33,7 @@ export type ThemeTokens = {
   radius: { sm: number; md: number; lg: number; xl: number; full: number };
   typography: Record<TypographyKey, TypographyToken>;
   fontFamily: string | undefined;
+  figure: FigureTokens;
   maxFontScale: number;
   shadow: {
     sm: string;

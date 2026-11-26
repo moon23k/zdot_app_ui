@@ -1,6 +1,7 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Photo } from '../../components/photo/photo';
 import { Text } from '../../components/text/text';
+import { Won } from '../../components/text/figures';
 import { PressableBase } from '../../internal/pressable-base';
 import { makeStyles } from '../../utils/styles';
 
@@ -37,7 +38,9 @@ export function ProductTile({
       <Photo source={{ uri: image ?? '' }} seed={name} />
       <View style={s.body}>
         <Text numberOfLines={1}>{name}</Text>
-        <Text weight="semibold">{price}</Text>
+        <Text weight="semibold">
+          <Won>{price}</Won>
+        </Text>
         {state ? (
           <Text variant="caption" tone="muted">
             {state}

@@ -3,6 +3,7 @@ import { ChevronGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { Won } from '../text/figures';
 
 export type ValueTone = 'default' | 'warning' | 'success';
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.mutedForeground,
   },
@@ -38,6 +40,7 @@ const useStyles = makeStyles((t) => ({
     textAlign: 'right',
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.foreground,
   },
@@ -72,7 +75,12 @@ export function ValueRows({ rows, style }: ValueRowsProps) {
             {row.note ? (
               <Text style={tone(row.note.tone)}>{`${row.note.text}   `}</Text>
             ) : null}
-            {row.value}
+            <Won
+              size={t.typography.label.fontSize}
+              tracking={t.typography.label.letterSpacing}
+            >
+              {row.value}
+            </Won>
           </Text>
           {row.onPress ? (
             <ChevronGlyph color={t.colors.ring} size={t.iconSize.sm} />

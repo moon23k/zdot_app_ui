@@ -13,6 +13,7 @@ const useStyles = makeStyles((t) => ({
   line: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.mutedForeground,
   },

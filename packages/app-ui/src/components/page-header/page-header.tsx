@@ -33,6 +33,7 @@ const useStyles = makeStyles((t) => ({
   },
   title: {
     fontSize: t.typography.screenTitle.fontSize,
+    fontFamily: t.fontFamily,
     lineHeight: t.typography.screenTitle.lineHeight,
     fontWeight: t.typography.screenTitle.fontWeight,
     letterSpacing: t.typography.screenTitle.letterSpacing,

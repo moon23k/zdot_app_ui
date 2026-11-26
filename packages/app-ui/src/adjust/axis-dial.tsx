@@ -43,7 +43,7 @@ const END_W = 104;
 const DEAD = 24;
 const NUMBER_SIZE = 46;
 const NUMBER_LINE = 50;
-const NUMBER_TRACK = -1.5;
+const NUMBER_TRACK = -1.38;
 
 const point = (r: number, deg: number) => {
   const a = (deg * Math.PI) / 180;
@@ -82,7 +82,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     gap: t.space[1],
   },
-  number: { fontWeight: '700', fontVariant: ['tabular-nums'] },
+  number: { fontWeight: '500', fontVariant: ['tabular-nums'] },
   end: { position: 'absolute', alignItems: 'center' },
 }));
 

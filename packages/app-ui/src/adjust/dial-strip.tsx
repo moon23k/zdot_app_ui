@@ -1,5 +1,6 @@
 import { ScrollView, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { isFigureText } from '../components/text/figures';
 import { Text } from '../components/text/text';
 import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
@@ -43,7 +44,7 @@ const useStyles = makeStyles((t) => ({
   },
   lifted: { boxShadow: t.shadow.liftSm },
   value: { position: 'absolute' },
-  bold: { fontWeight: '700' },
+  figure: { fontWeight: '500' },
 }));
 
 const ORIGIN = 50;
@@ -84,6 +85,7 @@ function Ring({
   }
   const v = percent ? (item.value ?? ORIGIN) - ORIGIN : (item.value ?? 0);
   const frac = Math.min(1, Math.abs(v) / (item.max ?? (percent ? ORIGIN : 2)));
+  const shown = item.text ?? shownOf(item, percent);
   return (
     <View style={[s.ring, on && s.lifted]}>
       <Svg width={SIZE} height={SIZE}>
@@ -113,9 +115,9 @@ function Ring({
         variant="caption"
         weight={on ? 'semibold' : 'medium'}
         tone={on ? 'default' : 'muted'}
-        style={[s.value, on && percent && s.bold]}
+        style={[s.value, on && isFigureText(shown) && s.figure]}
       >
-        {item.text ?? shownOf(item, percent)}
+        {shown}
       </Text>
     </View>
   );

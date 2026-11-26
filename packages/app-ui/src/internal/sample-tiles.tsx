@@ -87,6 +87,8 @@ export function useSampleStyle() {
   const t = useTheme();
   return {
     fontSize: t.typography.screenTitle.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.screenTitle.letterSpacing,
     lineHeight: t.typography.screenTitle.lineHeight,
     color: t.colors.title,
   };

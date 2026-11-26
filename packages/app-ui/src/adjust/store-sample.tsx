@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   fill: { flex: 1 },
   strong: { fontWeight: '600' },
-  bold: { fontWeight: '700' },
+  bold: { fontWeight: '600' },
   dots: {
     position: 'absolute',
     left: 0,

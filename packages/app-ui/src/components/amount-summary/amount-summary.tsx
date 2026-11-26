@@ -30,6 +30,7 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     fontWeight: '500',
     color: t.colors.title,
@@ -37,8 +38,9 @@ const useStyles = makeStyles((t) => ({
   value: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.title.fontSize,
+    letterSpacing: t.typography.title.letterSpacing,
     lineHeight: t.typography.title.lineHeight,
-    fontWeight: '600',
+    fontWeight: '500',
     color: t.colors.title,
   },
   lines: { gap: t.space[2] },
@@ -61,12 +63,14 @@ const useStyles = makeStyles((t) => ({
   lineLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.mutedForeground,
   },
   lineValue: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.foreground,
   },
@@ -89,7 +93,9 @@ export function AmountSummary({
       <Text style={s.label} maxFontSizeMultiplier={t.maxFontScale}>
         {label}
       </Text>
-      <RollText style={s.value}>{value}</RollText>
+      <RollText style={s.value} money>
+        {value}
+      </RollText>
     </View>
   );
   return (
@@ -122,7 +128,7 @@ export function AmountSummary({
                   </PressableBase>
                 ) : null}
               </View>
-              <RollText style={s.lineValue} flash>
+              <RollText style={s.lineValue} flash money>
                 {line.value}
               </RollText>
             </View>

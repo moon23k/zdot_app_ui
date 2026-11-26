@@ -251,6 +251,8 @@ const useStyles = makeStyles((t) => ({
   },
   tagText: {
     fontSize: t.typography.caption.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.caption.letterSpacing,
     fontWeight: '600',
   },
   tag: {
@@ -304,6 +306,7 @@ const useStyles = makeStyles((t) => ({
   focusTagText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '600',
     color: t.colors.title,

@@ -106,6 +106,8 @@ const useStyles = makeStyles((t) => ({
   snippet: {
     marginTop: t.space[1],
     fontSize: t.typography.eyebrow.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
   },
   faded: { opacity: t.opacity.disabled },

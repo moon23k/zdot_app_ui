@@ -29,6 +29,7 @@ const DIAGRAM_ROWS = [0, 1, 2];
 const SOFT_TITLE = 6;
 const SOFT_LINE = 4;
 const SOFT_LABEL = 11;
+const SOFT_LABEL_TRACKING = 0.11;
 const SOFT_LABEL_LINE = 1.35;
 
 const useStyles = makeStyles((t) => ({
@@ -114,8 +115,10 @@ const useStyles = makeStyles((t) => ({
   softLabel: {
     textAlign: 'center',
     color: t.colors.title,
+    fontFamily: t.fontFamily,
     fontSize: SOFT_LABEL,
     lineHeight: SOFT_LABEL * SOFT_LABEL_LINE,
+    letterSpacing: SOFT_LABEL_TRACKING,
   },
   softTitle: {
     width: '56%',

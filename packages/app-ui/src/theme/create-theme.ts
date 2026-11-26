@@ -6,7 +6,7 @@ import type {
   Themes,
 } from '../types';
 import { pickForeground } from '../utils/color';
-import { colors, tokens } from './tokens';
+import { colors, tokens, withFontFamily } from './tokens';
 
 type Plain = Record<string, unknown>;
 
@@ -44,7 +44,14 @@ function resolveColors(
 
 export function createTheme(overrides: ThemeOverrides = {}): Themes {
   const { colors: shared = {}, dark = {}, ...rest } = overrides;
-  const base = merge(tokens, rest);
+  const merged = merge(tokens, rest);
+  const base =
+    'fontFamily' in rest
+      ? {
+          ...merged,
+          typography: withFontFamily(merged.typography, merged.fontFamily),
+        }
+      : merged;
   const build = (
     scheme: ColorScheme,
     override: Partial<ThemeColors>

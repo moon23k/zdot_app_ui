@@ -112,6 +112,7 @@ const useStyles = makeStyles((t) => ({
   optionLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '500',
     color: t.colors.mutedForeground,
@@ -120,6 +121,7 @@ const useStyles = makeStyles((t) => ({
   note: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '500',
     color: t.colors.faint,
@@ -180,6 +182,7 @@ const useStyles = makeStyles((t) => ({
   tileLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '400',
     color: t.colors.title,

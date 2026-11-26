@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { Column, demoProducts, Section } from '../../__stories__/helpers';
+import { Figures, Won } from './figures';
 import { Text } from './text';
 
 const meta = { title: 'Components/Text', component: Text } satisfies Meta<
@@ -22,6 +23,17 @@ export const AllVariants: StoryObj<typeof meta> = {
         <Text tone="muted">보조 설명</Text>
         <Text tone="danger">결제에 실패했어요</Text>
         <Text tone="success">정산이 완료됐어요</Text>
+      </Section>
+      <Section title="figures">
+        <Text variant="display" weight="medium">
+          <Won>128,000원</Won>
+        </Text>
+        <Text variant="bodyLg" weight="medium">
+          <Won>35,000원</Won>
+        </Text>
+        <Text variant="bodyLg">
+          <Figures>발송할 주문 3건</Figures>
+        </Text>
       </Section>
       <Section title="numberOfLines=1">
         <Text numberOfLines={1}>{demoProducts.long}</Text>

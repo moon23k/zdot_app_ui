@@ -95,7 +95,11 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.muted,
   },
   image: { width: '100%', height: '100%' },
-  glyph: { fontSize: GLYPH, lineHeight: GLYPH * 1.25 },
+  glyph: {
+    fontFamily: t.fontFamily,
+    fontSize: GLYPH,
+    lineHeight: GLYPH * 1.25,
+  },
   badge: {
     position: 'absolute',
     right: -BADGE_SHIFT,

@@ -14,6 +14,7 @@ import { makeStyles } from '../../utils/styles';
 import { Photo } from '../photo/photo';
 import { FlushRowContext } from '../../internal/flush-row';
 import { haptic } from '../../internal/haptics';
+import { Figures, Won, isFigureText, type FiguresScope } from '../text/figures';
 
 export type ListRowTone = 'muted' | 'warning' | 'danger';
 
@@ -36,6 +37,7 @@ export type ListRowProps = Omit<
   strong?: boolean;
   titleSize?: 'md' | 'lg';
   titleLines?: number;
+  titleFigures?: FiguresScope;
   selection?: 'check' | 'radio';
   selected?: boolean;
 };
@@ -65,7 +67,6 @@ const useStyles = makeStyles((t) => ({
     ...t.typography.bodyLg,
     fontFamily: t.fontFamily,
     color: t.colors.foreground,
-    fontVariant: ['tabular-nums'],
   },
   meta: {
     ...t.typography.label,
@@ -107,6 +108,7 @@ const useStyles = makeStyles((t) => ({
   checkOn: { borderColor: t.colors.primary, backgroundColor: t.colors.primary },
   radioOn: { borderWidth: 6, borderColor: t.colors.primary },
   strong: { color: t.colors.title, fontWeight: '600' },
+  strongFigure: { fontWeight: '500' },
   titleLg: {
     ...t.typography.bodyLg,
     color: t.colors.title,
@@ -130,6 +132,7 @@ export function ListRow({
   strong = false,
   titleSize = 'md',
   titleLines = 1,
+  titleFigures,
   selection,
   selected = false,
   onPress,
@@ -194,9 +197,31 @@ export function ListRow({
         <Text
           numberOfLines={titleLines}
           maxFontSizeMultiplier={t.maxFontScale}
-          style={[s.title, strong && s.strong, titleSize === 'lg' && s.titleLg]}
+          style={[
+            s.title,
+            strong && s.strong,
+            titleSize === 'lg' && s.titleLg,
+            (strong || titleSize === 'lg') &&
+              isFigureText(title) &&
+              s.strongFigure,
+          ]}
         >
-          {title}
+          {titleFigures ? (
+            <Figures
+              size={t.typography.bodyLg.fontSize}
+              tracking={t.typography.bodyLg.letterSpacing}
+              scope={titleFigures}
+            >
+              {title}
+            </Figures>
+          ) : (
+            <Won
+              size={t.typography.bodyLg.fontSize}
+              tracking={t.typography.bodyLg.letterSpacing}
+            >
+              {title}
+            </Won>
+          )}
         </Text>
         {description ? (
           <Text
@@ -218,9 +243,19 @@ export function ListRow({
           {value ? (
             <Text
               maxFontSizeMultiplier={t.maxFontScale}
-              style={[s.value, strong && s.strong, strong && s.money]}
+              style={[
+                s.value,
+                strong && s.strong,
+                strong && s.money,
+                strong && isFigureText(value) && s.strongFigure,
+              ]}
             >
-              {value}
+              <Won
+                size={t.typography.bodyLg.fontSize}
+                tracking={t.typography.bodyLg.letterSpacing}
+              >
+                {value}
+              </Won>
             </Text>
           ) : null}
           {trailing ? renderIcon(trailing, icon) : null}

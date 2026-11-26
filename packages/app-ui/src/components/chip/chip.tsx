@@ -57,11 +57,12 @@ const useStyles = makeStyles((t) => ({
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
   },
   strong: { fontWeight: '600' },
-  count: { fontVariant: ['tabular-nums'], fontWeight: '600' },
+  count: { fontWeight: '500' },
 }));
 
 export function Chip({

@@ -64,6 +64,8 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     textAlign: 'center',
     fontSize: t.typography.title.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.title.letterSpacing,
     lineHeight: t.typography.title.lineHeight,
   },
   body: { padding: t.space[3], gap: t.space[3] },
@@ -82,6 +84,8 @@ const useStyles = makeStyles((t) => ({
   lead: { flexDirection: 'row', alignItems: 'center', gap: t.space[1] },
   blockTitle: {
     fontSize: t.typography.title.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.title.letterSpacing,
     lineHeight: t.typography.title.lineHeight,
   },
 }));

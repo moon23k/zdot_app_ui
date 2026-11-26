@@ -175,11 +175,11 @@ describe('TileGrid', () => {
     expect(onValueChange).toHaveBeenCalledWith('perfume');
   });
 
-  it('lifts only the chosen tile name to bold', async () => {
+  it('keeps the chosen tile name within the 600 weight cap', async () => {
     await render(
       <TileGrid items={tiles} value="flower" onValueChange={() => {}} />
     );
-    expect(screen.getByText('플라워 숍')).toHaveStyle({ fontWeight: '700' });
+    expect(screen.getByText('플라워 숍')).toHaveStyle({ fontWeight: '600' });
     expect(screen.getByText('베이커리')).toHaveStyle({ fontWeight: '600' });
   });
 });

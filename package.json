@@ -50,7 +50,8 @@
     "storybook": "10.6.3",
     "test-renderer": "~1.2.0",
     "typescript": "^6.0.3",
-    "vite": "^8"
+    "vite": "^8",
+    "wanted-sans": "1.0.3"
   },
   "packageManager": "yarn@4.11.0",
   "prettier": {

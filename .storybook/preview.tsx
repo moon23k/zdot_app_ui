@@ -1,4 +1,5 @@
 import type { Decorator, Preview } from '@storybook/react-native-web-vite';
+import 'wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.css';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import {

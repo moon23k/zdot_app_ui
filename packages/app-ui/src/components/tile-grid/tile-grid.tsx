@@ -49,7 +49,7 @@ const NAME_TOP = 32;
 const NAME_WIDTH = 88;
 const NAME_SIZE = 16;
 const NAME_LEADING = 21;
-const NAME_TRACKING = -0.3;
+const NAME_TRACKING = -0.19;
 const CHECK = 22;
 const CHECK_INSET = 12;
 
@@ -106,6 +106,7 @@ const useStyles = makeStyles((t) => ({
     right: INSET_X,
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '400',
     color: t.colors.faint,
@@ -122,7 +123,7 @@ const useStyles = makeStyles((t) => ({
     fontWeight: '600',
     color: t.colors.title,
   },
-  strong: { fontWeight: '700' },
+  strong: { fontWeight: '600' },
   check: {
     position: 'absolute',
     left: CHECK_INSET,

@@ -7,6 +7,7 @@ import { ProgressBar } from '../../components/progress-bar/progress-bar';
 import { StatusBadge } from '../../components/status-badge/status-badge';
 import { Switch } from '../../components/switch/switch';
 import { Text } from '../../components/text/text';
+import { Won } from '../../components/text/figures';
 import { UsersGlyph } from '../../internal/glyphs';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
@@ -198,7 +199,7 @@ export function MetricCard({
             weight="semibold"
             tone={emphasis ? 'point' : undefined}
           >
-            {value}
+            <Won>{value}</Won>
           </Text>
           {caption ? (
             <Text variant="label" tone="muted">
@@ -208,7 +209,7 @@ export function MetricCard({
         </View>
         {aside ? (
           <Text variant="bodyLg" weight="semibold" tone="point">
-            {aside}
+            <Won>{aside}</Won>
           </Text>
         ) : null}
         {action}
@@ -244,7 +245,7 @@ export function ValueTiles({ items }: ValueTilesProps) {
               tone={item.emphasis ? 'point' : undefined}
               numberOfLines={1}
             >
-              {item.value}
+              <Won>{item.value}</Won>
             </Text>
           </>
         );

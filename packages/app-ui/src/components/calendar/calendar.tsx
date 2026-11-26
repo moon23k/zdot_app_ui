@@ -77,6 +77,7 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
     color: t.colors.foreground,
@@ -95,6 +96,7 @@ const useStyles = makeStyles((t) => ({
     textAlign: 'center',
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     color: t.colors.foreground,
   },
@@ -102,6 +104,7 @@ const useStyles = makeStyles((t) => ({
   subhead: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
     color: t.colors.mutedForeground,
@@ -133,15 +136,15 @@ const useStyles = makeStyles((t) => ({
   number: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
-    fontVariant: ['tabular-nums'],
   },
   strong: { fontWeight: '600' },
   label: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
-    fontVariant: ['tabular-nums'],
   },
   dot: {
     width: 4,

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Photo } from '../components/photo/photo';
 import { Text } from '../components/text/text';
+import { Won, isFigureText } from '../components/text/figures';
 import { CopyGlyph } from '../internal/glyphs';
 import { PressableBase } from '../internal/pressable-base';
 import { useTheme } from '../theme/theme-provider';
@@ -83,6 +84,7 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     fontFamily: t.fontFamily,
     fontSize: t.typography.screenTitle.fontSize,
+    letterSpacing: t.typography.screenTitle.letterSpacing,
     lineHeight: t.typography.screenTitle.lineHeight,
     fontWeight: '600',
     color: t.colors.title,
@@ -95,13 +97,17 @@ const useStyles = makeStyles((t) => ({
   heroCaptionText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
   heroBody: { marginTop: t.space[4] },
   heroWarn: { color: t.colors.warningText, fontWeight: '500' },
+  heroFigure: { fontWeight: '500' },
   heroSuffix: {
     fontSize: t.typography.label.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.label.letterSpacing,
     fontWeight: '400',
     color: t.colors.mutedForeground,
   },
@@ -146,8 +152,11 @@ function ScrollTemplate({
           <View style={s.hero}>
             {hero.overline}
             <View style={s.heroHead}>
-              <Text accessibilityRole="header" style={s.heroTitle}>
-                {hero.title}
+              <Text
+                accessibilityRole="header"
+                style={[s.heroTitle, isFigureText(hero.title) && s.heroFigure]}
+              >
+                <Won>{hero.title}</Won>
                 {hero.titleSuffix ? (
                   <Text style={s.heroSuffix}>{` ${hero.titleSuffix}`}</Text>
                 ) : null}

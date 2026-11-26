@@ -120,6 +120,8 @@ const useStyles = makeStyles((t) => ({
   due: { color: t.colors.warningText },
   small: {
     fontSize: t.typography.eyebrow.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
   },
 }));

@@ -10,6 +10,7 @@ import {
 import { useTheme } from '../../theme/theme-provider';
 import { contrastRatio, pickForeground } from '../../utils/color';
 import { makeStyles } from '../../utils/styles';
+import { Won } from '../../components/text/figures';
 import type { PaletteColors } from '../palette-block/palette-block';
 
 export type StoreSampleItem = {
@@ -36,7 +37,7 @@ const RADIUS = 22;
 const TOP = 11;
 const TITLE_SIZE = 18;
 const TITLE_LEADING = 24;
-const TITLE_TRACKING = -0.3;
+const TITLE_TRACKING = -0.22;
 const BAG = 20;
 const BAG_STROKE = 1.5;
 const CHIPS_TOP = 17;
@@ -49,7 +50,7 @@ const HERO = 150;
 const HERO_RADIUS = 14;
 const BADGE = 22;
 const BADGE_SIZE = 12;
-const BADGE_TRACKING = 0.4;
+const BADGE_TRACKING = 0.12;
 const GRID_TOP = 14;
 const GRID_GAP = 10;
 const ROW_GAP = 16;
@@ -58,6 +59,7 @@ const ITEM_SIZE = 13;
 const ITEM_LEADING = 18;
 const PRICE_SIZE = 14;
 const PRICE_LEADING = 20;
+const PRICE_TRACKING = -0.06;
 
 const useStyles = makeStyles((t) => ({
   root: { borderRadius: RADIUS, boxShadow: t.shadow.lift },
@@ -83,7 +85,7 @@ const useStyles = makeStyles((t) => ({
     fontSize: TITLE_SIZE,
     lineHeight: TITLE_LEADING,
     letterSpacing: TITLE_TRACKING,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   chips: {
     flexDirection: 'row',
@@ -118,7 +120,7 @@ const useStyles = makeStyles((t) => ({
     fontSize: BADGE_SIZE,
     lineHeight: BADGE,
     letterSpacing: BADGE_TRACKING,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   grid: { gap: ROW_GAP, marginTop: GRID_TOP },
   row: { flexDirection: 'row', gap: GRID_GAP },
@@ -156,7 +158,8 @@ const useStyles = makeStyles((t) => ({
     fontFamily: t.fontFamily,
     fontSize: PRICE_SIZE,
     lineHeight: PRICE_LEADING,
-    fontWeight: '700',
+    letterSpacing: PRICE_TRACKING,
+    fontWeight: '500',
   },
 }));
 
@@ -269,7 +272,9 @@ function StoreSampleView({
                     maxFontSizeMultiplier={scale}
                     style={[s.price, { color: colors.text }]}
                   >
-                    {item.price}
+                    <Won size={PRICE_SIZE} tracking={PRICE_TRACKING}>
+                      {item.price}
+                    </Won>
                   </Text>
                 </View>
               ))}

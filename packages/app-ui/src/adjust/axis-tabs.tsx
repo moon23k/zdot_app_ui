@@ -32,7 +32,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.recess,
   },
   on: { backgroundColor: t.colors.raised, boxShadow: t.shadow.lift },
-  label: { letterSpacing: -0.5 },
+  label: { letterSpacing: t.typography.body.letterSpacing },
   dot: {
     position: 'absolute',
     bottom: t.space[2],

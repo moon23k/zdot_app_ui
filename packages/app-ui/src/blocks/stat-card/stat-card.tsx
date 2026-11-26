@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '../../components/text/text';
 import { makeStyles } from '../../utils/styles';
+import { Won } from '../../components/text/figures';
 import { Card } from '../internal/card';
 
 export type StatCardProps = {
@@ -61,7 +62,7 @@ export function StatCard({
           {meta ? null : <Text tone="muted">{label}</Text>}
           <View style={s.value}>
             <Text variant="title" weight="semibold">
-              {value}
+              <Won>{value}</Won>
             </Text>
             {hasChange ? (
               <Text

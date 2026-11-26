@@ -44,7 +44,7 @@ const PEEK = 38;
 const LOCK = 700;
 const TITLE_SIZE = 22;
 const TITLE_LEADING = 30;
-const TITLE_TRACKING = -0.7;
+const TITLE_TRACKING = -0.48;
 
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, marginHorizontal: -t.layout.screenX },

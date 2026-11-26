@@ -20,6 +20,7 @@ const useStyles = makeStyles((t) => ({
   who: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
     color: t.colors.mutedForeground,
   },

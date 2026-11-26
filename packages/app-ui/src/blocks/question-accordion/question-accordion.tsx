@@ -47,7 +47,6 @@ const useStyles = makeStyles((t) => ({
     ...t.typography.caption,
     fontWeight: '500',
     color: t.colors.ring,
-    fontVariant: ['tabular-nums'],
   },
   label: { ...t.typography.label, color: t.colors.mutedForeground },
   summary: {

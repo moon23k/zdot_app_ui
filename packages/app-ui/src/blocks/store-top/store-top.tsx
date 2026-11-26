@@ -61,6 +61,7 @@ const useStyles = makeStyles((t) => ({
   initial: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.bodyLg.fontSize,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     lineHeight: t.typography.bodyLg.lineHeight,
     fontWeight: '600',
     color: t.colors.title,
@@ -72,6 +73,7 @@ const useStyles = makeStyles((t) => ({
     flexShrink: 1,
     fontFamily: t.fontFamily,
     fontSize: t.typography.bodyLg.fontSize,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     lineHeight: t.typography.bodyLg.lineHeight,
     fontWeight: '600',
     color: t.colors.title,
@@ -82,6 +84,7 @@ const useStyles = makeStyles((t) => ({
   statusText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
     color: t.colors.mutedForeground,
   },
@@ -93,16 +96,17 @@ const useStyles = makeStyles((t) => ({
   keyText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     color: t.colors.mutedForeground,
   },
   count: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.display.fontSize,
+    letterSpacing: t.typography.display.letterSpacing,
     lineHeight: t.typography.display.lineHeight,
-    fontWeight: '600',
+    fontWeight: '500',
     color: t.colors.primary,
-    fontVariant: ['tabular-nums'],
   },
   zero: { fontWeight: '400', color: t.colors.input },
   urgent: {
@@ -114,6 +118,7 @@ const useStyles = makeStyles((t) => ({
   urgentText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.caption.fontSize,
+    letterSpacing: t.typography.caption.letterSpacing,
     lineHeight: t.typography.caption.lineHeight,
     fontWeight: '600',
     color: t.colors.warningText,

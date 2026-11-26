@@ -46,6 +46,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.background,
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     color: t.colors.title,
   },
   text: {

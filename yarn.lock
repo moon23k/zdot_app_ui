@@ -13079,6 +13079,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"wanted-sans@npm:1.0.3":
+  version: 1.0.3
+  resolution: "wanted-sans@npm:1.0.3"
+  checksum: 10c0/82ccc3cc8f9e0494e713aec8cb8793695853609cac21d1d9215095ee1f3fa1879f40f2374aec8e154851af85b72c009cc224f7a316a4a39bd2faaa57080586a4
+  languageName: node
+  linkType: hard
+
 "wcwidth@npm:^1.0.1":
   version: 1.0.1
   resolution: "wcwidth@npm:1.0.1"
@@ -13492,6 +13499,7 @@ __metadata:
     test-renderer: "npm:~1.2.0"
     typescript: "npm:^6.0.3"
     vite: "npm:^8"
+    wanted-sans: "npm:1.0.3"
   languageName: unknown
   linkType: soft
 

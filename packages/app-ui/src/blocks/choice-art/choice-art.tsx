@@ -74,6 +74,7 @@ const useStyles = makeStyles((t) => ({
   sample: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.space[6],
     fontWeight: '600',
   },
@@ -229,6 +230,7 @@ const useStyles = makeStyles((t) => ({
   chipLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '400',
     color: t.colors.title,

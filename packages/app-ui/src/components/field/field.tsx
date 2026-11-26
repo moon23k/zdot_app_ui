@@ -104,11 +104,13 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: 0,
     fontFamily: t.fontFamily,
     fontSize: t.typography.bodyLg.fontSize,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     color: t.colors.foreground,
   },
   error: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     paddingLeft: t.space[1],
     color: t.colors.danger,
@@ -124,6 +126,7 @@ const useStyles = makeStyles((t) => ({
   hint: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     paddingLeft: t.space[1],
     color: t.colors.mutedForeground,
@@ -131,6 +134,7 @@ const useStyles = makeStyles((t) => ({
   warning: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     paddingLeft: t.space[1],
     color: t.colors.foreground,

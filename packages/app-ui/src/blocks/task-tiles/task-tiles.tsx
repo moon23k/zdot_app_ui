@@ -35,8 +35,9 @@ const useStyles = makeStyles((t) => ({
   },
   count: {
     fontSize: t.typography.title.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.title.letterSpacing,
     lineHeight: t.typography.title.lineHeight,
-    fontVariant: ['tabular-nums'],
   },
 }));
 

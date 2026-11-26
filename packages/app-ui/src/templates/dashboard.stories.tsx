@@ -28,14 +28,24 @@ function Screen({ blocked }: { blocked?: boolean }) {
         <ListSection title="오늘 할 일 4">
           <ListRow
             title="발송할 주문 3건"
+            titleFigures="all"
             overline="1건 오늘 14:00 마감"
             overlineTone="warning"
             onPress={() => {}}
           />
-          <ListRow title="반품 요청 판단 1건" onPress={() => {}} />
-          <ListRow title="답변할 문의 1건" onPress={() => {}} />
+          <ListRow
+            title="반품 요청 판단 1건"
+            titleFigures="all"
+            onPress={() => {}}
+          />
+          <ListRow
+            title="답변할 문의 1건"
+            titleFigures="all"
+            onPress={() => {}}
+          />
           <ListRow
             title="픽업 준비 1건"
+            titleFigures="all"
             description="11월 2일 14:00"
             onPress={() => {}}
           />
@@ -43,6 +53,7 @@ function Screen({ blocked }: { blocked?: boolean }) {
         <ListSection title="매출">
           <ListRow
             title="오늘 128,000원"
+            titleFigures="all"
             description="주문 3건 · 어제보다 +24,000원"
             onPress={() => {}}
           />

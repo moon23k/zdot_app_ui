@@ -88,11 +88,12 @@ const useStyles = makeStyles((t) => ({
   tabText: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     fontWeight: '500',
     color: t.colors.faint,
   },
-  tabActiveText: { fontWeight: '700', color: t.colors.title },
+  tabActiveText: { fontWeight: '600', color: t.colors.title },
   tabDoneText: { color: t.colors.mutedForeground },
   area: { flex: 1, marginHorizontal: -t.layout.screenX },
   flow: {

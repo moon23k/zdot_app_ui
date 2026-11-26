@@ -97,14 +97,20 @@ const useStyles = makeStyles((t) => ({
   quiet: { fontWeight: '500' },
   smLabel: {
     fontSize: t.typography.label.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
   },
   mdLabel: {
     fontSize: t.typography.body.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
   },
   lgLabel: {
     fontSize: t.typography.bodyLg.fontSize,
+    fontFamily: t.fontFamily,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     lineHeight: t.typography.bodyLg.lineHeight,
   },
 }));

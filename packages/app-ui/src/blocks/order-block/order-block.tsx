@@ -9,6 +9,7 @@ import type { IconSlot } from '../../internal/icon';
 import { PressableBase } from '../../internal/pressable-base';
 import { useTheme } from '../../theme/theme-provider';
 import { makeStyles } from '../../utils/styles';
+import { Figures, Won } from '../../components/text/figures';
 
 export type OrderBlockAction = {
   label: string;
@@ -50,6 +51,7 @@ const useStyles = makeStyles((t) => ({
   overline: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.eyebrow.fontSize,
+    letterSpacing: t.typography.eyebrow.letterSpacing,
     lineHeight: t.typography.eyebrow.lineHeight,
     fontWeight: '500',
     color: t.colors.mutedForeground,
@@ -57,6 +59,7 @@ const useStyles = makeStyles((t) => ({
   title: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.bodyLg.fontSize,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     lineHeight: t.typography.bodyLg.lineHeight,
     fontWeight: '500',
     color: t.colors.title,
@@ -64,6 +67,7 @@ const useStyles = makeStyles((t) => ({
   meta: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.label.fontSize,
+    letterSpacing: t.typography.label.letterSpacing,
     lineHeight: t.typography.label.lineHeight,
     color: t.colors.mutedForeground,
   },
@@ -71,10 +75,10 @@ const useStyles = makeStyles((t) => ({
     marginTop: 'auto',
     fontFamily: t.fontFamily,
     fontSize: t.typography.bodyLg.fontSize,
+    letterSpacing: t.typography.bodyLg.letterSpacing,
     lineHeight: t.typography.bodyLg.lineHeight,
-    fontWeight: '600',
+    fontWeight: '500',
     color: t.colors.title,
-    fontVariant: ['tabular-nums'],
   },
   bottom: {
     flexDirection: 'row',
@@ -108,6 +112,7 @@ const useStyles = makeStyles((t) => ({
   swipeLabel: {
     fontFamily: t.fontFamily,
     fontSize: t.typography.body.fontSize,
+    letterSpacing: t.typography.body.letterSpacing,
     lineHeight: t.typography.body.lineHeight,
     fontWeight: '600',
     color: t.colors.primaryForeground,
@@ -182,7 +187,13 @@ export function OrderBlock({
             numberOfLines={1}
             maxFontSizeMultiplier={t.maxFontScale}
           >
-            {title}
+            <Figures
+              size={t.typography.bodyLg.fontSize}
+              tracking={t.typography.bodyLg.letterSpacing}
+              scope="more"
+            >
+              {title}
+            </Figures>
           </Text>
           <Text
             style={s.meta}
@@ -192,7 +203,12 @@ export function OrderBlock({
             {meta}
           </Text>
           <Text style={s.amount} maxFontSizeMultiplier={t.maxFontScale}>
-            {amount}
+            <Won
+              size={t.typography.bodyLg.fontSize}
+              tracking={t.typography.bodyLg.letterSpacing}
+            >
+              {amount}
+            </Won>
           </Text>
         </View>
       </PressableBase>

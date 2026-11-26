@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 import { useState } from 'react';
-import { Text } from 'react-native';
 import { Column, demoProducts, demoStore } from '../../__stories__/helpers';
+import { Text } from '../text/text';
 import { Field } from './field';
 
 const meta = {
