@@ -1,5 +1,28 @@
 # @ezpg/app-ui
 
+## 0.22.0
+
+### Minor Changes
+
+- 4bd58c9: DesignPickTemplate: 안이 4개 이상이어도 안 단추가 한 줄에 들어가게 폭 조정. ResultTemplate: 미리보기 아래 선택 자리 tray 속성 추가.
+
+  changeset 없이 쌓여 있던 변경 포함: 분위기 맞추기 부품(AxisWheel · AxisTabs · AxisAdjust · StoreSample) 추가, 상세페이지 스튜디오 부품(StudioTools · StudioSteps · SectionCover · detail-request 의 PhotoMosaic · FactRows · AddThumbs · TintButton) 추가, KeyboardBar · PhotoToolBar · SectionThumb · studioDockSpace 삭제, IntroTemplate 폭 측정 전 그리지 않음, UndoGlyph · RetryGlyph 웹 표시 수정, StudioBar 꼬리표 세로 정렬 수정
+
+### Patch Changes
+
+- 404de0a: AdjustTemplate 의 "원래와 비교" 단추가 실제 기기에서 눌리지 않던 문제 수정(누르고 있는 동안 onCompareChange 가 불리지 않음 — PreviewEditTemplate 과 같은 원인).
+- a9e52a7: CreditCost · CreditPill: 크레딧 숫자를 천 단위로 끊어 표기(3000 → 3,000), 접근성 문구도 같은 표기
+- 135169d: 상세페이지 스튜디오 2차 마감: DetailCanvas 가 그리는 글(편집 칸 값 제외)은 한글 낱말 안에서 줄이 바뀌지 않게 낱말 글자 사이에 줄바꿈 금지 문자를 넣어 그림(가운뎃점은 앞 낱말에, 한 글자 낱말은 뒤 숫자에 붙임), 새 선택 prop onMeasure · DetailPartsContext(글 · 사진 자리 보고). SectionThumb 는 offset 을 주지 않으면 실제 자리로 썸네일 범위를 잡음(사진으로 시작하면 사진 가운데, 글로 시작하면 첫 글부터, 아래 끝에 걸친 글 줄은 빼고). SectionEditTemplate 은 시트가 열리면 시트 윗변이 글 줄을 자르지 않게 스크롤을 맞춤. SectionBoard 더보기 메뉴는 글 칸 폭 전체를 덮고 위아래 끝이 줄 사이에 오게(SectionAnchor fill · pitch, 기본 메뉴는 그대로). CompareSlider inset(나눔 선이 선택 테두리 안에). PhotoToolBar 는 넘칠 때 도구 칸 단위로 멈춤. SectionSettings 배경 색은 한 줄 8색(서식 패널 색과 같은 지름). TextFormatPanel 굵기 칸은 칸마다 자기 굵기(SegmentedControl item weight). 새 글리프 FocusGlyph. 선택 prop: Button steady(꺼져도 크기 그대로 · 옅은 회색 — ConfirmRow · StudioBar 완료에 사용), Skeleton sheen(움직임 줄이기에서도 빛 띠를 그림 — AssetGrid 만드는 중 칸), Chip · ChipGroup item cost(칩 안 마름모 비용).
+- 86df3dd: 상세페이지 스튜디오 3차 마감: 구획 썸네일이 사진이 있으면 사진 가운데를 보여 줌(DetailPart blank — 사진 없는 자리 구분), 구획 시트가 열릴 때 스크롤로 닿을 수 있는 줄 경계만 고르고 내용 높이 변화에 다시 맞춤(sheetEdge reach), 미리보기 카드가 잘린 글 대신 사진 끝 · 글 경계에서 끝남(DraftPreview pageHeight · draftPreviewFit), 흐림 띠 틈 없앰(EdgeFade 겹친 층), 시안 색 목록 DETAIL_TEXT_COLORS · DETAIL_BACKGROUND_COLORS, 제목 판정 detailIsTitle(7단계 이상 또는 굵은 6단계 — 빈 제목 자리 · 구획 추가 그림). 기존 기본값은 그대로.
+- ae2f93f: 상세페이지 스튜디오 4차 마감: 구획 목록 더보기 메뉴가 연 줄 바로 아래에서 오른쪽 정렬로 열림(줄 자리를 목록 카드 위치 + 줄 번호로 계산 — 끌어 옮기는 목록 안에서 줄을 직접 재면 옛 자리가 나오던 문제, 메뉴 위아래 끝은 줄 사이), AI 글 결과 쪽 표시 점의 위 간격 20 · 점 아래 여백을 포커스 범위에 포함, 글 상자를 처음 열 때 커서를 글 끝에 둠, 제목 판정 detailIsTitle 을 7단계 이상 또는 굵은 5단계 이상으로.
+- 9386546: 상세페이지 스튜디오 5차 마감: 사진 위 · 글 아래 배치에서 사진 아래 글 묶음의 윗 여백을 시안 값으로(+8), 글을 고치는 동안 키보드 · 서식 패널이 떠 있으면 고치는 글 상자의 아래 끝을 도구 줄 바로 위에 맞춤(typingOffset), 구획 설정 시트가 열릴 때 구획이 길면 구획의 아래 끝을 시트 위에 맞춤, 배치 견본 이름 글자를 시안 값(11 · 줄 높이 1.35)으로(LayoutPicker soft 변형만)
+
+  구획 설정 시트의 아래 맞춤이 시트 높이만큼 스크롤 영역이 늘어난 뒤에 적용되게(늘어나기 전에 한 번 소진되어 맞춤이 안 되던 것), 한글 낱말 뒤의 숫자(수량 · 치수)를 앞 낱말과 한 줄에(keepWords — "숟가락 2" 가 줄 끝에서 갈라지던 것)
+
+- 953a92e: 상세페이지 스튜디오 6차 마감(시안 값): 고른 색 고리 지름 44(ColorSwatchPicker row 변형의 고리 틈 3 → 4), StudioToggle 44×26 · 손잡이 22, StudioDock 글자 11, 구획 목록 카드가 아래 도구 막대 뒤로 이어지게(아래 여백을 카드 안쪽으로 — 카드의 둥근 끝이 막대 옆으로 보이던 것)
+- b7bf4c1: SectionThumb: 사진이 없고 내용이 썸네일보다 짧은 구획은 세로 가운데에 놓음(아래 절반이 비어 보이던 것)
+- 2edc958: 상세페이지 스튜디오 마감을 승인 시안에 맞춤: StudioSheet 윗모서리 16 · 위로 드리우는 그림자, ConfirmRow 알약 단추(위 여백 20, 비활성 주 단추는 옅은 회색), StudioBar 완료 알약(높이 36), RewriteTray · ImagePrompt 제안 칩을 흰 바탕 테두리 칩(높이 36 · 모서리 8)으로, PhotoToolBar 도구 간격 없앰 · 오른쪽 끝 흐림(가려진 도구가 있을 때만) · 아이콘 24, KeyboardBar · StudioDock · AdjustTiles 아이콘 24, StudioDock · AdjustTiles · SectionBoard 모서리 16, SectionEditTemplate 아래 도구 줄 바닥 흰색, AssetGrid 격자 아래 끝 흐림, SectionSettings 배치 타일 옅은 그림(LayoutPicker variant="soft") · 여백 슬라이더 얇게, TextFormatPanel 슬라이더 얇게. 새 부품 StudioToggle · StudioToggleList(한 번에 다듬기 줄 52 · 그린 스위치). 공용 부품은 기본 모양 그대로 두고 선택 prop 만 추가: Button pill, Slider size="sm", LayoutPicker variant="soft".
+
 ## 0.21.0
 
 ### Minor Changes
