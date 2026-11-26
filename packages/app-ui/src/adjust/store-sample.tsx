@@ -9,6 +9,7 @@ import {
   View,
   type ImageSourcePropType,
   type TextStyle,
+  type ViewStyle,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useReducedMotion } from '../internal/use-reduced-motion';
@@ -58,6 +59,7 @@ export type StoreSampleProps = {
   height: number;
   fontFamily?: string;
   serifFamily?: string;
+  cutout?: boolean;
 };
 
 const BASE = 390;
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingRight: 0,
   },
-  tall: { height: '100%' },
   fill: { flex: 1 },
   strong: { fontWeight: '600' },
   bold: { fontWeight: '700' },
@@ -94,6 +95,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   faded: { opacity: 0.35 },
+  clip: { overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  inset: { width: '76%', height: '76%' },
 });
 
 const serifDefault = Platform.select({
@@ -121,6 +124,31 @@ const BAG = 'M5 8h14l1 12H4zM9 8a3 3 0 016 0';
 const HEART =
   'M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0112 7.2a4.2 4.2 0 017.5 2.6C19.5 15.4 12 20 12 20z';
 
+function Shot({
+  source,
+  box,
+  tone,
+  cutout,
+}: {
+  source: ImageSourcePropType | undefined;
+  box: ViewStyle;
+  tone: string;
+  cutout: boolean;
+}) {
+  if (!source) return <View style={[box, { backgroundColor: tone }]} />;
+  return cutout ? (
+    <View style={[styles.clip, box, { backgroundColor: tone }]}>
+      <Image source={source} resizeMode="contain" style={styles.inset} />
+    </View>
+  ) : (
+    <Image
+      source={source}
+      resizeMode="cover"
+      style={[box as never, { backgroundColor: tone }]}
+    />
+  );
+}
+
 function Rail({
   photos,
   side,
@@ -129,6 +157,7 @@ function Rail({
   radius,
   tone,
   play,
+  cutout,
 }: {
   photos: readonly ImageSourcePropType[];
   side: number;
@@ -137,6 +166,7 @@ function Rail({
   radius: number;
   tone: string;
   play: boolean;
+  cutout: boolean;
 }) {
   const reduced = useReducedMotion();
   const x = useRef(new Animated.Value(0)).current;
@@ -166,16 +196,12 @@ function Rail({
       ]}
     >
       {photos.map((photo, i) => (
-        <Image
+        <Shot
           key={i}
           source={photo}
-          resizeMode="cover"
-          style={{
-            width: side,
-            height: side,
-            borderRadius: radius,
-            backgroundColor: tone,
-          }}
+          box={{ width: side, height: side, borderRadius: radius }}
+          tone={tone}
+          cutout={cutout}
         />
       ))}
     </Animated.View>
@@ -192,6 +218,7 @@ export function StoreSample({
   height,
   fontFamily,
   serifFamily = serifDefault,
+  cutout = false,
 }: StoreSampleProps) {
   const k = width / BASE;
   const px = (n: number) => n * k;
@@ -215,16 +242,12 @@ export function StoreSample({
     color: look.text,
   });
   const photo = (i: number, w: number, h: number, radius = look.radiusLg) => (
-    <Image
+    <Shot
       key={i}
       source={photos[i % Math.max(1, photos.length)]}
-      resizeMode="cover"
-      style={{
-        width: px(w),
-        height: px(h),
-        borderRadius: px(radius),
-        backgroundColor: look.surfaceAlt,
-      }}
+      box={{ width: px(w), height: px(h), borderRadius: px(radius) }}
+      tone={look.surfaceAlt}
+      cutout={cutout}
     />
   );
   const pair = (first: number, h: number) => (
@@ -308,10 +331,11 @@ export function StoreSample({
         </RNText>
         {button(copy.more, small ? 36 : 48, 15, strong)}
       </View>
-      <Image
+      <Shot
         source={photos[2 % Math.max(1, photos.length)]}
-        resizeMode="cover"
-        style={[styles.tall, { width: px(178) }]}
+        box={{ width: px(178), height: '100%' }}
+        tone={strong ? look.accent : look.surfaceAlt}
+        cutout={cutout}
       />
     </View>
   );
@@ -379,6 +403,7 @@ export function StoreSample({
             radius={px(look.radiusLg)}
             tone={look.surfaceAlt}
             play={look.autoplay}
+            cutout={cutout}
           />
           {look.autoplay ? (
             <View style={[styles.dots, { bottom: -px(PAD), gap: px(6) }]}>
@@ -406,15 +431,15 @@ export function StoreSample({
     const h = Math.max(70, tall - PAD * 3 - 56);
     body = (
       <View style={{ padding: px(PAD), gap: px(PAD) }}>
-        <Image
+        <Shot
           source={hero}
-          resizeMode="cover"
-          style={{
+          box={{
             width: px(inner),
             height: px(h),
             borderRadius: px(look.radiusLg),
-            backgroundColor: look.surfaceAlt,
           }}
+          tone={look.surfaceAlt}
+          cutout={cutout}
         />
         <View style={[styles.row, { gap: px(10) }]}>
           <View
