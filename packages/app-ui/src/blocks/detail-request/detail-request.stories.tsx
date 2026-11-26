@@ -30,7 +30,11 @@ function Demo() {
       </Section>
       <Section title="참고">
         <AddThumbs images={[]} onAdd={() => {}} addLabel="참고" />
-        <AddThumbs images={photos.slice(0, 2)} onAdd={() => {}} addLabel="참고" />
+        <AddThumbs
+          images={photos.slice(0, 2)}
+          onAdd={() => {}}
+          addLabel="참고"
+        />
       </Section>
       <Section title="단추">
         <TintButton cost={1000} onPress={() => {}}>

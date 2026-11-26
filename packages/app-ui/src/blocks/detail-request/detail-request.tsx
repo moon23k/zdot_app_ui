@@ -194,7 +194,5 @@ export function AddThumbs({ images, onAdd, addLabel }: AddThumbsProps) {
 
 export function TintButton({ style, ...rest }: TintButtonProps) {
   const s = useStyles();
-  return (
-    <Button {...rest} variant="secondary" point style={[s.tint, style]} />
-  );
+  return <Button {...rest} variant="secondary" point style={[s.tint, style]} />;
 }
